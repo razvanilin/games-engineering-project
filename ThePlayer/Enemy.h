@@ -13,7 +13,7 @@ private:
 	StateMachine<Enemy> _stateMachine;
 	//Decision tree used to determine which state to enter(AI)
 	DecisionTreeNode<Enemy>* _decisionTree;
-	//Rigidbody controlling movement (pysics)
+	//Rigidbody controlling movement (physics)
 	btRigidBody* _rigidBody;
 	// Keep track of total elapsed time since last decision
 	float _elapsedTime;
