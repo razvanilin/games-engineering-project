@@ -28,7 +28,7 @@ Enemy::Enemy() : Entity(-1, 0, ""), _stateMachine(this){
 //Initialise the enemy and add states to SM
 
 void Enemy::initialise(){
-	Entity* player = EntityManager::getNamedEntities("Player")->front();
+	Entity* player = EntityManager::getNamedEntities("Object")->front();
 	//Add states to SM
 	_stateMachine.addState("Normal", new StateNormal());
 	_stateMachine.addState("Seek", new SeekState(this, player, 10.0f));
@@ -57,7 +57,7 @@ void Enemy::loadContent(){
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
 	//set material properties
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("flame.jpg"));
+	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/flame.jpg"));
 	//create rigid body (sphere with rad of 1)
 	_rigidBody = PhysicsEngine::createSphereRigidBody(this, 1.0f, 10);
 }

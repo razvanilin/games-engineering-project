@@ -7,7 +7,9 @@
 #include "PhysicsEntity.h"
 #include "PhysicsEngine.h"
 #include "Player.h"
+#include "Object.h"
 #include "Enemy.h"
+
 
 using namespace irr;
 using namespace irr::core;
@@ -24,9 +26,14 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 
 int main (){
 	Player* player = new Player();
-	Enemy* enemy[20];
-	for (int i = 0; i < 20; ++i)
-		enemy[i] = new Enemy();
+
+	Object* tester = new Object();
+
+	Enemy* enemies[10];
+	for (int i = 0; i<10; i++){
+		enemies[i] = new Enemy();
+	}
+
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -42,17 +49,18 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
-	// Randomly place enemies
-	for (int i = 0; i < 20; ++i)
-	{
-		btTransform transform;
-		transform.setOrigin(btVector3(20 - rand() % 40, 0.0f, 20 - rand() % 40));
-		enemy[i]->getRigidBody()->setWorldTransform(transform);
-	}
+	// Randomly place Objects
+
+
+	
+
 
 	//create a floor
 	createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
 
+	//create a wall
+	createBox("Wall", vector3df(25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
+	createBox("Wall", vector3df(-25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
 
 	//set up timers
 	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
@@ -91,11 +99,11 @@ void createBox(const std::string& name, const vector3df& position, const vector3
 	ISceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
 	// and set the scale
 	node->setScale(scale);
-	//set the position, dumbass!
+	//set the position
 	node->setPosition(position);
 	// Set the material properties Use a texture of your choice
 	node->setMaterialFlag(EMF_LIGHTING, false);
-	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("checked.jpg"));
+	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/steel.jpg"));
 
 	//create a PhysicsEntity
 	PhysicsEntity* physicsEntity = new PhysicsEntity(node, name);
@@ -107,11 +115,11 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 	//create sphere geometry
 	ISceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
 
-	//and again, 'tard
+	//and again
 	node->setPosition(position);
 	//set material properties
 	node->setMaterialFlag(EMF_LIGHTING, false);
-	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("checked.jpg"));
+	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/checked.jpg"));
 
 	//create a PhysicsEntity
 	PhysicsEntity* physicsEntity = new PhysicsEntity(node, name);
