@@ -20,22 +20,86 @@ void Player::loadContent(){
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
 }
 
 void Player::update(float deltaTime){
-	float mod = 10.0f;
 
-	if (inputHandler.isKeyDown(KEY_KEY_W)){
-		_node->setPosition(_node->getPosition() + (vector3df(0.0f, 0.0f, -1.0f)*deltaTime*mod));
+	getRigidBody()->activate();
+	
+	// modifying the speed based on the movement mode
+	if (inputHandler.isKeyDown(KEY_LCONTROL))
+		// stealth movement
+		_mod = 2.0f;
+	else
+		// normal movement
+		_mod = 5.0f;
+
+	// setting the position of the node based on the rigid body
+	btVector3 point = _rigidBody->getCenterOfMassPosition();
+	_node->setPosition(vector3df(point.getX(), point.getY(), point.getZ()));
+	btQuaternion quat = _rigidBody->getOrientation();
+	quaternion q(quat.getX(), quat.getY(), quat.getZ(), quat.getW());
+	vector3df eular;
+	q.toEuler(eular);
+	eular *= RADTODEG;
+	_node->setRotation(eular);
+
+	// preparing the matrix
+	matrix4 mat = IdentityMatrix;
+	mat.setInverseRotationRadians(vector3df(_pitch, _yaw, 0.0f));
+
+	// transform direction vectors based on the orientation of the player
+	vector3df backward(.0f, .0f, -1.0f*_mod);
+	vector3df toLeft(-1.0f*_mod, .0f, .0f);
+	vector3df toRight(1.0f*_mod, .0f, .0f);
+	vector3df forward(.0f, .0f, 1.0f*_mod);
+	vector3df up(.0f, 1.0f, .0f);
+
+	mat.transformVect(forward);
+	mat.transformVect(backward);
+	mat.transformVect(toLeft);
+	mat.transformVect(toRight);
+	mat.transformVect(up);
+
+	// updating the player direction attributes
+	setForward(forward);
+	setUp(up);
+
+	// setting key press events
+	if (inputHandler.isKeyDown(KEY_KEY_D)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(toRight.X, 0.0f, toRight.Z));
 	}
-	if (inputHandler.isKeyDown(KEY_KEY_S)){
-		_node->setPosition(_node->getPosition() + (vector3df(0.0f, 0.0f, 1.0f)*deltaTime*mod));
+	if (inputHandler.isKeyDown(KEY_KEY_A)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(toLeft.X, 0.0f, toLeft.Z));
 	}
-	if (inputHandler.isKeyDown(KEY_KEY_A)){
-		_node->setPosition(_node->getPosition() + (vector3df(1.0f, 0.0f, 0.0f)*deltaTime*mod));
+	if (inputHandler.isKeyDown(KEY_KEY_S)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(backward.X, 0.0f, backward.Z));
 	}
-	if (inputHandler.isKeyDown(KEY_KEY_D)){
-		_node->setPosition(_node->getPosition() + (vector3df(-1.0f, 0.0f, 0.0f)*deltaTime*mod));
+	if (inputHandler.isKeyDown(KEY_KEY_W)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(forward.X, 0.0f, forward.Z));
+	}
+	// setting double key press events
+	if (inputHandler.isKeyDown(KEY_KEY_W) && inputHandler.isKeyDown(KEY_KEY_A)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(forward.X + toLeft.X, 0.0f, forward.Z + toLeft.Z));
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_W) && inputHandler.isKeyDown(KEY_KEY_D)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(forward.X + toRight.X, 0.0f, forward.Z + toRight.Z));
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_S) && inputHandler.isKeyDown(KEY_KEY_A)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(backward.X + toLeft.X, 0.0f, backward.Z + toLeft.Z));
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_S) && inputHandler.isKeyDown(KEY_KEY_D)) {
+		this->getRigidBody()->setLinearVelocity(btVector3(backward.X + toRight.X, 0.0f, backward.Z + toRight.Z));
+	}
+
+	// jump!
+	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE)) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
+	}
+	// TODO: fix the jumping and moving forward feature
+	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W)) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X + forward.X, (up.Y + forward.Y)*_mod, up.Z + forward.Z));
 	}
 
 	//action key
@@ -83,4 +147,16 @@ void Player::update(float deltaTime){
 			}
 		}
 	}
+}
+
+void Player::rotate(float deltaYaw, float deltaPitch){
+	_yaw -= deltaYaw;
+	_pitch += deltaPitch;
+
+	// rotate the rigid body according to the yaw of the player entity
+	btTransform trans = getRigidBody()->getCenterOfMassTransform();
+	btQuaternion quat;
+	quat.setEuler(-_yaw, 0.0f, 0.0f);
+	trans.setRotation(quat);
+	this->getRigidBody()->setCenterOfMassTransform(trans);
 }

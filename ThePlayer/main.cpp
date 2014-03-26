@@ -2,6 +2,7 @@
 #pragma comment (lib, "Irrlicht")
 
 #include <Irrlicht.h>
+#include <iostream>
 #include "Game.h"
 #include "TargetCamera.h"
 #include "PhysicsEntity.h"
@@ -9,6 +10,7 @@
 #include "Player.h"
 #include "Object.h"
 #include "Enemy.h"
+#include "FreeCamera.h"
 
 
 using namespace irr;
@@ -23,37 +25,31 @@ void createBox(const std::string& name, const vector3df& position, const vector3
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass);
 
 
-
 int main (){
 	Player* player = new Player();
 
 	Object* tester = new Object();
 
-	Enemy* enemies[10];
+	/*Enemy* enemies[10];
 	for (int i = 0; i<10; i++){
 		enemies[i] = new Enemy();
-	}
-
+	}*/
 
 	//setup window
 	game.setCaption(L"State Machines");
-	game.setDimensions(dimension2d<u32>(1200,900));
+	game.setDimensions(dimension2d<u32>(1366,768));
 
 	//add a camera
-	TargetCamera* cam = new TargetCamera();
+	FreeCamera* cam = new FreeCamera();
 	cam->setPosition(vector3df(0.0f,30.0f,30.0f));
 	cam->setTarget(vector3df(0.0f,0.0f,0.0f));
+	cam->setYaw(0.0f);
+	cam->setPitch(0.0f);
 	game.setCam(cam);
 
 	//initialise and load content
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
-
-	// Randomly place Objects
-
-
-	
-
 
 	//create a floor
 	createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
@@ -66,6 +62,7 @@ int main (){
 	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
 	u32 currTime;
 	float deltaTime;
+	int mod = 0;
 
 	while(game.getDevice()->run()){
 		//update timers
@@ -73,9 +70,37 @@ int main (){
 		deltaTime = float (currTime - prevTime)/1000.0f;
 
 		//escape!
-		if(inputHandler.isKeyDown(KEY_ESCAPE)){
+		if (inputHandler.isKeyDown(KEY_ESCAPE)){
 			break;
 		}
+
+		// zoom in or out so you can see the player
+		if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
+			mod++;
+		}
+		if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
+			mod--;
+		}
+
+		// set the camera position so it follows the player
+		cam->setPosition(vector3df(player->getNode()->getPosition().X, player->getNode()->getPosition().Y, player->getNode()->getPosition().Z+mod));
+
+		// stealth movement -> lower the camera a bit and update the player status
+		if (inputHandler.isKeyDown(KEY_LCONTROL)) {
+			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
+			player->setStealth(true);
+		}
+		else if (player->isStealthActive()){
+			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
+			player->setStealth(false);
+		}
+
+		// Now check if the mouse has moved
+		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;
+		int deltaY = inputHandler.getCurrentMouse().Position.Y - inputHandler.getPrevMouse().Position.Y;
+		// Rotate the camera by the change in the mouse position. 
+		player->rotate(deltaX * deltaTime, deltaY * deltaTime);
+		cam->rotate(deltaX * deltaTime, deltaY * deltaTime);
 
 		//update
 		if(!game.update(deltaTime)) break;
@@ -108,7 +133,10 @@ void createBox(const std::string& name, const vector3df& position, const vector3
 	//create a PhysicsEntity
 	PhysicsEntity* physicsEntity = new PhysicsEntity(node, name);
 	//create the rigidBody for the entity
-	physicsEntity->setRigidBody(PhysicsEngine::createBoxRigidBody(physicsEntity, scale, mass));
+	btRigidBody* body = PhysicsEngine::createBoxRigidBody(physicsEntity, scale, mass);
+	body->setFriction(1.5f);
+	body->setRollingFriction(2.0f);
+	physicsEntity->setRigidBody(body);
 }
 
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass){

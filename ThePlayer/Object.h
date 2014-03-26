@@ -12,6 +12,9 @@ private:
 	//boolean indicating if object has been collected
 	bool _pickedUp;
 	std::string _name;
+	vector3df _forward;
+	vector3df _up;
+	float _mod;
 
 public:
 	//constructor
@@ -32,6 +35,12 @@ public:
 	bool getPickedUp(){ return _pickedUp; }
 	//setter for pickedUp
 	void setPickedUp(bool val){ _pickedUp = val; }
+
+	vector3df getUp() { return _up; }
+	void setUp(vector3df value) { _up = value; }
+
+	vector3df getForward() { return _forward; }
+	void setForward(vector3df value) { _forward = value; }
 
 	void Object::handleMessage(const Message& message);
 };
