@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "Player.h"
 #include "FreeCamera.h"
+#include <iostream>
 
 using namespace irr::core;
 using namespace irr::scene;
@@ -33,6 +34,8 @@ void Object::loadContent(){
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
 }
 
+float objDistance = .5f;
+
 //updates the Object
 void Object::update(float deltaTime){
 	_mod = 2.0f;
@@ -46,11 +49,17 @@ void Object::update(float deltaTime){
 		btRigidBody* body = getRigidBody();
 		Entity* player = EntityManager::getNamedEntities("Player")->front();
 		vector3df playerPos = player->getNode()->getPosition();
-		this->_node->setPosition(playerPos + vector3df(_forward.X+_up.X, -(_forward.Y+_up.Y)+.5f, .3f*_forward.Z+_up.Z));
-		btVector3 newPos = btVector3(playerPos.X, playerPos.Y, playerPos.Z) + btVector3(_forward.X + _up.X, -(_forward.Y + _up.Y)+.5f, .3f*_forward.Z + _up.Z);
+		
+		// position of the rigid body and the node when it's picked up
+		_forward = vector3df(-_forward.X, _forward.Y, _forward.Z);
+		this->_node->setPosition(playerPos + _forward*objDistance);
+		
+		btVector3 f = btVector3(_forward.X, _forward.Y, _forward.Z);
+		btVector3 newPos = btVector3(playerPos.X, playerPos.Y, playerPos.Z) + f*objDistance;
 		btTransform transform = this->getRigidBody()->getCenterOfMassTransform();
 		transform.setOrigin(newPos);
-		body->setCenterOfMassTransform(transform);		
+		body->setCenterOfMassTransform(transform);
+		cout << _forward.Y << endl;
 	}
 	else{
 		// update our position and orientation from PhysicsEngines rigid body
@@ -67,7 +76,7 @@ void Object::handleMessage(const Message& message){
 	if (message.message == "thrown"){
 		_rigidBody->activate();
 		this->_pickedUp = false;
-		_rigidBody->setLinearVelocity(btVector3((_forward.X+_up.X)*_mod, -(_forward.Y+_up.X)*_mod*_mod, (_forward.Z+_up.Z)*_mod));
+		_rigidBody->setLinearVelocity(btVector3((_forward.X)*_mod, (_forward.Y)*_mod*_mod, (_forward.Z)*_mod));
 	}
 	if (message.message == "dropped"){
 		_rigidBody->activate();

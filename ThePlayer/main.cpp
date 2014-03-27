@@ -30,10 +30,10 @@ int main (){
 
 	Object* tester = new Object();
 
-	/*Enemy* enemies[10];
+	Enemy* enemies[10];
 	for (int i = 0; i<10; i++){
 		enemies[i] = new Enemy();
-	}*/
+	}
 
 	//setup window
 	game.setCaption(L"State Machines");
