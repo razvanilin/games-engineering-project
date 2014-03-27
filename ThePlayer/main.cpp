@@ -20,7 +20,7 @@ using namespace irr::video;
 using namespace GameEngine;
 
 // function header to add a box to our game world
-void createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass);
+btRigidBody* createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass);
 //function header to add a sphere
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass);
 
@@ -52,7 +52,7 @@ int main (){
 	if(!game.loadContent()) return -1;
 
 	//create a floor
-	createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
+	btRigidBody* floor = createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
 
 	//create a wall
 	createBox("Wall", vector3df(25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
@@ -63,6 +63,7 @@ int main (){
 	u32 currTime;
 	float deltaTime;
 	int mod = 0;
+	int colFlag;
 
 	while(game.getDevice()->run()){
 		//update timers
@@ -95,6 +96,11 @@ int main (){
 			player->setStealth(false);
 		}
 
+		if (player->getNode()->getPosition().Y > -3.5f) {
+			player->setDown(false);
+		}
+		else
+			player->setDown(true);
 		// Now check if the mouse has moved
 		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;
 		int deltaY = inputHandler.getCurrentMouse().Position.Y - inputHandler.getPrevMouse().Position.Y;
@@ -119,7 +125,7 @@ int main (){
 
 
 // function to add a box to our game world
-void createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass){
+btRigidBody* createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass){
 	//first create a box using Irrlicht
 	ISceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
 	// and set the scale
@@ -137,6 +143,8 @@ void createBox(const std::string& name, const vector3df& position, const vector3
 	body->setFriction(1.5f);
 	body->setRollingFriction(2.0f);
 	physicsEntity->setRigidBody(body);
+
+	return body;
 }
 
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass){

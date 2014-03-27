@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "Player.h"
 #include "FreeCamera.h"
+#include "PhysicsEntity.h"
 #include <iostream>
 
 using namespace irr::core;
@@ -32,13 +33,16 @@ void Object::loadContent(){
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/fish.jpg"));
 	//create rigid body (sphere with rad of 1)
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
+
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
+	physicsEntity->setRigidBody(_rigidBody);
 }
 
-float objDistance = .5f;
+float objDistance = 2.0f;
 
 //updates the Object
 void Object::update(float deltaTime){
-	_mod = 2.0f;
+	_mod = 10.0f;
 
 	std::list<Entity*>* objects = EntityManager::getNamedEntities("Player");
 	Player* player = (Player*)*(objects->begin());
@@ -52,19 +56,14 @@ void Object::update(float deltaTime){
 		
 		// position of the rigid body and the node when it's picked up
 		_forward = vector3df(-_forward.X, _forward.Y, _forward.Z);
-		this->_node->setPosition(playerPos + _forward*objDistance);
 		
 		btVector3 f = btVector3(_forward.X, _forward.Y, _forward.Z);
 		btVector3 newPos = btVector3(playerPos.X, playerPos.Y, playerPos.Z) + f*objDistance;
-		btTransform transform = this->getRigidBody()->getCenterOfMassTransform();
-		transform.setOrigin(newPos);
-		body->setCenterOfMassTransform(transform);
-		cout << _forward.Y << endl;
-	}
-	else{
-		// update our position and orientation from PhysicsEngines rigid body
-		btVector3 point = _rigidBody->getCenterOfMassPosition();
-		_node->setPosition(vector3df(point.getX(), point.getY(), point.getZ()));
+		if (newPos.y() <! -3.5) {
+			btTransform transform = this->getRigidBody()->getCenterOfMassTransform();
+			transform.setOrigin(newPos);
+			body->setCenterOfMassTransform(transform);
+		}
 	}
 }
 
@@ -76,7 +75,7 @@ void Object::handleMessage(const Message& message){
 	if (message.message == "thrown"){
 		_rigidBody->activate();
 		this->_pickedUp = false;
-		_rigidBody->setLinearVelocity(btVector3((_forward.X)*_mod, (_forward.Y)*_mod*_mod, (_forward.Z)*_mod));
+		_rigidBody->setLinearVelocity(btVector3((_forward.X)*_mod, (_forward.Y)*_mod, (_forward.Z)*_mod));
 	}
 	if (message.message == "dropped"){
 		_rigidBody->activate();

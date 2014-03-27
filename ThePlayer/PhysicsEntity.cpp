@@ -2,6 +2,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "InputHandler.h"
 #include "Game.h"
+#include <iostream>
 
 using namespace irr::core;
 
@@ -49,6 +50,7 @@ void PhysicsEntity::handleMessage(const Message& message){
 		}
 		else if(((Entity*)message.data)->getName() == "Floor"){
 			//set texture to original
+			cout << "Collided!" << endl;
 			_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("checked.jpg"));
 		}
 	}

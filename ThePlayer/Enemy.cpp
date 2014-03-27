@@ -15,6 +15,7 @@
 #include "SeekDecision.h"
 #include "FleeState.h"
 #include "FleeDecision.h"
+#include "PhysicsEntity.h"
 
 using namespace irr::core;
 using namespace irr::scene;
@@ -60,6 +61,9 @@ void Enemy::loadContent(){
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/flame.jpg"));
 	//create rigid body (sphere with rad of 1)
 	_rigidBody = PhysicsEngine::createSphereRigidBody(this, 1.0f, 10);
+
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
+	physicsEntity->setRigidBody(_rigidBody);
 }
 
 //updates the enemy

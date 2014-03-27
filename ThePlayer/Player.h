@@ -12,6 +12,7 @@ private:
 	float _mod;
 	bool _isCarrying;
 	bool _stealthActive;
+	bool _isDown;
 	Object* _carriedItem;
 	std::list<std::string> _collectedItems;
 	btRigidBody* _rigidBody;
@@ -33,6 +34,9 @@ public:
 
 	bool isStealthActive() { return _stealthActive; }
 	void setStealth(bool value) { _stealthActive = value; }
+
+	bool isDown() { return _isDown; }
+	void setDown(bool value) { _isDown = value; }
 
 	vector3df getUp() { return _up; }
 	void setUp(vector3df value) { _up = value; }
