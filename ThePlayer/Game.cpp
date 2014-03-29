@@ -20,7 +20,7 @@ namespace GameEngine{
 			16,
 			false,
 			false,
-			false,
+			true,
 			&inputHandler);
 		if(!_device){
 			std::cerr << "Error creating device" << std::endl;

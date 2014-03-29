@@ -63,7 +63,7 @@ int main (){
 	u32 currTime;
 	float deltaTime;
 	int mod = 0;
-	int colFlag;
+	btTransform transform;
 
 	while(game.getDevice()->run()){
 		//update timers
@@ -81,6 +81,15 @@ int main (){
 		}
 		if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
 			mod--;
+		}
+		
+		// resets the position and velocity of the object object
+		if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
+			//tester->~Object();
+			transform = tester->getRigidBody()->getCenterOfMassTransform();
+			transform.setOrigin(btVector3(0, 0, 0));
+			tester->getRigidBody()->setCenterOfMassTransform(transform);
+			tester->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
 		}
 
 		// set the camera position so it follows the player
@@ -127,7 +136,7 @@ int main (){
 // function to add a box to our game world
 btRigidBody* createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass){
 	//first create a box using Irrlicht
-	ISceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
+	IMeshSceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
 	// and set the scale
 	node->setScale(scale);
 	//set the position
@@ -149,7 +158,7 @@ btRigidBody* createBox(const std::string& name, const vector3df& position, const
 
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass){
 	//create sphere geometry
-	ISceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
+	IMeshSceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
 
 	//and again
 	node->setPosition(position);

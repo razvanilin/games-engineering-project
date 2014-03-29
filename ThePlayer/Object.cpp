@@ -24,6 +24,7 @@ void Object::initialise(){
 //Load content for the Object
 void Object::loadContent(){
 	//make a sphere
+	//IMesh* mesh = game.getDevice()->getSceneManager()->addCubeSceneNode(.3f);
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(.3f);
 	//set position to (0,0,0)
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
@@ -42,7 +43,8 @@ float objDistance = 2.0f;
 
 //updates the Object
 void Object::update(float deltaTime){
-	_mod = 10.0f;
+	// throw power
+	_mod = 15.0f;
 
 	std::list<Entity*>* objects = EntityManager::getNamedEntities("Player");
 	Player* player = (Player*)*(objects->begin());

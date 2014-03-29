@@ -8,12 +8,12 @@ namespace GameEngine{
 	protected:
 		int _id;
 		std::string _name;
-		irr::scene::ISceneNode* _node;
+		irr::scene::IMeshSceneNode* _node;
 		bool _alive;
 	public:
-		Entity(int id, irr::scene::ISceneNode* node, const std::string& name = "");
+		Entity(int id, irr::scene::IMeshSceneNode* node, const std::string& name = "");
 		virtual ~Entity(){ }
-		irr::scene::ISceneNode* getNode(){ return _node; }
+		irr::scene::IMeshSceneNode* getNode(){ return _node; }
 		bool isAlive() const {return _alive;}
 		void setAlive(bool value){ _alive = value; }
 		std::string getName() const {return _name;}

@@ -10,7 +10,7 @@ private:
 	//represents a physical object
 	btRigidBody* _rigidBody;
 public:
-	PhysicsEntity(ISceneNode* node, const std::string& name) : Entity (-1, node, name){}
+	PhysicsEntity(IMeshSceneNode* node, const std::string& name) : Entity (-1, node, name){}
 	~PhysicsEntity(){}
 
 	//getter and setter for _rigidbody
