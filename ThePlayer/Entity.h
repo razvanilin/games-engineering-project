@@ -14,6 +14,7 @@ namespace GameEngine{
 		Entity(int id, irr::scene::IMeshSceneNode* node, const std::string& name = "");
 		virtual ~Entity(){ }
 		irr::scene::IMeshSceneNode* getNode(){ return _node; }
+		void setNode(irr::scene::IMeshSceneNode* value) { _node = value; }
 		bool isAlive() const {return _alive;}
 		void setAlive(bool value){ _alive = value; }
 		std::string getName() const {return _name;}

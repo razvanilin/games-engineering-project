@@ -11,6 +11,7 @@
 #include "Object.h"
 #include "Enemy.h"
 #include "FreeCamera.h"
+#include "Room.h"
 
 
 using namespace irr;
@@ -29,6 +30,8 @@ int main (){
 	Player* player = new Player();
 
 	Object* tester = new Object();
+
+	Room* room = new Room("textures/steel.jpg", "textures/steel.jpg", "textures/steel.jpg", vector3df(0.0f, 5.0f, 0.0f), vector3df(0.0f, 5.0f, 5.0f), new array<int>());
 
 	Enemy* enemies[10];
 	for (int i = 0; i<10; i++){
