@@ -30,8 +30,15 @@ int main (){
 	Player* player = new Player();
 
 	Object* tester = new Object();
-	int doors[4]={ 1, 2, 3, 4};
-	Room* room = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 0.0f), vector3df(.5f, 6.5f, 20.0f), doors);
+
+	Room* room = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 0.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{3});
+	Room* hall = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2, 3, 4});
+	Room* bathroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{2});
+	Room* storageroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(0.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1});
+	Room* livingroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2, 4});
+	Room* kitchen = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{2, 3});
+	Room* depo = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 30.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{4});
+	Room* hallexit = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(0.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2});
 
 	Enemy* enemies[5];
 	for (int i = 0; i<5; i++){
@@ -69,7 +76,7 @@ int main (){
 	float deltaTime;
 	int mod = 0;
 	btTransform transform;
-
+	//player->getNode()->setPosition(vector3df(0, 100, 0));
 	while(game.getDevice()->run()){
 		//update timers
 		currTime = game.getDevice()->getTimer()->getRealTime();
@@ -110,10 +117,10 @@ int main (){
 			player->setStealth(false);
 		}
 
-		if (player->getNode()->getPosition().Y > room->getNode()->getPosition().Y - room->getNode()->getScale().Y*2) {
+		/*if (player->getNode()->getPosition().Y > room->getNode()->getPosition().Y - room->getNode()->getScale().Y*2) {
 			player->setDown(false);
 		}
-		else
+		else*/
 			player->setDown(true);
 		// Now check if the mouse has moved
 		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;

@@ -24,7 +24,10 @@ public:
 
 	/* also, the constructor needs an array of int for determining where the doors are -
 	 * door 1 = right; door 2 = left; door 3 = front; door 4 = back; other numbers are ignored
-	 * usage: "array(1,3,4)" - will create a door forward, backwards and to the left
+	 */
+
+	/* using scale:
+	 * X - wall thickness; Y - wall height; Z - wall width;
 	 */
 
 	Room(std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4]);

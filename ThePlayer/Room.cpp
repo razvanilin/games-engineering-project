@@ -33,29 +33,29 @@ void Room::loadContent() {
 	_node->setPosition(_position);
 
 	// preparing the walls
-	for (u32 i = 0; i < 4; ++i) {
+	for (int i = 0; i < 4; ++i) {
 
 		if (i == 0){
 			constructWall(
-				_position, 
-				_scale, 
+				vector3df(_position.X+_scale.Z/2, _position.Y, _position.Z), 
+				vector3df(_scale.X, _scale.Y, _scale.Z),
 				_wallTexture);
 		}
 		else if (i == 1) {
 			constructWall(
-				vector3df(-_position.X, _position.Y, _position.Z), 
-				_scale, 
+				vector3df(_position.X-_scale.Z/2, _position.Y, _position.Z), 
+				vector3df(_scale.X, _scale.Y, _scale.Z), 
 				_wallTexture);
 		}
 		else if (i == 2) {
 			constructWall(
-				vector3df(_position.Z, _position.Y, _position.X), 
+				vector3df(_position.X, _position.Y, _position.Z + _scale.Z / 2),
 				vector3df(_scale.Z, _scale.Y, _scale.X), 
 				_wallTexture);
 		}
 		else {
 			constructWall(
-				vector3df(_position.Z, _position.Y, -_position.X), 
+				vector3df(_position.X, _position.Y, _position.Z - _scale.Z / 2),
 				vector3df(_scale.Z, _scale.Y, _scale.X), 
 				_wallTexture);
 		}
@@ -63,16 +63,16 @@ void Room::loadContent() {
 	
 	// preparing the floor
 	constructWall(
-		vector3df(_position.Z, _position.Y - _scale.Y / 2, _position.Z), 
+		vector3df(_position.X, _position.Y - _scale.Y/2, _position.Z), 
 		vector3df(_scale.Z, _scale.X, _scale.Z),
 		_floorTexture);
 	
 	// preparing the ceiling
 	constructWall(
-		vector3df(_position.Z, _position.Y + _scale.Y / 2, _position.Z), 
+		vector3df(_position.X, _scale.Y/2, _position.Z), 
 		vector3df(_scale.Z, _scale.X, _scale.Z), 
 		_ceilingTexture);
-
+	
 	// loading the doors
 	loadDoors();
 }
@@ -98,28 +98,29 @@ void constructWall(vector3df position, vector3df scale, std::string texture) {
 // 1 = right; 2 = left; 3 = front; 4 = back; the other numbers are ignored
 void Room::loadDoors() {
 	for (int i = 0; i < 4; ++i) {
-		
+		std::cout << _doors[i] << std::endl;
 		// if valid number found, call construct door which creates the door entity
 		if (_doors[i] == 1) {
-			constructDoor(vector3df(_position.X, _position.Y - 1.0f, _position.Z / 2), 
-				vector3df(_scale.X + 0.5f, _scale.Y / 1.5f, 2.0f));
+			constructDoor(vector3df(_position.X + _scale.Z / 2, _position.Y-_scale.Y/4+_scale.X, _position.Z),
+				vector3df(_scale.X + 0.25f, _scale.Y/(_scale.Y/4)+_scale.X, 2.0f)
+				);
 		}
 		else if (_doors[i] == 2) {
 			constructDoor(
-				vector3df(-_position.X, _position.Y - 1.0f, _position.Z / 2), 
-				vector3df(_scale.X + 0.5f, _scale.Y / 1.5f, 2.0f)
+				vector3df(_position.X - _scale.Z / 2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
+				vector3df(_scale.X + 0.25f, _scale.Y / (_scale.Y / 4) + _scale.X, 2.0f)
 				);
 		}
 		else if (_doors[i] == 3) {
 			constructDoor(
-				vector3df(_position.Z / 2, _position.Y - 1.0f, _position.X), 
-				vector3df(2.0f, _scale.Y / 1.5f, _scale.X + 0.5f)
+				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z + _scale.Z / 2), 
+				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X + 0.25f)
 				);
 		}
 		else if (_doors[i] == 4) {
 			constructDoor(
-				vector3df(_position.Z / 2, _position.Y - 1.0f, -_position.X), 
-				vector3df(2.0f, _scale.Y / 1.5f, _scale.X + 0.5f)
+				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z - _scale.Z / 2), 
+				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X + 0.25f)
 				);
 		}
 	}
