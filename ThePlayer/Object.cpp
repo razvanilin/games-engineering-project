@@ -65,7 +65,7 @@ void Object::update(float deltaTime){
 		_forward = vector3df(-_forward.X, _forward.Y, _forward.Z);
 		
 		btVector3 f = btVector3(_forward.X, _forward.Y, _forward.Z);
-		btVector3 newPos = btVector3(playerPos.X, playerPos.Y, playerPos.Z) + f*objDistance;
+		btVector3 newPos = btVector3(playerPos.X, playerPos.Y+1.0f, playerPos.Z) + f*objDistance;
 		//if (newPos.y() <! -3.5) {
 			btTransform transform = this->getRigidBody()->getCenterOfMassTransform();
 			transform.setOrigin(newPos);

@@ -14,21 +14,20 @@ private:
 	std::string _wallTexture;
 	std::string _floorTexture;
 	std::string _ceilingTexture;
-	array<int>* _doors;
+	int _doors[4];
 public:
 	// when creating a room, specify the textures for walls, floor and ceiling
 	
-
 	/* the position is used to determine the lower left corner of the room
 	 * the walls will be built from there, clockwise
 	 */
 
 	/* also, the constructor needs an array of int for determining where the doors are -
-	 * door 1 for example will be the front door and the others will be determined clockwise
+	 * door 1 = right; door 2 = left; door 3 = front; door 4 = back; other numbers are ignored
 	 * usage: "array(1,3,4)" - will create a door forward, backwards and to the left
 	 */
 
-	Room(std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, array<int>* doors);
+	Room(std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4]);
 	~Room(){}
 
 	array<btRigidBody*>* getBounds() { return _bounds; }
@@ -42,6 +41,7 @@ public:
 
 	// add an object in the room
 	//void addObject(std::string name, std::string meshPath, std::string texturePath, btVector3 position, float mass);
+	void loadDoors();
 
 	void initialise();
 	void loadContent();
