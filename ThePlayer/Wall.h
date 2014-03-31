@@ -9,7 +9,7 @@ class Wall : public Entity {
 private:
 	btRigidBody* _rigidBody;
 public:
-	Wall(btRigidBody* body);
+	Wall();
 	~Wall() {}
 
 	btRigidBody* getRigidBody() { return _rigidBody; }

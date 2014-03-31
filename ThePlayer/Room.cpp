@@ -34,77 +34,87 @@ void Room::loadContent() {
 
 	vector3df currWallPos;
 	vector3df lastWallPos(0,0,0);
+	Wall* wallEntity;
+	btTransform trans;
+	btQuaternion quat;
+	btVector3 position = btVector3(_position.X, _position.Y, _position.Z);
 	// preparing the walls
 	for (u32 i = 0; i < 4; ++i) {
 		wallNodes->push_back(game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f));
-		physicsEntity = new PhysicsEntity(wallNodes->getLast(), "Wall");
-		btRigidBody* body = PhysicsEngine::createBoxRigidBody(physicsEntity, _scale, 0.0f);
-		// setting the position and scale of the walls
-		if (i == 0) {
-			wallNodes->getLast()->setPosition(_position + vector3df(0.0f, 0.0f, 0.0f));
-			wallNodes->getLast()->setScale(_scale);
-			body = PhysicsEngine::createBoxRigidBody(physicsEntity, _scale, 0.0f);
-		}
-		else if (i == 1) {
-			wallNodes->getLast()->setPosition(_position + vector3df(_scale.Z, 0.0f, 0.0f));
-			wallNodes->getLast()->setScale(vector3df(_scale.Z, _scale.Y, _scale.X));
-			body = PhysicsEngine::createBoxRigidBody(physicsEntity, vector3df(_scale.Z, _scale.Y, _scale.X), 0.0f);
-		}
-		else if (i == 2) {
-			wallNodes->getLast()->setPosition(_position + vector3df(_scale.X, 0.0f, _scale.Z));
-			wallNodes->getLast()->setScale(vector3df(_scale.X, _scale.Y, -_scale.Z));
-			body = PhysicsEngine::createBoxRigidBody(physicsEntity, vector3df(_scale.X, _scale.Y, -_scale.Z), 0.0f);
-		}
-		else if (i == 3) {
-			wallNodes->getLast()->setPosition(_position + vector3df(_scale.Z, 0.0f, 0.0f));
-			wallNodes->getLast()->setPosition(vector3df(-_scale.Z, _scale.Y, _scale.X));
-			body = PhysicsEngine::createBoxRigidBody(physicsEntity, vector3df(-_scale.Z, _scale.Y, _scale.X), 0.0f);
-		}
+		//physicsEntity = new PhysicsEntity(wallNodes->getLast(), "Wall");
+		wallEntity = new Wall();
 		// setting the texture
+		wallNodes->getLast()->setMaterialFlag(EMF_LIGHTING, false);
 		wallNodes->getLast()->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(_wallTexture.c_str()));
 		// creating an entity from each wall
-		Wall* entity = new Wall(body);
-		entity->setName("Wall");
-		entity->setNode(wallNodes->getLast());
-		std::cout << "Here" << endl;
-		// setting up the rigid body for the walls
-		entity->setRigidBody(body);
-		physicsEntity->setRigidBody(body);
+		wallEntity->setName("Wall");
+		wallEntity->setNode(wallNodes->getLast());
+		wallEntity->getNode()->setPosition(vector3df(position.x(), position.y(), position.z()));
+		wallEntity->getNode()->setScale(_scale);
+		// setting the position and scale of the walls
+		if (i == 0) {
+			wallEntity->getNode()->setPosition(_position);
+			wallEntity->getNode()->setScale(_scale);
+			btRigidBody* body = PhysicsEngine::createBoxRigidBody(wallEntity, _scale, 0.0f);
+			wallEntity->setRigidBody(body);
+		}
+		else if (i == 1) {
+			wallEntity->getNode()->setPosition(_position + vector3df(_scale.Z / 2 - _scale.X / 2, 0.0f, _scale.Z / 2));
+			wallEntity->getNode()->setScale(vector3df(_scale.Z, _scale.Y, _scale.X));
+			btRigidBody* body = PhysicsEngine::createBoxRigidBody(wallEntity, vector3df(_scale.Z, _scale.Y, _scale.X), 0.0f);
+			wallEntity->setRigidBody(body);
+		}
+		else if (i == 2) {
+			wallEntity->getNode()->setPosition(_position + vector3df(_scale.Z, 0.0f, _scale.X / 2));
+			wallEntity->getNode()->setScale(vector3df(_scale.X, _scale.Y, -_scale.Z));
+			btRigidBody* body = PhysicsEngine::createBoxRigidBody(wallEntity, vector3df(_scale.X, _scale.Y, _scale.Z), 0.0f);
+			wallEntity->setRigidBody(body);
+		}
+		else if (i == 3) {
+			wallEntity->getNode()->setPosition(_position + vector3df(_scale.Z / 2, 0.0f, -_scale.Z / 2));
+			wallEntity->getNode()->setScale(vector3df(-_scale.Z - _scale.X, _scale.Y, -_scale.X));
+			btRigidBody* body = PhysicsEngine::createBoxRigidBody(wallEntity, vector3df(_scale.Z - _scale.X, _scale.Y, -_scale.X), 0.0f);
+			wallEntity->setRigidBody(body);
+		}
 	}
 
 	// preparing the floor
 	IMeshSceneNode* floorNode = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
-	floorNode->setPosition(_position + vector3df(_scale.Z/2, 0.0f, _scale.Z/2));
-	floorNode->setScale(vector3df(_scale.Z, 1.0f, _scale.Z));
+	floorNode->setPosition(_position + vector3df(_scale.Z / 2, -_scale.Y / 2 + _scale.X / 2, 0.0f));
+	floorNode->setScale(vector3df(_scale.Z + _scale.X, 1.0f, _scale.Z + _scale.X));
+	floorNode->setMaterialFlag(EMF_LIGHTING, false);
 	floorNode->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(_floorTexture.c_str()));
 
 	// creating an entity for the floor
-	physicsEntity = new PhysicsEntity(floorNode, "Floor");
-	btRigidBody* floorBody = PhysicsEngine::createBoxRigidBody(physicsEntity, vector3df(_scale.Z, 1.0f, _scale.Z), 0.0f);
+	//physicsEntity = new PhysicsEntity(floorNode, "Floor");
 
-	Wall* floorEntity = new Wall(floorBody);
+	Wall* floorEntity = new Wall();
 	floorEntity->setName("Floor");
 	floorEntity->setNode(floorNode);
 
-	// setting up the rigid body for the floor
-	physicsEntity->setRigidBody(floorBody);
+	btRigidBody* floorBody = PhysicsEngine::createBoxRigidBody(floorEntity, vector3df(_scale.Z, 0.5f, _scale.Z), 0.0f);
+	floorBody->setFriction(1.5f);
+	floorEntity->setRigidBody(floorBody);
 
 	// preparing the ceiling
 	IMeshSceneNode* ceilingNode = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
-	ceilingNode->setPosition(_position + vector3df(_scale.Z / 2, _scale.Y, _scale.Z / 2));
+	ceilingNode->setPosition(_position + vector3df(_scale.Z / 2, _scale.Y/2 + _scale.X, 0.0f));
 	ceilingNode->setScale(vector3df(_scale.Z, 1.0f, _scale.Z));
+	ceilingNode->setMaterialFlag(EMF_LIGHTING, false);
 	ceilingNode->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(_ceilingTexture.c_str()));
 
 	// creating an entity for the ceiling
-	physicsEntity = new PhysicsEntity(ceilingNode, "Ceiling");
-	btRigidBody* ceilingBody = PhysicsEngine::createBoxRigidBody(physicsEntity, vector3df(_scale.Z, 1.0f, _scale.Z), 0.0f);
+	//physicsEntity = new PhysicsEntity(ceilingNode, "Ceiling");
 
-	Wall* ceilingEntity = new Wall(ceilingBody);
+	Wall* ceilingEntity = new Wall();
 	ceilingEntity->setName("Ceiling");
 	ceilingEntity->setNode(ceilingNode);
 
+	btRigidBody* ceilingBody = PhysicsEngine::createBoxRigidBody(ceilingEntity, vector3df(_scale.Z, 1.0f, _scale.Z), 0.0f);
+	ceilingEntity->setRigidBody(ceilingBody);
+
 	// setting up the rigid body for the ceiling
-	physicsEntity->setRigidBody(ceilingBody);
+	//physicsEntity->setRigidBody(ceilingBody);
 }
 
 void Room::update(float deltaTime) {

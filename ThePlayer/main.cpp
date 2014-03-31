@@ -31,10 +31,10 @@ int main (){
 
 	Object* tester = new Object();
 
-	Room* room = new Room("textures/steel.jpg", "textures/steel.jpg", "textures/steel.jpg", vector3df(0.0f, 5.0f, 0.0f), vector3df(0.0f, 5.0f, 5.0f), new array<int>());
+	Room* room = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(-2.0f, 0.5, -2.0f), vector3df(.5f, 6.5f, 10.0f), new array<int>());
 
-	Enemy* enemies[10];
-	for (int i = 0; i<10; i++){
+	Enemy* enemies[5];
+	for (int i = 0; i<5; i++){
 		enemies[i] = new Enemy();
 	}
 
@@ -55,11 +55,11 @@ int main (){
 	if(!game.loadContent()) return -1;
 
 	//create a floor
-	btRigidBody* floor = createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
+	//btRigidBody* floor = createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
 
 	//create a wall
-	createBox("Wall", vector3df(25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
-	createBox("Wall", vector3df(-25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
+	//createBox("Wall", vector3df(25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
+	//createBox("Wall", vector3df(-25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
 
 	//set up timers
 	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
@@ -90,13 +90,13 @@ int main (){
 		if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
 			//tester->~Object();
 			transform = tester->getRigidBody()->getCenterOfMassTransform();
-			transform.setOrigin(btVector3(0, 0, 0));
+			transform.setOrigin(btVector3(player->getNode()->getPosition().X, player->getNode()->getPosition().Y+1, player->getNode()->getPosition().Z));
 			tester->getRigidBody()->setCenterOfMassTransform(transform);
 			tester->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
 		}
 
 		// set the camera position so it follows the player
-		cam->setPosition(vector3df(player->getNode()->getPosition().X, player->getNode()->getPosition().Y, player->getNode()->getPosition().Z+mod));
+		cam->setPosition(vector3df(player->getNode()->getPosition().X, player->getNode()->getPosition().Y+0.5f, player->getNode()->getPosition().Z+mod));
 
 		// stealth movement -> lower the camera a bit and update the player status
 		if (inputHandler.isKeyDown(KEY_LCONTROL)) {
@@ -108,7 +108,7 @@ int main (){
 			player->setStealth(false);
 		}
 
-		if (player->getNode()->getPosition().Y > -3.5f) {
+		if (player->getNode()->getPosition().Y > room->getNode()->getPosition().Y - room->getNode()->getScale().Y) {
 			player->setDown(false);
 		}
 		else

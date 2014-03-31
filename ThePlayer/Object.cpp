@@ -24,16 +24,21 @@ void Object::initialise(){
 //Load content for the Object
 void Object::loadContent(){
 	//make a sphere
-	//IMesh* mesh = game.getDevice()->getSceneManager()->addCubeSceneNode(.3f);
-	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(.3f);
+	//IMesh* mesh = game.getDevice()->getSceneManager()->getMesh("meshes/house/Shelve.obj")->getMesh(0);
+	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(0.3f);
+	//_node->setScale(vector3df(0.1f, 0.1f, 0.1f));
+	//_node->setMesh(mesh);
 	//set position to (0,0,0)
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
 	//set material properties
+	//_node->setVisible(0);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/fish.jpg"));
 	//create rigid body (sphere with rad of 1)
+
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
+	//btCollisionShape *shape = new btBoxShape(btVector3(1.0f, 1.0f, 1.0f));
+	//_rigidBody->setCollisionShape(shape);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -61,11 +66,11 @@ void Object::update(float deltaTime){
 		
 		btVector3 f = btVector3(_forward.X, _forward.Y, _forward.Z);
 		btVector3 newPos = btVector3(playerPos.X, playerPos.Y, playerPos.Z) + f*objDistance;
-		if (newPos.y() <! -3.5) {
+		//if (newPos.y() <! -3.5) {
 			btTransform transform = this->getRigidBody()->getCenterOfMassTransform();
 			transform.setOrigin(newPos);
 			body->setCenterOfMassTransform(transform);
-		}
+		//}
 	}
 }
 
