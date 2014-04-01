@@ -11,11 +11,12 @@ private:
 	btRigidBody* _rigidBody;
 	//boolean indicating if object has been collected
 	bool _pickedUp;
-	std::string _name;
+	std::string _itemName;
+	vector3df _startPos;
 
 public:
 	//constructor
-	Object();
+	Object(std::string name, vector3df startPos);
 	//destructor
 	~Object(){}
 	//RB getter
@@ -32,6 +33,10 @@ public:
 	bool getPickedUp(){ return _pickedUp; }
 	//setter for pickedUp
 	void setPickedUp(bool val){ _pickedUp = val; }
+
+	std::string getItemName(){
+		return this->_itemName;
+	}
 
 	void Object::handleMessage(const Message& message);
 };

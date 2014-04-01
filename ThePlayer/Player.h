@@ -21,5 +21,7 @@ public:
 	Object* getCarriedItem(){ return _carriedItem; }
 	void setCarriedItem(Object* val){ _carriedItem = val; }
 	void clearCarriedItem(){ _carriedItem = 0; }
+	void addItem(std::string val){ _collectedItems.push_front(val); }
+	std::list<std::string> getCollectedItems(){ return _collectedItems; }
 
 };

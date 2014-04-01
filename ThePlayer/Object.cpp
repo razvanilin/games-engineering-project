@@ -2,14 +2,16 @@
 #include "Game.h"
 #include "EntityManager.h"
 
+
 using namespace irr::core;
 using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an pickupable object. Initialises Entity and SM
-Object::Object() : Entity(-1, 0, "Object"){
+Object::Object(std::string name, vector3df startPos ) : Entity(-1, 0, "Object"){
 	_pickedUp = false;
-	_name = "";
+	_itemName = name;
+	_startPos = startPos;
 }
 
 
@@ -20,15 +22,15 @@ void Object::initialise(){
 //Load content for the Object
 void Object::loadContent(){
 	//make a sphere
-	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(10);
+	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(1);
 	//set position to (0,0,0)
-	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
+	_node->setPosition(_startPos);
 	//set material properties
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/fish.jpg"));
+	std::string pathToTexture = "textures/"+_itemName+".jpg";
+	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 	//create rigid body (sphere with rad of 1)
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 2);
 }
 
 //updates the Object
@@ -59,14 +61,12 @@ void Object::handleMessage(const Message& message){
 	if (message.message == "thrown"){
 		_rigidBody->activate();
 		this->_pickedUp = false;
-		_rigidBody->setLinearVelocity(btVector3(10.0f, 10.0f, 0.0f));
-		
+		_rigidBody->setLinearVelocity(btVector3(10.0f, 10.0f, 0.0f));		
 	}
+
 	if (message.message == "dropped"){
 		_rigidBody->activate();
 		this->_pickedUp = false;
-		
-
 	}
 
 }

@@ -62,8 +62,6 @@ void Player::update(float deltaTime){
 					obj->setPickedUp(true);
 					this->setCarriedItem(obj);
 					this->_isCarrying = true;
-					cout << "item at location "<<this->getCarriedItem()<< " now picked up" << endl;
-					cout << "isCarrying: " << _isCarrying << endl;
 					break;
 				}
 				iter++;
@@ -83,4 +81,7 @@ void Player::update(float deltaTime){
 			}
 		}
 	}
+	
+	
+
 }

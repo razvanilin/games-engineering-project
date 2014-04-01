@@ -9,7 +9,10 @@
 #include "Player.h"
 #include "Object.h"
 #include "Enemy.h"
-
+#include <IGUIFont.h>
+#include "EntityManager.h"
+#include <sstream>
+#include "Collectable.h"
 
 using namespace irr;
 using namespace irr::core;
@@ -27,14 +30,24 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 int main (){
 	Player* player = new Player();
 
-	Object* tester = new Object();
+	Object* fish = new Object("fish", vector3df(-15.0f, 0.0f, 5.0f));
+	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));
+	Object* carrot = new Object("carrot", vector3df(-15.0f, 0.0f, -15.0f));
+	Object* bone = new Object("bone", vector3df(15.0f, 0.0f, -15.0f));
+	
+	Collectable* socks = new Collectable("socks", vector3df(-10.0f, 0.0f, -10.0f));
+	Collectable* jeans = new Collectable("jeans", vector3df(10.0f, 0.0f, 10.0f));
+	Collectable* shoes = new Collectable("shoes", vector3df(-10.0f, 0.0f, 10.0f));
+	Collectable* shirt = new Collectable("shirt", vector3df(10.0f, 0.0f, -10.0f));
 
-	Enemy* enemies[10];
-	for (int i = 0; i<10; i++){
-		enemies[i] = new Enemy();
-	}
 
+	Enemy* fatcat = new Enemy("fatcat", vector3df(10.0f, 0.0f, 10.0f), 5.0f);
+	Enemy* cat = new Enemy("cat", vector3df(-10.0f, 0.0f, -10.0f), 10.0f);
+	Enemy* dog = new Enemy("dog", vector3df(-10.0f, 0.0f, 10.0f), 10.0f);
+	Enemy* rabbit = new Enemy("rabbit", vector3df(10.0F, 0.0F, -10.0F), 10.0f);
 
+	
+	
 	//setup window
 	game.setCaption(L"State Machines");
 	game.setDimensions(dimension2d<u32>(1200,900));
@@ -49,10 +62,13 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
-	// Randomly place Objects
+	irr::gui::IGUIStaticText* text;
+	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
+	text = guienv->addStaticText(L"0 : 0", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
+	irr::gui::IGUIFont* font = guienv->getFont("bigfont.png");
+	text->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
+	text->setOverrideFont(font);
 
-
-	
 
 
 	//create a floor
@@ -82,6 +98,16 @@ int main (){
 
 		//render
 		if(!game.render()) break;
+
+		//random stuff...
+		
+		
+		Player* player = (Player*)EntityManager::getNamedEntities("Player")->front();
+		vector3df playerPos = player->getNode()->getPosition();
+		std::wstringstream sstream;
+		sstream << "x:" << playerPos.X << " y: " << playerPos.Y << " z: " << playerPos.Z << ". CI: "<< player->getCollectedItems().size() ;
+		text->setText(sstream.str().c_str());
+		//cout <<  << endl;
 
 		prevTime = currTime;
 	}
