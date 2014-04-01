@@ -4,6 +4,7 @@
 #include "EntityManager.h"
 #include "Wall.h"
 #include "Door.h"
+#include "Furniture.h"
 #include <iostream>
 
 using namespace irr::scene;
@@ -164,6 +165,7 @@ void Room::update(float deltaTime) {
 
 }
 
-void Room::addObject(std::string name, std::string meshPath, std::string texturePath, btVector3* position, float mass) {
-
+void Room::addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
+	vector3df furniturePos = _position - position;
+	new Furniture(name, roomName, meshPath, furniturePos, scale, mass);
 }

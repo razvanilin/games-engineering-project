@@ -30,7 +30,7 @@ public:
 	/* using scale:
 	 * X - wall thickness; Y - wall height; Z - wall width;
 	 */
-
+	
 	Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor);
 	~Room(){}
 
@@ -53,6 +53,6 @@ public:
 	void update(float deltaTime);
 	void unloadContent() {}
 
-	void addObject(std::string name, std::string meshPath, std::string texturePath, btVector3* position, float mass);
+	void addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
 
 };

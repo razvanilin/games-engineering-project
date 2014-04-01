@@ -28,6 +28,23 @@ btRigidBody* createBox(const std::string& name, const vector3df& position, const
 //function header to add a sphere
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass);
 
+const float WALL_THIKNESS = 0.5f;
+const float WALL_HEIGHT = 7.5f;
+const float ROOM_SIZE = 15.0f;
+
+void createHouse() {
+	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
+	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
+	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* storageroom = new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
+	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
+	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
+
+	bedroom->addObject("couch", bedroom->getName(), "Couch.obj", vector3df(5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+	hall->addObject("girl", hall->getName(), "girl_3.obj", vector3df(5.0f, 2.0f, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+
+}
 
 int main (){
 	Player* player = new Player();
@@ -42,13 +59,7 @@ int main (){
 	Collectable* shoes = new Collectable("shoes", vector3df(-10.0f, 0.0f, 10.0f));
 	Collectable* shirt = new Collectable("shirt", vector3df(10.0f, 0.0f, -10.0f));
 
-	Room* bedroom		= new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{3}, 0);
-	Room* hall			= new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 3, 4}, 0);
-	Room* bathroom		= new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2}, 0);
-	Room* storageroom	= new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1}, 0);
-	Room* livingroom	= new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 4}, 0);
-	Room* kitchen		= new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2}, 0);
-	Room* hallexit		= new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2}, 2);
+	createHouse();
 
 	Enemy* fatcat = new Enemy("fatcat", vector3df(10.0f, 0.0f, 10.0f), 5.0f);
 	Enemy* cat = new Enemy("cat", vector3df(-10.0f, 0.0f, -10.0f), 10.0f);
@@ -127,7 +138,7 @@ int main (){
 			player->setStealth(false);
 		}
 
-		if (player->getNode()->getPosition().Y > bedroom->getNode()->getPosition().Y - bedroom->getNode()->getScale().Y*2) {
+		if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT/2+WALL_THIKNESS) {
 			player->setDown(false);
 		}
 		else
@@ -144,7 +155,7 @@ int main (){
 
 		vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
-		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size();
+		sstream << "x:" << pos.X << " y: " << player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size() << "  " << -WALL_HEIGHT / 2 + WALL_THIKNESS;
 		text->setText(sstream.str().c_str());
 
 		//render
