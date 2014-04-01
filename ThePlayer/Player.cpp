@@ -7,6 +7,7 @@
 #include "Door.h"
 #include <unordered_map>
 #include <iostream>
+#include "Room.h"
 
 using namespace irr::scene;
 using namespace irr::video;
@@ -32,7 +33,7 @@ void Player::loadContent(){
 void Player::update(float deltaTime){
 
 	getRigidBody()->activate();
-	
+
 	// modifying the speed based on the movement mode
 	if (inputHandler.isKeyDown(KEY_LCONTROL))
 		// stealth movement
@@ -109,7 +110,7 @@ void Player::update(float deltaTime){
 		getRigidBody()->setLinearVelocity(btVector3(up.X - backward.X, up.Y, up.Z + backward.Z)*_mod);
 	}
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_A) && isDown() && !isStealthActive()) {
-		getRigidBody()->setLinearVelocity(btVector3(up.X +toLeft.X, up.Y, up.Z - toLeft.Z)*_mod);
+		getRigidBody()->setLinearVelocity(btVector3(up.X + toLeft.X, up.Y, up.Z - toLeft.Z)*_mod);
 	}
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_D) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X + toRight.X, up.Y, up.Z - toRight.Z)*_mod);
@@ -126,11 +127,12 @@ void Player::update(float deltaTime){
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
 			}
-		}else{//picking up
+		}
+		else{//picking up
 			std::list<Entity*>* objects = EntityManager::getNamedEntities("Object");
 			vector3df playerPos = _node->getPosition();
 			auto iter = objects->begin();
-			while (iter!=objects->end()){
+			while (iter != objects->end()){
 				Object* obj = (Object*)(*iter);
 				btVector3 hm = obj->getRigidBody()->getCenterOfMassPosition();
 				vector3df objPos = vector3df(hm.getX(), hm.getY(), hm.getZ());
@@ -142,7 +144,7 @@ void Player::update(float deltaTime){
 					break;
 				}
 				iter++;
-			}			
+			}
 		}
 	}
 
@@ -188,6 +190,20 @@ void Player::update(float deltaTime){
 		iter++;
 	}
 
+	/* GET THE ROOM THE PLAYER IS IN */
+	std::list<Entity*>* rooms = EntityManager::getNamedEntities("Room");
+	playerPos = _node->getPosition();
+	auto iterator = rooms->begin();
+	while (iterator != rooms->end()){
+
+		Room* room = (Room*)(*iterator);
+		vector3df roomPos = room->getPosition();
+		vector3df roomScale = room->getScale();
+		vector3df toPlayer = playerPos - roomPos;
+		if (toPlayer.getLength() < roomScale.Z / 2)
+			setCurrentRoom(room->getName());
+		iterator++;
+	}
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){

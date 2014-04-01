@@ -42,13 +42,12 @@ int main (){
 	Collectable* shoes = new Collectable("shoes", vector3df(-10.0f, 0.0f, 10.0f));
 	Collectable* shirt = new Collectable("shirt", vector3df(10.0f, 0.0f, -10.0f));
 
-	Room* bedroom		= new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1,3}, 1);
+	Room* bedroom		= new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{3}, 0);
 	Room* hall			= new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 3, 4}, 0);
 	Room* bathroom		= new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2}, 0);
 	Room* storageroom	= new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1}, 0);
 	Room* livingroom	= new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 4}, 0);
-	Room* kitchen		= new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2, 3}, 0);
-	Room* depo			= new Room("Depo", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{4}, 0);
+	Room* kitchen		= new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2}, 0);
 	Room* hallexit		= new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2}, 2);
 
 	Enemy* fatcat = new Enemy("fatcat", vector3df(10.0f, 0.0f, 10.0f), 5.0f);

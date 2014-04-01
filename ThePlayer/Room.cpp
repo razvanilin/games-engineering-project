@@ -13,12 +13,13 @@ using namespace GameEngine;
 void constructDoor(vector3df position, vector3df scale, int direction, bool isExit);
 void constructWall(vector3df position, vector3df scale, std::string texture);
 
-Room::Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor) : Entity(-1, 0, name){
+Room::Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor) : Entity(-1, 0, "Room"){
 	_wallTexture = wallTexture;
 	_floorTexture = floorTexture;
 	_ceilingTexture = ceilingTexture;
 	_position = position;
 	_scale = scale;
+	_name = name;
 	for (int i = 0; i < 4; ++i) {
 		_doors[i] = doors[i];
 	}

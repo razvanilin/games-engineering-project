@@ -43,6 +43,8 @@ public:
 	vector3df getPosition() { return _position; }
 	void setPosition(vector3df value) { _position = value; }
 
+	std::string getName() { return _name; }
+
 	// add an object in the room
 	void loadDoors();
 
