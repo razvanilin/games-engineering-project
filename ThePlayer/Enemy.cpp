@@ -17,6 +17,7 @@
 #include "DistanceToCarrotDecision.h"
 #include "RandomDecision.h"
 #include "SeekState.h"
+#include "Seek.h"
 #include "SeekPlayerDecision.h"
 #include "SeekCollectableDecision.h"
 #include "FleeState.h"
@@ -27,13 +28,14 @@
 #include <iostream>
 #include "Collectable.h"
 #include <sstream>
+#include "PhysicsEntity.h"
 
 using namespace irr::core;
 using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an Enemy object. Initialises Entity and SM
-Enemy::Enemy(std::string name, vector3df startPos, float velMod) : Entity(-1, 0, ""), _stateMachine(this){
+Enemy::Enemy(std::string name, vector3df startPos, float velMod) : Entity(-1, 0, name), _stateMachine(this){
 	_enemyName = name;
 	_velMod = velMod;
 	_startPos = startPos;
@@ -112,7 +114,7 @@ void Enemy::initialise(){
 		_stateMachine.addState("Normal", new StateNormal());
 		_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
 		_stateMachine.addState("FleePlayer", new FleeState(this, player, _velMod));
-		_stateMachine.addState("SeekItem", new SeekState(this, carrot, _velMod));		
+		_stateMachine.addState("SeekItem", new SeekState(this, carrot, _velMod));
 		_stateMachine.addState("SeekCollectable", new SeekState(this, jeans, _velMod));
 	}
 	else if (_enemyName == "dog"){// seeks shoes, loves bones
@@ -137,38 +139,41 @@ void Enemy::loadContent(){
 	//find mesh
 	IAnimatedMesh* mesh = 0;
 	std::wstringstream path;
-	path << "meshes/"  << _enemyName.c_str() << "/" << _enemyName.c_str() << ".obj";
-		mesh = game.getDevice()->getSceneManager()->getMesh(path.str().c_str());
-		if (!mesh){
-			std::cout << "Could not load "<< _enemyName.c_str() << " mesh" << std::endl;
-			return;
-		}
-	
+	path << "meshes/" << _enemyName.c_str() << "/" << _enemyName.c_str() << ".obj";
+	mesh = game.getDevice()->getSceneManager()->getMesh(path.str().c_str());
+	if (!mesh){
+		std::cout << "Could not load " << _enemyName.c_str() << " mesh" << std::endl;
+		return;
+	}
+
 	_node = game.getDevice()->getSceneManager()->addAnimatedMeshSceneNode(mesh);
-	
+
 	//Set Positions and lighting
 	_node->setPosition(_startPos);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	
+
 	//set scales
 	if (_enemyName == "fatcat"){
-		_node->setScale(vector3df(10.0f, 5.0f, 5.0f));
+		_node->setScale(vector3df(1.5f, 1, 1));
 	}
-	else{
-		_node->setScale(vector3df(5.0f, 5.0f, 5.0f));
+	else if (_enemyName == "cat"){
+		_node->setScale(vector3df(1.0f, 1.0f, 1.0f));
 	}
-	
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 100);
+	else if (_enemyName == "rabbit") {
+		_node->setScale(vector3df(1, 1, 1));
+	}
+	else if (_enemyName == "dog") {
+		_node->setScale(vector3df(1.5f, 1.5f, 1.5f));
+	}
+
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 1);
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
+	physicsEntity->setRigidBody(_rigidBody);
 
 }
 
 //updates the enemy
 void Enemy::update(float deltaTime){
-	// update our position and orientation from PhysicsEngines rigid body
-	btVector3 point = _rigidBody->getCenterOfMassPosition();
-	_node->setPosition(vector3df(point.getX(), point.getY(), point.getZ()));
-
-
 	// Add elapsed time
 	_elapsedTime += deltaTime;
 
@@ -190,17 +195,17 @@ void Enemy::update(float deltaTime){
 DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 	DecisionTreeNode<Enemy>* result = 0;
 
-	if (name == "fatcat"){		
+	if (name == "fatcat"){
 		result = new DistanceToPlayerDecision(
-					30.0f,
-					new DistanceToFishDecision(
-						10.0f,
-						new DistanceToFishDecision(
-							2.0f,
-							new NormalDecision(),
-							new SeekItemDecision()),
-						new NormalDecision()),
-					new NormalDecision());
+			30.0f,
+			new DistanceToFishDecision(
+			10.0f,
+			new DistanceToFishDecision(
+			2.0f,
+			new NormalDecision(),
+			new SeekItemDecision()),
+			new NormalDecision()),
+			new NormalDecision());
 	}
 
 	if (name == "dog"){
@@ -215,7 +220,7 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 			new NormalDecision()),
 			new NormalDecision());
 	}
-	
+
 	if (name == "rabbit"){
 		result = new DistanceToPlayerDecision(
 			30.0f,
@@ -228,21 +233,21 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 			new NormalDecision()),
 			new NormalDecision());
 	}
-	
+
 	if (name == "cat"){// will watch over socks, moving towards player then back to socks. Will Avoid spray at all costs...
 		result = new DistanceToPlayerDecision(
-					15.0f,
-					new DistanceToSprayDecision(
-						10.0f,
-						new FleeItemDecision(),
-						new DistanceToSocksDecision(
-							5.0f,
-							new SeekPlayerDecision(),
-							new SeekCollectableDecision()
-						)
-					), 
-					new NormalDecision()
-					);
+			15.0f,
+			new DistanceToSprayDecision(
+			10.0f,
+			new FleeItemDecision(),
+			new DistanceToSocksDecision(
+			5.0f,
+			new SeekPlayerDecision(),
+			new SeekCollectableDecision()
+			)
+			),
+			new NormalDecision()
+			);
 	}
 
 	return result;

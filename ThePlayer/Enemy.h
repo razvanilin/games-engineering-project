@@ -4,7 +4,6 @@
 #include "StateMachine.h"
 #include "PhysicsEngine.h"
 #include "DecisionTreeNode.h"
-#include "AlertMark.h"
 
 using namespace GameEngine;
 
@@ -25,7 +24,7 @@ private:
 	float _velMod;
 	vector3df _startPos;
 
-	
+
 
 public:
 	//constructor
@@ -33,7 +32,7 @@ public:
 	//destructor
 	~Enemy(){}
 	//RB getter
-	btRigidBody* getRigidBody(){return _rigidBody;}
+	btRigidBody* getRigidBody(){ return _rigidBody; }
 	// Gets the state machine of the enemy
 	StateMachine<Enemy>& getStateMachine() { return _stateMachine; }
 	//initialise
@@ -48,7 +47,7 @@ public:
 	std::string getEnemyName(){
 		return _enemyName;
 	}
-		
+
 
 	DecisionTreeNode<Enemy>* getDecTree(std::string name);
 };

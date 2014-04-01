@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include <iostream>
 #include "Player.h"
+#include "PhysicsEntity.h"
 
 using namespace irr::core;
 using namespace irr::scene;
@@ -32,6 +33,10 @@ void Collectable::loadContent(){
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 	_alive = true;
 
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1, 1, 1), 1.0f);
+
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Collectable");
+	physicsEntity->setRigidBody(_rigidBody);
 }
 
 //updates the Object
@@ -46,7 +51,7 @@ void Collectable::update(float deltaTime){
 		irr::core::aabbox3df cb = _node->getTransformedBoundingBox();
 			
 		//if (pb.intersectsWithBox(cb)){
-		if (toTarget.getLength()<1.0f){
+		if (toTarget.getLength()<2.0f){
 			_alive = false;
 			_node->setVisible(false);
 			player->addItem(_itemName);
