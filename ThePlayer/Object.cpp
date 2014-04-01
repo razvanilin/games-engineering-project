@@ -25,29 +25,15 @@ void Object::initialise(){
 //Load content for the Object
 void Object::loadContent(){
 	//make a sphere
-<<<<<<< HEAD
-	//IMesh* mesh = game.getDevice()->getSceneManager()->getMesh("meshes/house/Shelve.obj")->getMesh(0);
-	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(0.3f);
-	//_node->setScale(vector3df(0.1f, 0.1f, 0.1f));
-=======
 	//IAnimatedMesh* mesh = game.getDevice()->getSceneManager()->getMesh("meshes/house/Couch.obj");
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
 	//_node->setScale(vector3df(0.5f, 0.5f, 0.5f));
->>>>>>> DaveDev
 	//_node->setMesh(mesh);
 	//set position to (0,0,0)
 	_node->setPosition(_startPos);
 	//set material properties
 	//_node->setVisible(0);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-<<<<<<< HEAD
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/fish.jpg"));
-	//create rigid body (sphere with rad of 1)
-
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
-	//btCollisionShape *shape = new btBoxShape(btVector3(1.0f, 1.0f, 1.0f));
-	//_rigidBody->setCollisionShape(shape);
-=======
 	std::string pathToTexture = "textures/" + _itemName + ".jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 
@@ -55,7 +41,6 @@ void Object::loadContent(){
 	//create rigid body (sphere with rad of 1)
 
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
->>>>>>> DaveDev
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 	physicsEntity->setRigidBody(_rigidBody);

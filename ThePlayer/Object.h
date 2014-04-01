@@ -15,11 +15,8 @@ private:
 	vector3df _forward;
 	vector3df _up;
 	float _mod;
-<<<<<<< HEAD
-=======
 	vector3df _startPos;
 	std::string _itemName;
->>>>>>> DaveDev
 
 public:
 	//constructor
@@ -47,12 +44,9 @@ public:
 	vector3df getForward() { return _forward; }
 	void setForward(vector3df value) { _forward = value; }
 
-<<<<<<< HEAD
-=======
 	std::string getItemName(){
 		return _itemName;
 	}
 
->>>>>>> DaveDev
 	void Object::handleMessage(const Message& message);
 };

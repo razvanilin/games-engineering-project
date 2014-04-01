@@ -19,10 +19,7 @@ namespace GameEngine{
 			_dimensions,
 			32,
 			false,
-<<<<<<< HEAD
-=======
 			false,
->>>>>>> DaveDev
 			true,
 			&inputHandler);
 		if(!_device){

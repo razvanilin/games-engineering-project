@@ -12,12 +12,9 @@
 #include "Enemy.h"
 #include "FreeCamera.h"
 #include "Room.h"
-<<<<<<< HEAD
-=======
 #include "Collectable.h"
 #include <sstream>
 #include <IGUIFont.h>
->>>>>>> DaveDev
 
 
 using namespace irr;
@@ -35,23 +32,6 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 int main (){
 	Player* player = new Player();
 
-<<<<<<< HEAD
-	Object* tester = new Object();
-
-	Room* room = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 0.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{3});
-	Room* hall = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2, 3, 4});
-	Room* bathroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{2});
-	Room* storageroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(0.0f, 0.0f, 10.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1});
-	Room* livingroom = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(10.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2, 4});
-	Room* kitchen = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{2, 3});
-	Room* depo = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(20.0f, 0.0f, 30.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{4});
-	Room* hallexit = new Room("textures/steel.jpg", "textures/flame.jpg", "textures/checked.jpg", vector3df(0.0f, 0.0f, 20.0f), vector3df(.5f, 6.5f, 10.0f), new int[]{1, 2});
-
-	Enemy* enemies[5];
-	for (int i = 0; i<5; i++){
-		enemies[i] = new Enemy();
-	}
-=======
 	Object* fish = new Object("fish", vector3df(-15.0f, 0.0f, 5.0f));
 	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));
 	Object* carrot = new Object("carrot", vector3df(-15.0f, 0.0f, -15.0f));
@@ -75,7 +55,6 @@ int main (){
 	Enemy* cat = new Enemy("cat", vector3df(-10.0f, 0.0f, -10.0f), 10.0f);
 	Enemy* dog = new Enemy("dog", vector3df(-10.0f, 0.0f, 10.0f), 10.0f);
 	Enemy* rabbit = new Enemy("rabbit", vector3df(10.0F, 0.0F, -10.0F), 10.0f);
->>>>>>> DaveDev
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -93,16 +72,6 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
-<<<<<<< HEAD
-	/*//create a floor
-	btRigidBody* floor = createBox("Floor", vector3df(0.0f, -5.0f, 0.0f), vector3df(50.0f, 0.5f, 50.0f), 0.0f);
-
-	//create a wall
-	createBox("Wall", vector3df(25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
-	createBox("Wall", vector3df(-25.0f, 0.0f, 0.0f), vector3df(0.5f, 10.0f, 50.0f), 0.0f);
-	createBox("Wall", vector3df(0.0f, 0.0f, 25.0f), vector3df(50.0f, 10.0f, 0.5f), 0.0f);
-	createBox("Wall", vector3df(0.0f, 0.0f, -25.0f), vector3df(50.0f, 10.0f, 0.5f), 0.0f);*/
-=======
 	irr::gui::IGUIStaticText* text;
 	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
 	text = guienv->addStaticText(L"0 : 0", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
@@ -110,7 +79,6 @@ int main (){
 	text->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
 	text->setOverrideFont(font);
 
->>>>>>> DaveDev
 
 	//set up timers
 	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
@@ -138,28 +106,17 @@ int main (){
 		}
 		
 		// resets the position and velocity of the object object
-<<<<<<< HEAD
-		if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
-=======
 		/*if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
->>>>>>> DaveDev
 			//tester->~Object();
 			transform = tester->getRigidBody()->getCenterOfMassTransform();
 			transform.setOrigin(btVector3(player->getNode()->getPosition().X, player->getNode()->getPosition().Y, player->getNode()->getPosition().Z));
 			tester->getRigidBody()->setCenterOfMassTransform(transform);
 			tester->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
-<<<<<<< HEAD
-		}
-
-		// set the camera position so it follows the player
-		cam->setPosition(vector3df(player->getNode()->getPosition().X, player->getNode()->getPosition().Y+1.0f, player->getNode()->getPosition().Z+mod));
-=======
 		}*/
 
 		// set the camera position so it follows the player
 		btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
 		cam->setPosition(vector3df(playerPos.x(), playerPos.y()+2.0f, playerPos.z()+mod));
->>>>>>> DaveDev
 
 		// stealth movement -> lower the camera a bit and update the player status
 		if (inputHandler.isKeyDown(KEY_LCONTROL)) {
@@ -171,17 +128,10 @@ int main (){
 			player->setStealth(false);
 		}
 
-<<<<<<< HEAD
-		/*if (player->getNode()->getPosition().Y > room->getNode()->getPosition().Y - room->getNode()->getScale().Y*2) {
-			player->setDown(false);
-		}
-		else*/
-=======
 		if (player->getNode()->getPosition().Y > bedroom->getNode()->getPosition().Y - bedroom->getNode()->getScale().Y*2) {
 			player->setDown(false);
 		}
 		else
->>>>>>> DaveDev
 			player->setDown(true);
 		// Now check if the mouse has moved
 		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;
@@ -214,7 +164,7 @@ int main (){
 // function to add a box to our game world
 btRigidBody* createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass){
 	//first create a box using Irrlicht
-	IMeshSceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
+	ISceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
 	// and set the scale
 	node->setScale(scale);
 	//set the position
@@ -236,7 +186,7 @@ btRigidBody* createBox(const std::string& name, const vector3df& position, const
 
 void createSphere(const std::string& name, const vector3df& position, float radius, float mass){
 	//create sphere geometry
-	IMeshSceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
+	ISceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
 
 	//and again
 	node->setPosition(position);

@@ -4,10 +4,7 @@
 #include "Object.h"
 #include "MessageHandler.h"
 #include "PhysicsEntity.h"
-<<<<<<< HEAD
-=======
 #include "Door.h"
->>>>>>> DaveDev
 #include <unordered_map>
 #include <iostream>
 
@@ -25,16 +22,10 @@ void Player::loadContent(){
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
-<<<<<<< HEAD
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
-
-	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
-=======
 	_node->setVisible(false);
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Player");
->>>>>>> DaveDev
 	physicsEntity->setRigidBody(_rigidBody);
 }
 
@@ -50,11 +41,8 @@ void Player::update(float deltaTime){
 		// normal movement
 		_mod = 5.0f;
 
-<<<<<<< HEAD
-=======
 	/* SETTING UP THE DIRECTION MATRIX */
 
->>>>>>> DaveDev
 	// preparing the matrix
 	matrix4 mat0;
 	mat0.setRotationAxisRadians(_yaw, vector3df(0, 1, 0));
@@ -80,11 +68,8 @@ void Player::update(float deltaTime){
 	setForward(forward);
 	setUp(up);
 
-<<<<<<< HEAD
-=======
 	/* MOVEMENT */
 
->>>>>>> DaveDev
 	// setting key press events
 	if (inputHandler.isKeyDown(KEY_KEY_D) && isDown()) {
 		this->getRigidBody()->setLinearVelocity(btVector3(toRight.X, 0.0f, -toRight.Z)*_mod);
@@ -115,7 +100,6 @@ void Player::update(float deltaTime){
 	// jump!
 	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
-<<<<<<< HEAD
 	}
 	// TODO: fix the jumping and moving forward feature
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
@@ -126,21 +110,6 @@ void Player::update(float deltaTime){
 	}
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_A) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X +toLeft.X, up.Y, up.Z - toLeft.Z)*_mod);
-	}
-	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_D) && isDown() && !isStealthActive()) {
-		getRigidBody()->setLinearVelocity(btVector3(up.X + toRight.X, up.Y, up.Z - toRight.Z)*_mod);
-=======
-	}
-	// TODO: fix the jumping and moving forward feature
-	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
-		getRigidBody()->setLinearVelocity(btVector3(up.X - forward.X, up.Y, up.Z + forward.Z)*_mod);
-	}
-	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_S) && isDown() && !isStealthActive()) {
-		getRigidBody()->setLinearVelocity(btVector3(up.X - backward.X, up.Y, up.Z + backward.Z)*_mod);
-	}
-	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_A) && isDown() && !isStealthActive()) {
-		getRigidBody()->setLinearVelocity(btVector3(up.X +toLeft.X, up.Y, up.Z - toLeft.Z)*_mod);
->>>>>>> DaveDev
 	}
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_D) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X + toRight.X, up.Y, up.Z - toRight.Z)*_mod);
@@ -187,8 +156,6 @@ void Player::update(float deltaTime){
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 
 	/* CHECKING THE DOORS */
 	std::list<Entity*>* doors = EntityManager::getNamedEntities("Door");
@@ -221,7 +188,6 @@ void Player::update(float deltaTime){
 		iter++;
 	}
 
->>>>>>> DaveDev
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){

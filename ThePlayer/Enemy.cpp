@@ -21,9 +21,6 @@
 #include "SeekPlayerDecision.h"
 #include "SeekCollectableDecision.h"
 #include "FleeState.h"
-<<<<<<< HEAD
-#include "FleeDecision.h"
-=======
 #include "FleePlayerDecision.h"
 #include "fleeItemDecision.h"
 #include "SeekItemDecision.h"
@@ -31,7 +28,6 @@
 #include <iostream>
 #include "Collectable.h"
 #include <sstream>
->>>>>>> DaveDev
 #include "PhysicsEntity.h"
 
 using namespace irr::core;
@@ -155,14 +151,6 @@ void Enemy::loadContent(){
 	//Set Positions and lighting
 	_node->setPosition(_startPos);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-<<<<<<< HEAD
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/flame.jpg"));
-	//create rigid body (sphere with rad of 1)
-	_rigidBody = PhysicsEngine::createSphereRigidBody(this, 1.0f, 10);
-
-	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
-	physicsEntity->setRigidBody(_rigidBody);
-=======
 
 	//set scales
 	if (_enemyName == "fatcat"){
@@ -182,7 +170,6 @@ void Enemy::loadContent(){
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
 	physicsEntity->setRigidBody(_rigidBody);
 
->>>>>>> DaveDev
 }
 
 //updates the enemy
