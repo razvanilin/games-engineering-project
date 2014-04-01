@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "SteeringBehaviour.h"
+#include "AlertMark.h"
 
 namespace GameEngine
 {
@@ -14,6 +15,9 @@ namespace GameEngine
 		Entity* _target;
 		// Maximum speet of the Entity
 		float _maxSpeed;
+
+
+
 	public:
 		// Creates a new Seek behaviour
 		Seek(Entity* character, Entity* target, float maxSpeed)

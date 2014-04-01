@@ -4,11 +4,13 @@
 #include "StateMachine.h"
 #include "PhysicsEngine.h"
 #include "DecisionTreeNode.h"
+#include "AlertMark.h"
 
 using namespace GameEngine;
 
 class Enemy : public Entity{
 private:
+
 	//StsteMachine to control behaviour
 	StateMachine<Enemy> _stateMachine;
 	//Decision tree used to determine which state to enter(AI)
@@ -17,10 +19,17 @@ private:
 	btRigidBody* _rigidBody;
 	// Keep track of total elapsed time since last decision
 	float _elapsedTime;
+	//name for AI
+	std::string _enemyName;
+	//
+	float _velMod;
+	vector3df _startPos;
+
+	
 
 public:
 	//constructor
-	Enemy();
+	Enemy(std::string name, vector3df startPos, float pVel);
 	//destructor
 	~Enemy(){}
 	//RB getter
@@ -35,4 +44,11 @@ public:
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
 	void unloadContent(){}
+
+	std::string getEnemyName(){
+		return _enemyName;
+	}
+		
+
+	DecisionTreeNode<Enemy>* getDecTree(std::string name);
 };

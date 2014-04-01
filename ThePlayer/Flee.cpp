@@ -1,4 +1,5 @@
 #include "Flee.h"
+#include <cmath>
 
 using namespace irr::core;
 
@@ -23,6 +24,8 @@ namespace GameEngine
 		// Use this in the steering output. Rotation is 0
 		steering.direction = direction;
 		steering.rotation = 0.0f;
+
+
 
 		return steering;
 	}
