@@ -11,7 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="DistanceDecision.cpp" />
+    <ClCompile Include="DistanceToBoneDecision.cpp" />
+    <ClCompile Include="DistanceToCarrotDecision.cpp" />
+    <ClCompile Include="DistanceToFishDecision.cpp" />
+    <ClCompile Include="DistanceToPlayerDecision.cpp" />
+    <ClCompile Include="DistanceToSocksDecision.cpp" />
+    <ClCompile Include="DistanceToSprayDecision.cpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
@@ -19,43 +27,64 @@
     <ClCompile Include="FleeState.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GuiHud.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PhysicsEntity.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Seek.cpp" />
     <ClCompile Include="SeekState.cpp" />
     <ClCompile Include="Spin2.cpp" />
     <ClCompile Include="StateNormal.cpp" />
     <ClCompile Include="StateSpin.cpp" />
     <ClCompile Include="TargetCamera.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Collectable.h" />
     <ClInclude Include="Decision.h" />
     <ClInclude Include="DecisionTreeNode.h" />
     <ClInclude Include="DistanceDecision.h" />
+    <ClInclude Include="DistanceToBoneDecision.h" />
+    <ClInclude Include="DistanceToCarrotDecision.h" />
+    <ClInclude Include="DistanceToFishDecision.h" />
+    <ClInclude Include="DistanceToPlayerDecision.h" />
+    <ClInclude Include="DistanceToSocksDecision.h" />
+    <ClInclude Include="DistanceToSprayDecision.h" />
+    <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Flee.h" />
+    <ClInclude Include="FleeColletableDecision.h" />
     <ClInclude Include="FleeDecision.h" />
+    <ClInclude Include="FleeItemDecision.h" />
+    <ClInclude Include="FleePlayerDecision.h" />
     <ClInclude Include="FleeState.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GuiHud.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="MultiDecision.h" />
     <ClInclude Include="NormalDecision.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RandomDecision.h" />
     <ClInclude Include="RandomMultiDecision.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Seek.h" />
+    <ClInclude Include="SeekCollectableDecision.h" />
     <ClInclude Include="SeekDecision.h" />
+    <ClInclude Include="SeekItemDecision.h" />
+    <ClInclude Include="SeekPlayerDecision.h" />
     <ClInclude Include="SeekState.h" />
     <ClInclude Include="Spin2.h" />
     <ClInclude Include="Spin2Decision.h" />
@@ -67,6 +96,7 @@
     <ClInclude Include="SteeringBehaviour.h" />
     <ClInclude Include="SteeringOutput.h" />
     <ClInclude Include="TargetCamera.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE8181B7-EFEE-43F7-81F0-6E53E4208ADA}</ProjectGuid>

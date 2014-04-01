@@ -17,9 +17,12 @@ namespace GameEngine{
 		_device = irr::createDevice(
 			irr::video::EDT_DIRECT3D9,
 			_dimensions,
-			16,
+			32,
 			false,
+<<<<<<< HEAD
+=======
 			false,
+>>>>>>> DaveDev
 			true,
 			&inputHandler);
 		if(!_device){

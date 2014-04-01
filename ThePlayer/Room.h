@@ -15,6 +15,10 @@ private:
 	std::string _floorTexture;
 	std::string _ceilingTexture;
 	int _doors[4];
+<<<<<<< HEAD
+=======
+	int _exitDoor;
+>>>>>>> DaveDev
 public:
 	// when creating a room, specify the textures for walls, floor and ceiling
 	
@@ -30,7 +34,11 @@ public:
 	 * X - wall thickness; Y - wall height; Z - wall width;
 	 */
 
+<<<<<<< HEAD
 	Room(std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4]);
+=======
+	Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor);
+>>>>>>> DaveDev
 	~Room(){}
 
 	array<btRigidBody*>* getBounds() { return _bounds; }
@@ -43,11 +51,20 @@ public:
 	void setPosition(vector3df value) { _position = value; }
 
 	// add an object in the room
+<<<<<<< HEAD
 	//void addObject(std::string name, std::string meshPath, std::string texturePath, btVector3 position, float mass);
+=======
+>>>>>>> DaveDev
 	void loadDoors();
 
 	void initialise();
 	void loadContent();
 	void update(float deltaTime);
 	void unloadContent() {}
+<<<<<<< HEAD
+=======
+
+	void addObject(std::string name, std::string meshPath, std::string texturePath, btVector3* position, float mass);
+
+>>>>>>> DaveDev
 };
