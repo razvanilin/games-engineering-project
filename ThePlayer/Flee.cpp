@@ -1,4 +1,5 @@
 #include "Flee.h"
+#include <cmath>
 
 using namespace irr::core;
 

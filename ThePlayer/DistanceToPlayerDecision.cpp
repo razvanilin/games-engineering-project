@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DistanceDecision.h"
+#include "DistanceToPlayerDecision.h"
 #include "EntityManager.h"
 
-DecisionTreeNode<Enemy>* DistanceDecision::getBranch(Enemy* owner)
+DecisionTreeNode<Enemy>* DistanceToPlayerDecision::getBranch(Enemy* owner)
 {
 	Entity* player = EntityManager::getNamedEntities("Player")->front();
 	vector3df playerPos = player->getNode()->getPosition();

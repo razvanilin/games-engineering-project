@@ -9,57 +9,157 @@
 #include "NormalDecision.h"
 #include "Spin2Decision.h"
 #include "SpinDecision.h"
-#include "DistanceDecision.h"
+#include "DistanceToPlayerDecision.h"
+#include "DistanceToSprayDecision.h"
+#include "DistanceToFishDecision.h"
+#include "DistanceToSocksDecision.h"
+#include "DistanceToBoneDecision.h"
+#include "DistanceToCarrotDecision.h"
 #include "RandomDecision.h"
 #include "SeekState.h"
-#include "SeekDecision.h"
+#include "SeekPlayerDecision.h"
+#include "SeekCollectableDecision.h"
 #include "FleeState.h"
-#include "FleeDecision.h"
+#include "FleePlayerDecision.h"
+#include "fleeItemDecision.h"
+#include "SeekItemDecision.h"
+#include "Object.h"
+#include <iostream>
+#include "Collectable.h"
+#include <sstream>
 
 using namespace irr::core;
 using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an Enemy object. Initialises Entity and SM
-Enemy::Enemy() : Entity(-1, 0, ""), _stateMachine(this){
-	
+Enemy::Enemy(std::string name, vector3df startPos, float velMod) : Entity(-1, 0, ""), _stateMachine(this){
+	_enemyName = name;
+	_velMod = velMod;
+	_startPos = startPos;
 }
 
 //Initialise the enemy and add states to SM
 
 void Enemy::initialise(){
+	// find player pointer
 	Entity* player = EntityManager::getNamedEntities("Player")->front();
+
+	//find object pointers
+	std::list<Entity*>* objects = EntityManager::getNamedEntities("Object");
+	Object* fish = 0;
+	Object* spray = 0;
+	Object* bone = 0;
+	Object* carrot = 0;
+	auto iter = objects->begin();
+	while (iter != objects->end()){
+		Object* temp = (Object*)(*iter);
+		if (temp->getItemName() == "fish"){
+			fish = temp;
+		}
+		if (temp->getItemName() == "spray"){
+			spray = temp;
+		}
+		if (temp->getItemName() == "bone"){
+			bone = temp;
+		}
+		if (temp->getItemName() == "carrot"){
+			carrot = temp;
+		}
+		iter++;
+	}
+
+	//find socks
+	std::list<Entity*>* collectables = EntityManager::getNamedEntities("Collectable");
+	Collectable* socks = 0;
+	Collectable* shirt = 0;
+	Collectable* jeans = 0;
+	Collectable* shoes = 0;
+	auto cIter = collectables->begin();
+	while (cIter != collectables->end()){
+		Collectable* tempC = (Collectable*)(*cIter);
+		if (tempC->getItemName() == "socks"){
+			socks = tempC;
+		}
+		if (tempC->getItemName() == "shirt"){
+			shirt = tempC;
+		}
+		if (tempC->getItemName() == "jeans"){
+			jeans = tempC;
+		}
+		if (tempC->getItemName() == "shoes"){
+			shoes = tempC;
+		}
+		cIter++;
+	}
+
+
 	//Add states to SM
-	_stateMachine.addState("Normal", new StateNormal());
-	_stateMachine.addState("Seek", new SeekState(this, player, 10.0f));
-	_stateMachine.addState("Flee", new FleeState(this, player, 10.0f));
+	if (_enemyName == "cat"){// seeks socks, hates spray
+		_stateMachine.addState("Normal", new StateNormal());
+		_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
+		_stateMachine.addState("SeekItem", new SeekState(this, fish, _velMod));
+		_stateMachine.addState("FleePlayer", new FleeState(this, player, _velMod));
+		_stateMachine.addState("FleeItem", new FleeState(this, spray, _velMod));
+		_stateMachine.addState("SeekCollectable", new SeekState(this, socks, _velMod));
+	}
+	else if (_enemyName == "fatcat"){// seeks shirt, loves fish
+		_stateMachine.addState("Normal", new StateNormal());
+		_stateMachine.addState("SeekItem", new SeekState(this, fish, _velMod));
+		_stateMachine.addState("SeekCollectable", new SeekState(this, shirt, _velMod));
+	}
+	else if (_enemyName == "rabbit"){//seeks jeans, loves carrots
+		_stateMachine.addState("Normal", new StateNormal());
+		_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
+		_stateMachine.addState("FleePlayer", new FleeState(this, player, _velMod));
+		_stateMachine.addState("SeekItem", new SeekState(this, carrot, _velMod));		
+		_stateMachine.addState("SeekCollectable", new SeekState(this, jeans, _velMod));
+	}
+	else if (_enemyName == "dog"){// seeks shoes, loves bones
+		_stateMachine.addState("Normal", new StateNormal());
+		_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
+		_stateMachine.addState("FleePlayer", new FleeState(this, player, _velMod));
+		_stateMachine.addState("SeekItem", new SeekState(this, bone, _velMod));
+		_stateMachine.addState("SeekCollectable", new SeekState(this, shoes, _velMod));
+	}
+
 	//set initial state to normal
 	_stateMachine.setState("Normal");
 	// Set elapsed time to 0
 	_elapsedTime = 0.0f;
 	// Create decision tree
-	_decisionTree = new DistanceDecision(
-		20.0f,
-		new DistanceDecision(
-		10.0f,
-		new FleeDecision(),
-		new RandomDecision<Enemy>(
-			new NormalDecision(),
-			new SeekDecision())),
-		new SeekDecision());
+	_decisionTree = this->getDecTree(_enemyName);
 }
 
 //Load content for the enemy
 void Enemy::loadContent(){
-	//make a sphere
-	_node = game.getDevice()->getSceneManager()->addSphereSceneNode(1.0f, 32);
-	//set position to (0,0,0)
-	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
-	//set material properties
+
+	//find mesh
+	IAnimatedMesh* mesh = 0;
+	std::wstringstream path;
+	path << "meshes/"  << _enemyName.c_str() << "/" << _enemyName.c_str() << ".obj";
+		mesh = game.getDevice()->getSceneManager()->getMesh(path.str().c_str());
+		if (!mesh){
+			std::cout << "Could not load "<< _enemyName.c_str() << " mesh" << std::endl;
+			return;
+		}
+	
+	_node = game.getDevice()->getSceneManager()->addAnimatedMeshSceneNode(mesh);
+	
+	//Set Positions and lighting
+	_node->setPosition(_startPos);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("flame.jpg"));
-	//create rigid body (sphere with rad of 1)
-	_rigidBody = PhysicsEngine::createSphereRigidBody(this, 1.0f, 10);
+	
+	//set scales
+	if (_enemyName == "fatcat"){
+		_node->setScale(vector3df(10.0f, 5.0f, 5.0f));
+	}
+	else{
+		_node->setScale(vector3df(5.0f, 5.0f, 5.0f));
+	}
+	
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 100);
+
 }
 
 //updates the enemy
@@ -67,18 +167,15 @@ void Enemy::update(float deltaTime){
 	// update our position and orientation from PhysicsEngines rigid body
 	btVector3 point = _rigidBody->getCenterOfMassPosition();
 	_node->setPosition(vector3df(point.getX(), point.getY(), point.getZ()));
-	const btQuaternion quat = _rigidBody->getOrientation();
-	quaternion q(quat.getX(),quat.getY(),quat.getZ(),quat.getW());
-	vector3df eular;
-	q.toEuler(eular);
-	eular *= RADTODEG;
-	_node->setRotation(eular);
+
 
 	// Add elapsed time
 	_elapsedTime += deltaTime;
 
 	// Run AI every half second
-	if (_elapsedTime > 0.5f)
+
+	float freq = 1/60;
+	if (_elapsedTime > freq)
 	{
 		// Make decision
 		_decisionTree->makeDecision(this);
@@ -87,17 +184,66 @@ void Enemy::update(float deltaTime){
 		// Reset elapsed time
 		_elapsedTime = 0.0f;
 	}
+}
 
-	/*
-	//if close to the player, set state to spin
-	Entity* player = EntityManager::getNamedEntities("Player")->front();
-	vector3df playerPos = player->getNode()->getPosition();
-	vector3df distance = playerPos - _node->getPosition();
 
-	if (distance.getLength() <= 10.0f){
-		_stateMachine.setState("Spin");
-	}else{
-		_stateMachine.setState("Normal");
+DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
+	DecisionTreeNode<Enemy>* result = 0;
+
+	if (name == "fatcat"){		
+		result = new DistanceToPlayerDecision(
+					30.0f,
+					new DistanceToFishDecision(
+						10.0f,
+						new DistanceToFishDecision(
+							2.0f,
+							new NormalDecision(),
+							new SeekItemDecision()),
+						new NormalDecision()),
+					new NormalDecision());
 	}
-	*/
+
+	if (name == "dog"){
+		result = new DistanceToPlayerDecision(
+			30.0f,
+			new DistanceToBoneDecision(
+			10.0f,
+			new DistanceToBoneDecision(
+			2.0f,
+			new NormalDecision(),
+			new SeekItemDecision()),
+			new NormalDecision()),
+			new NormalDecision());
+	}
+	
+	if (name == "rabbit"){
+		result = new DistanceToPlayerDecision(
+			30.0f,
+			new DistanceToCarrotDecision(
+			10.0f,
+			new DistanceToCarrotDecision(
+			2.0f,
+			new NormalDecision(),
+			new SeekItemDecision()),
+			new NormalDecision()),
+			new NormalDecision());
+	}
+	
+	if (name == "cat"){// will watch over socks, moving towards player then back to socks. Will Avoid spray at all costs...
+		result = new DistanceToPlayerDecision(
+					15.0f,
+					new DistanceToSprayDecision(
+						10.0f,
+						new FleeItemDecision(),
+						new DistanceToSocksDecision(
+							5.0f,
+							new SeekPlayerDecision(),
+							new SeekCollectableDecision()
+						)
+					), 
+					new NormalDecision()
+					);
+	}
+
+	return result;
 }
