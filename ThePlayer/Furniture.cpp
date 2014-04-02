@@ -15,6 +15,8 @@ Furniture::Furniture(std::string name, std::string roomName, std::string meshPat
 	_position = position;
 	_scale = scale;
 	_mass = mass;
+	_rotationAngle = 0;
+	_rotationAxis = new btVector3(1, 1, 1);
 }
 
 void Furniture::initialise() {
@@ -37,6 +39,11 @@ void Furniture::loadContent() {
 	_node->setScale(_scale);
 
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, _scale, _mass);
+	btQuaternion quat;
+	quat.setRotation(*_rotationAxis, _rotationAngle);
+	btTransform trans = _rigidBody->getCenterOfMassTransform();
+	trans.setRotation(quat);
+	_rigidBody->setCenterOfMassTransform(trans);
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, _name);
 	physicsEntity->setRigidBody(_rigidBody);
 }

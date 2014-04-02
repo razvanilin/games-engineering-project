@@ -14,6 +14,8 @@ private:
 	std::string _roomName;
 	std::string _mesh;
 	float _mass;
+	btVector3* _rotationAxis;
+	btScalar _rotationAngle;
 
 public:
 	// name is also used to find the right folder inside the mesh assets
@@ -25,6 +27,9 @@ public:
 
 	vector3df getPosition() { return _position; }
 	vector3df getScale() { return  _scale; }
+
+	void setRotationAxis(btVector3* value) { _rotationAxis = value; }
+	void setRotationAngle(btScalar value) { _rotationAngle = value; }
 
 	void initialise();
 	void loadContent();

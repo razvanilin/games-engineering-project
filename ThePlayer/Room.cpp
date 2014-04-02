@@ -165,7 +165,7 @@ void Room::update(float deltaTime) {
 
 }
 
-void Room::addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
+Furniture* Room::addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
 	vector3df furniturePos = _position - position;
-	new Furniture(name, roomName, meshPath, furniturePos, scale, mass);
+	return new Furniture(name, roomName, meshPath, furniturePos, scale, mass);
 }

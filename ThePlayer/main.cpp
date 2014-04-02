@@ -41,8 +41,11 @@ void createHouse() {
 	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
 	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
 
-	bedroom->addObject("couch", bedroom->getName(), "Couch.obj", vector3df(5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
-	hall->addObject("girl", hall->getName(), "girl_3.obj", vector3df(5.0f, 2.0f, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+	Furniture* couch = bedroom->addObject("couch", bedroom->getName(), "Couch.obj", vector3df(5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+	couch->setRotationAxis(new btVector3(0, 1, 0));
+	couch->setRotationAngle(PI / 2);
+	Furniture* girl = hall->addObject("girl", hall->getName(), "girl_3.obj", vector3df(5.0f, 2.0f, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+
 
 }
 

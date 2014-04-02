@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "PhysicsEngine.h"
+#include "Furniture.h"
 
 using namespace GameEngine;
 
@@ -53,6 +54,6 @@ public:
 	void update(float deltaTime);
 	void unloadContent() {}
 
-	void addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
+	Furniture* addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
 
 };
