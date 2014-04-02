@@ -2,7 +2,6 @@
 
 #include "Entity.h"
 #include "SteeringBehaviour.h"
-#include "AlertMark.h"
 
 namespace GameEngine
 {

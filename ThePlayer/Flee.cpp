@@ -25,8 +25,6 @@ namespace GameEngine
 		steering.direction = direction;
 		steering.rotation = 0.0f;
 
-
-
 		return steering;
 	}
 }
