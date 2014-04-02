@@ -19,8 +19,8 @@ namespace GameEngine{
 			_dimensions,
 			32,
 			false,
-			false,
 			true,
+			0,
 			&inputHandler);
 		if(!_device){
 			std::cerr << "Error creating device" << std::endl;

@@ -12,14 +12,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collectable.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="DistanceDecision.cpp" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClCompile Include="DistanceToBoneDecision.cpp" />
     <ClCompile Include="DistanceToCarrotDecision.cpp" />
     <ClCompile Include="DistanceToFishDecision.cpp" />
     <ClCompile Include="DistanceToPlayerDecision.cpp" />
     <ClCompile Include="DistanceToSocksDecision.cpp" />
     <ClCompile Include="DistanceToSprayDecision.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Door.cpp" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
@@ -48,20 +54,29 @@
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="Decision.h" />
     <ClInclude Include="DecisionTreeNode.h" />
+<<<<<<< HEAD
     <ClInclude Include="DistanceDecision.h" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClInclude Include="DistanceToBoneDecision.h" />
     <ClInclude Include="DistanceToCarrotDecision.h" />
     <ClInclude Include="DistanceToFishDecision.h" />
     <ClInclude Include="DistanceToPlayerDecision.h" />
     <ClInclude Include="DistanceToSocksDecision.h" />
     <ClInclude Include="DistanceToSprayDecision.h" />
+<<<<<<< HEAD
     <ClInclude Include="Door.h" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Flee.h" />
     <ClInclude Include="FleeColletableDecision.h" />
+<<<<<<< HEAD
     <ClInclude Include="FleeDecision.h" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClInclude Include="FleeItemDecision.h" />
     <ClInclude Include="FleePlayerDecision.h" />
     <ClInclude Include="FleeState.h" />
@@ -82,7 +97,10 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="Seek.h" />
     <ClInclude Include="SeekCollectableDecision.h" />
+<<<<<<< HEAD
     <ClInclude Include="SeekDecision.h" />
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
     <ClInclude Include="SeekItemDecision.h" />
     <ClInclude Include="SeekPlayerDecision.h" />
     <ClInclude Include="SeekState.h" />
@@ -129,8 +147,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\devStuff\Uni\GamesEng\Libraries\bullet-2.82-r2704-Win32-VS2013\bullet-2.82-r2704-Win32-VS2013\include;D:\devStuff\Uni\GamesEng\Libraries\irrlicht-1.8.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\devStuff\Uni\GamesEng\Libraries\bullet-2.82-r2704-Win32-VS2013\bullet-2.82-r2704-Win32-VS2013\lib;D:\devStuff\Uni\GamesEng\Libraries\irrlicht-1.8.1\lib\Win32-visualstudio;$(LibraryPath)</LibraryPath>
+    <IncludePath>X:\standalones\bullet-2.82-r2704-Win32-VS2013\include;X:\standalones\irrlicht-1.8.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>X:\standalones\irrlicht-1.8.1\lib\Win32-visualstudio;X:\standalones\bullet-2.82-r2704-Win32-VS2013\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

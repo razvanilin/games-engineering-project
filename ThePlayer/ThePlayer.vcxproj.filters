@@ -36,9 +36,6 @@
     <ClCompile Include="TargetCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DistanceDecision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,6 +72,7 @@
     <ClCompile Include="Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Room.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,6 +86,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Collectable.cpp">
+=======
+    <ClCompile Include="DistanceToPlayerDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToSprayDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToFishDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToSocksDecision.cpp">
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DistanceToBoneDecision.cpp">
@@ -96,6 +109,7 @@
     <ClCompile Include="DistanceToCarrotDecision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="DistanceToFishDecision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,6 +122,8 @@
     <ClCompile Include="DistanceToSprayDecision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+=======
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -117,9 +133,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DecisionTreeNode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DistanceDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
@@ -132,9 +145,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Flee.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FleeDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FleeState.h">
@@ -179,9 +189,6 @@
     <ClInclude Include="Seek.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="SeekDecision.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="SeekState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -218,6 +225,7 @@
     <ClInclude Include="Object.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Room.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -228,11 +236,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FleeItemDecision.h">
+=======
+    <ClInclude Include="SeekPlayerDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekItemDecision.h">
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="FleePlayerDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="GuiHud.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -249,17 +264,31 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DistanceToCarrotDecision.h">
+=======
+    <ClInclude Include="DistanceToPlayerDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToSprayDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FleeItemDecision.h">
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DistanceToFishDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="DistanceToPlayerDecision.h">
+=======
+    <ClInclude Include="Collectable.h">
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="DistanceToSocksDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="DistanceToSprayDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -267,6 +296,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SeekPlayerDecision.h">
+=======
+    <ClInclude Include="FleeColletableDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekCollectableDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToBoneDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToCarrotDecision.h">
+>>>>>>> 0df287edf5e7c8d2c2de44e1c6c1cef2f7b66520
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -179,7 +179,7 @@ void Enemy::update(float deltaTime){
 
 	// Run AI every half second
 
-	float freq = 0.1f;
+	float freq = 1/60;
 	if (_elapsedTime > freq)
 	{
 		// Make decision
