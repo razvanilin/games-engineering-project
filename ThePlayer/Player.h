@@ -18,6 +18,7 @@ private:
 	btRigidBody* _rigidBody;
 	vector3df _up;
 	vector3df _forward;
+	std::string _currentRoom;
 
 public:
 	Player() : Entity(-1, 0, "Player"){
@@ -43,6 +44,9 @@ public:
 
 	vector3df getForward() { return _forward; }
 	void setForward(vector3df value) { _forward = value; }
+
+	std::string getCurrentRoom() { return _currentRoom; }
+	void setCurrentRoom(std::string value) { _currentRoom = value; }
 
 	Object* getCarriedItem(){ return _carriedItem; }
 	void setCarriedItem(Object* val){ _carriedItem = val; }

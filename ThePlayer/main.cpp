@@ -15,7 +15,7 @@
 #include "Collectable.h"
 #include <sstream>
 #include <IGUIFont.h>
-
+#include "MessageHandler.h"
 
 using namespace irr;
 using namespace irr::core;
@@ -32,29 +32,32 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 int main (){
 	Player* player = new Player();
 
-	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));//leave there
-	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));//leave there
-	Object* carrot = new Object("carrot", vector3df(15.0f, 0.0f, 10.0f));//t
-	Object* bone = new Object("bone", vector3df(0.0f, 0.0f, 15.0f));//t
+	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));
+	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 20.0f));
+	Object* carrot = new Object("carrot", vector3df(15.0f, 0.0f, 15.0f));
+	Object* bone = new Object("bone", vector3df(0.0f, 0.0f, 15.0f));
 
-	Collectable* socks = new Collectable("socks", vector3df(-5.5f, 0.0f, 35.5f));
-	Collectable* jeans = new Collectable("jeans", vector3df(-20.0f, 0.0f, 24.5f));
-	Collectable* shoes = new Collectable("shoes", vector3df(-20.0f, 0.0f, 20.0f));
-	Collectable* shirt = new Collectable("shirt", vector3df(20.5f, 0.0f, 9.25f));
+	Collectable* socks = new Collectable("socks", vector3df(7.0f, 0.0f, 47.0f));
+	Collectable* jeans = new Collectable("jeans", vector3df(-28.0f, 0.0f, 48.0f));
+	Collectable* shoes = new Collectable("shoes", vector3df(-20.3f, 0.0f, 20.3f));
+	Collectable* shirt = new Collectable("shirt", vector3df(28.0f, 0.0f, 48.0f));
 
-	Room* bedroom		= new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1,3}, 1);
-	Room* hall			= new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 3, 4}, 0);
-	Room* bathroom		= new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2}, 0);
-	Room* storageroom	= new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1}, 0);
-	Room* livingroom	= new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 4}, 0);
-	Room* kitchen		= new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{2, 3}, 0);
-	Room* depo			= new Room("Depo", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{4}, 0);
-	Room* hallexit		= new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2}, 2);
+	const float WALL_THIKNESS = 0.5f;
+	const float WALL_HEIGHT = 7.5f;
+	const float ROOM_SIZE = 20.0f;
 
-	Enemy* fatcat = new Enemy("fatcat", vector3df(20.0f, 0.0f, 10.0f), 5.0f, fish, shirt);
-	Enemy* cat = new Enemy("cat", vector3df(-5.0f, 0.0f, 34.0f), 5.0f, spray, socks);
-	Enemy* dog = new Enemy("dog", vector3df(-20.0f, 0.0f, 20.0f), 10.0f, bone, shoes);
-	Enemy* rabbit = new Enemy("rabbit", vector3df(-20, 0.0F, 25.0F), 10.0f, carrot, jeans);
+	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
+	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
+	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* storageroom = new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
+	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
+	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
+	
+	Enemy* fatcat = new Enemy("fatcat",kitchen, vector3df(26.0f, 0.0f, 46.0f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat",livingroom, vector3df(5.0f, 0.0f, 43.0f), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog",storageroom, vector3df(-18.0f, 0.0f, 18.0f), 2.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-26.0, 0.0f, 42.0f), 20.0f, carrot, jeans);
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -88,6 +91,10 @@ int main (){
 	btTransform transform;
 	//player->getNode()->setPosition(vector3df(0, 100, 0));
 	while(game.getDevice()->run()){
+
+		
+
+
 		//update timers
 		currTime = game.getDevice()->getTimer()->getRealTime();
 		deltaTime = float (currTime - prevTime)/1000.0f;
@@ -96,7 +103,7 @@ int main (){
 		if (inputHandler.isKeyDown(KEY_ESCAPE)){
 			break;
 		}
-	
+
 
 
 		// zoom in or out so you can see the player

@@ -8,6 +8,7 @@
 #include "Door.h"
 #include <unordered_map>
 #include <iostream>
+#include "Room.h"
 
 using namespace irr::scene;
 using namespace irr::video;
@@ -20,12 +21,13 @@ void Player::initialise(){
 void Player::loadContent(){
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(2.0f);
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
+	//_node->setPosition(vector3df(-13.0f, 0.0f, 33.0f));
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
 	_node->setVisible(false);
 	this->setAlive(true);
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.7f, 2.7f, 2.7f), 50.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Player");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -170,7 +172,7 @@ void Player::update(float deltaTime){
 		vector3df doorPos = vector3df(btPos.x(), btPos.y(), btPos.z());
 		vector3df toPlayer = playerPos - doorPos;
 
-		if (toPlayer.getLength() < 2 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
+		if (toPlayer.getLength() < 3 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
 			btTransform transform = getRigidBody()->getCenterOfMassTransform();
 
 			if (door->getDirection() == 1 && playerPos.X < doorPos.X) {
@@ -189,6 +191,21 @@ void Player::update(float deltaTime){
 		}
 		doorIter++;
 	}
+	/* GET THE ROOM THE PLAYER IS IN */
+	std::list<Entity*>* rooms = EntityManager::getNamedEntities("Room");
+	playerPos = _node->getPosition();
+	auto iterator = rooms->begin();
+	while (iterator != rooms->end()){
+
+		Room* room = (Room*)(*iterator);
+		vector3df roomPos = room->getPosition();
+		vector3df roomScale = room->getScale();
+		vector3df toPlayer = playerPos - roomPos;
+		if (toPlayer.getLength() < roomScale.Z / 2)
+			setCurrentRoom(room->getName());
+		iterator++;
+	}
+
 
 }
 

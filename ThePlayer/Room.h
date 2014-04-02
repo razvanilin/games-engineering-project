@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "PhysicsEngine.h"
+#include "Furniture.h"
 
 using namespace GameEngine;
 
@@ -18,18 +19,18 @@ private:
 	int _exitDoor;
 public:
 	// when creating a room, specify the textures for walls, floor and ceiling
-	
+
 	/* the position is used to determine the lower left corner of the room
-	 * the walls will be built from there, clockwise
-	 */
+	* the walls will be built from there, clockwise
+	*/
 
 	/* also, the constructor needs an array of int for determining where the doors are -
-	 * door 1 = right; door 2 = left; door 3 = front; door 4 = back; other numbers are ignored
-	 */
+	* door 1 = right; door 2 = left; door 3 = front; door 4 = back; other numbers are ignored
+	*/
 
 	/* using scale:
-	 * X - wall thickness; Y - wall height; Z - wall width;
-	 */
+	* X - wall thickness; Y - wall height; Z - wall width;
+	*/
 
 	Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor);
 	~Room(){}
@@ -43,6 +44,8 @@ public:
 	vector3df getPosition() { return _position; }
 	void setPosition(vector3df value) { _position = value; }
 
+	std::string getName() { return _name; }
+
 	// add an object in the room
 	void loadDoors();
 
@@ -51,6 +54,6 @@ public:
 	void update(float deltaTime);
 	void unloadContent() {}
 
-	void addObject(std::string name, std::string meshPath, std::string texturePath, btVector3* position, float mass);
+	Furniture* addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
 
 };

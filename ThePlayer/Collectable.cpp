@@ -34,7 +34,7 @@ void Collectable::loadContent(){
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 	_alive = true;
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 10.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Collectable");
 	physicsEntity->setRigidBody(_rigidBody);

@@ -6,5 +6,8 @@
 class FleeDecision : public DecisionTreeNode<Enemy>
 {
 public:
-	void makeDecision(Enemy* owner) { owner->getStateMachine().setState("Flee"); }
+	void makeDecision(Enemy* owner) {
+		owner->getStateMachine().setState("Flee");
+		owner->setCurrentStateName("Flee");
+	}
 };
