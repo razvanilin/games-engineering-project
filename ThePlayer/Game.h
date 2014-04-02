@@ -18,6 +18,7 @@ namespace GameEngine
 		irr::core::dimension2d<irr::u32> _dimensions;
 		//camera
 		Camera* _camera;
+
 	public:
 		//create a Game class
 		Game(){ }
@@ -42,6 +43,7 @@ namespace GameEngine
 		//get and set camera
 		Camera* getCam(){return _camera;}
 		void setCam(Camera* val){_camera = val;}
+
 
 		//initialises the game
 		bool initialise();

@@ -1,4 +1,6 @@
 #include "Enemy.h"
+#include "Player.h"
+#include "MessageHandler.h"
 #include "StateNormal.h"
 #include "StateSpin.h"
 #include "Game.h"
@@ -10,35 +12,41 @@
 #include "Spin2Decision.h"
 #include "SpinDecision.h"
 #include "DistanceToPlayerDecision.h"
-#include "DistanceToSprayDecision.h"
-#include "DistanceToFishDecision.h"
-#include "DistanceToSocksDecision.h"
-#include "DistanceToBoneDecision.h"
-#include "DistanceToCarrotDecision.h"
 #include "RandomDecision.h"
 #include "SeekState.h"
 #include "Seek.h"
 #include "SeekPlayerDecision.h"
-#include "SeekCollectableDecision.h"
+#include "SeekGuardedItemDecision.h"
 #include "FleeState.h"
 #include "FleePlayerDecision.h"
-#include "fleeItemDecision.h"
-#include "SeekItemDecision.h"
+#include "FleeWeaknessDecision.h"
+#include "SeekWeaknessDecision.h"
 #include "Object.h"
 #include <iostream>
 #include "Collectable.h"
 #include <sstream>
 #include "PhysicsEntity.h"
+<<<<<<< HEAD
+=======
+#include "DistanceToGuardedItemDecision.h"
+#include "DistanceToWeaknessDecision.h"
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 using namespace irr::core;
 using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an Enemy object. Initialises Entity and SM
+<<<<<<< HEAD
 Enemy::Enemy(std::string name, vector3df startPos, float velMod) : Entity(-1, 0, name), _stateMachine(this){
+=======
+Enemy::Enemy(std::string name, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem) : Entity(-1, 0, "Enemy"), _stateMachine(this){
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	_enemyName = name;
-	_velMod = velMod;
+	_velMod = pVel;
 	_startPos = startPos;
+	_guardedItem = guardedItem;
+	_weakness = weakness;
 }
 
 //Initialise the enemy and add states to SM
@@ -47,56 +55,8 @@ void Enemy::initialise(){
 	// find player pointer
 	Entity* player = EntityManager::getNamedEntities("Player")->front();
 
-	//find object pointers
-	std::list<Entity*>* objects = EntityManager::getNamedEntities("Object");
-	Object* fish = 0;
-	Object* spray = 0;
-	Object* bone = 0;
-	Object* carrot = 0;
-	auto iter = objects->begin();
-	while (iter != objects->end()){
-		Object* temp = (Object*)(*iter);
-		if (temp->getItemName() == "fish"){
-			fish = temp;
-		}
-		if (temp->getItemName() == "spray"){
-			spray = temp;
-		}
-		if (temp->getItemName() == "bone"){
-			bone = temp;
-		}
-		if (temp->getItemName() == "carrot"){
-			carrot = temp;
-		}
-		iter++;
-	}
-
-	//find socks
-	std::list<Entity*>* collectables = EntityManager::getNamedEntities("Collectable");
-	Collectable* socks = 0;
-	Collectable* shirt = 0;
-	Collectable* jeans = 0;
-	Collectable* shoes = 0;
-	auto cIter = collectables->begin();
-	while (cIter != collectables->end()){
-		Collectable* tempC = (Collectable*)(*cIter);
-		if (tempC->getItemName() == "socks"){
-			socks = tempC;
-		}
-		if (tempC->getItemName() == "shirt"){
-			shirt = tempC;
-		}
-		if (tempC->getItemName() == "jeans"){
-			jeans = tempC;
-		}
-		if (tempC->getItemName() == "shoes"){
-			shoes = tempC;
-		}
-		cIter++;
-	}
-
-
 	//Add states to SM
+<<<<<<< HEAD
 	if (_enemyName == "cat"){// seeks socks, hates spray
 		_stateMachine.addState("Normal", new StateNormal());
 		_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
@@ -124,6 +84,16 @@ void Enemy::initialise(){
 		_stateMachine.addState("SeekItem", new SeekState(this, bone, _velMod));
 		_stateMachine.addState("SeekCollectable", new SeekState(this, shoes, _velMod));
 	}
+=======
+	_stateMachine.addState("Normal", new StateNormal());
+	_stateMachine.addState("SeekPlayer", new SeekState(this, player, _velMod));
+	_stateMachine.addState("FleePlayer", new FleeState(this, player, _velMod));
+	_stateMachine.addState("FleeWeakness", new FleeState(this, this->getWeakness(), _velMod));
+	_stateMachine.addState("SeekWeakness", new SeekState(this, this->getWeakness(), _velMod));
+	_stateMachine.addState("SeekGuardedItem", new SeekState(this, this->getGuardedItem(), _velMod));
+	
+	
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	//set initial state to normal
 	_stateMachine.setState("Normal");
@@ -158,6 +128,7 @@ void Enemy::loadContent(){
 	}
 	else if (_enemyName == "cat"){
 		_node->setScale(vector3df(1.0f, 1.0f, 1.0f));
+<<<<<<< HEAD
 	}
 	else if (_enemyName == "rabbit") {
 		_node->setScale(vector3df(1, 1, 1));
@@ -167,6 +138,17 @@ void Enemy::loadContent(){
 	}
 
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 1);
+=======
+	}
+	else if (_enemyName == "rabbit") {
+		_node->setScale(vector3df(1, 1, 1));
+	}
+	else if (_enemyName == "dog") {
+		_node->setScale(vector3df(1.5f, 1.5f, 1.5f));
+	}
+
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
 	physicsEntity->setRigidBody(_rigidBody);
 
@@ -179,7 +161,7 @@ void Enemy::update(float deltaTime){
 
 	// Run AI every half second
 
-	float freq = 1/60;
+	float freq = 0.1f;
 	if (_elapsedTime > freq)
 	{
 		// Make decision
@@ -198,12 +180,21 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 	if (name == "fatcat"){
 		result = new DistanceToPlayerDecision(
 			30.0f,
+<<<<<<< HEAD
 			new DistanceToFishDecision(
 			10.0f,
 			new DistanceToFishDecision(
 			2.0f,
 			new NormalDecision(),
 			new SeekItemDecision()),
+=======
+			new DistanceToWeaknessDecision(
+			10.0f,
+			new DistanceToWeaknessDecision(
+			2.0f,
+			new NormalDecision(),
+			new SeekWeaknessDecision()),
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 			new NormalDecision()),
 			new NormalDecision());
 	}
@@ -211,12 +202,12 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 	if (name == "dog"){
 		result = new DistanceToPlayerDecision(
 			30.0f,
-			new DistanceToBoneDecision(
+			new DistanceToWeaknessDecision(
 			10.0f,
-			new DistanceToBoneDecision(
+			new DistanceToWeaknessDecision(
 			2.0f,
 			new NormalDecision(),
-			new SeekItemDecision()),
+			new SeekWeaknessDecision()),
 			new NormalDecision()),
 			new NormalDecision());
 	}
@@ -224,18 +215,19 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 	if (name == "rabbit"){
 		result = new DistanceToPlayerDecision(
 			30.0f,
-			new DistanceToCarrotDecision(
+			new DistanceToWeaknessDecision(
 			10.0f,
-			new DistanceToCarrotDecision(
+			new DistanceToWeaknessDecision(
 			2.0f,
 			new NormalDecision(),
-			new SeekItemDecision()),
+			new SeekWeaknessDecision()),
 			new NormalDecision()),
 			new NormalDecision());
 	}
 
 	if (name == "cat"){// will watch over socks, moving towards player then back to socks. Will Avoid spray at all costs...
 		result = new DistanceToPlayerDecision(
+<<<<<<< HEAD
 			15.0f,
 			new DistanceToSprayDecision(
 			10.0f,
@@ -244,6 +236,16 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 			5.0f,
 			new SeekPlayerDecision(),
 			new SeekCollectableDecision()
+=======
+			10.0f,
+			new DistanceToWeaknessDecision(
+			4.0f,
+			new FleeWeaknessDecision(),
+			new DistanceToGuardedItemDecision(
+			3.0f,
+			new SeekPlayerDecision(),
+			new SeekGuardedItemDecision()
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 			)
 			),
 			new NormalDecision()
@@ -251,4 +253,15 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 	}
 
 	return result;
+}
+void Enemy::handleMessage(const Message& message){
+	if (message.message == "COLLISION"){
+		if (((Entity*)message.data)->getName() == "Player"){
+			Player* player = (Player*)message.data;
+
+			//send message to player that item has been picked up
+			Message m(player, "Die", this);
+			MessageHandler::sendMessage(m);
+		}
+	}
 }

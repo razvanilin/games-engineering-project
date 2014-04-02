@@ -32,6 +32,7 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 int main (){
 	Player* player = new Player();
 
+<<<<<<< HEAD
 	Object* fish = new Object("fish", vector3df(-15.0f, 0.0f, 5.0f));
 	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));
 	Object* carrot = new Object("carrot", vector3df(-15.0f, 0.0f, -15.0f));
@@ -41,6 +42,17 @@ int main (){
 	Collectable* jeans = new Collectable("jeans", vector3df(10.0f, 0.0f, 10.0f));
 	Collectable* shoes = new Collectable("shoes", vector3df(-10.0f, 0.0f, 10.0f));
 	Collectable* shirt = new Collectable("shirt", vector3df(10.0f, 0.0f, -10.0f));
+=======
+	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));//leave there
+	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));//leave there
+	Object* carrot = new Object("carrot", vector3df(15.0f, 0.0f, 10.0f));//t
+	Object* bone = new Object("bone", vector3df(0.0f, 0.0f, 15.0f));//t
+
+	Collectable* socks = new Collectable("socks", vector3df(-5.5f, 0.0f, 35.5f));
+	Collectable* jeans = new Collectable("jeans", vector3df(-20.0f, 0.0f, 24.5f));
+	Collectable* shoes = new Collectable("shoes", vector3df(-20.0f, 0.0f, 20.0f));
+	Collectable* shirt = new Collectable("shirt", vector3df(20.5f, 0.0f, 9.25f));
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	Room* bedroom		= new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1,3}, 1);
 	Room* hall			= new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2, 3, 4}, 0);
@@ -51,10 +63,17 @@ int main (){
 	Room* depo			= new Room("Depo", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{4}, 0);
 	Room* hallexit		= new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(.5f, 7.5f, 15.0f), new int[]{1, 2}, 2);
 
+<<<<<<< HEAD
 	Enemy* fatcat = new Enemy("fatcat", vector3df(10.0f, 0.0f, 10.0f), 5.0f);
 	Enemy* cat = new Enemy("cat", vector3df(-10.0f, 0.0f, -10.0f), 10.0f);
 	Enemy* dog = new Enemy("dog", vector3df(-10.0f, 0.0f, 10.0f), 10.0f);
 	Enemy* rabbit = new Enemy("rabbit", vector3df(10.0F, 0.0F, -10.0F), 10.0f);
+=======
+	Enemy* fatcat = new Enemy("fatcat", vector3df(20.0f, 0.0f, 10.0f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat", vector3df(-5.0f, 0.0f, 34.0f), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog", vector3df(-20.0f, 0.0f, 20.0f), 10.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", vector3df(-20, 0.0F, 25.0F), 10.0f, carrot, jeans);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -96,6 +115,51 @@ int main (){
 		if (inputHandler.isKeyDown(KEY_ESCAPE)){
 			break;
 		}
+	
+
+
+		// zoom in or out so you can see the player
+		if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
+			mod++;
+		}
+		if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
+			mod--;
+		}
+		
+		// resets the position and velocity of the object object
+		/*if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
+			//tester->~Object();
+			transform = tester->getRigidBody()->getCenterOfMassTransform();
+			transform.setOrigin(btVector3(player->getNode()->getPosition().X, player->getNode()->getPosition().Y, player->getNode()->getPosition().Z));
+			tester->getRigidBody()->setCenterOfMassTransform(transform);
+			tester->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
+		}*/
+
+		// set the camera position so it follows the player
+		btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
+		cam->setPosition(vector3df(playerPos.x(), playerPos.y()+2.0f, playerPos.z()+mod));
+
+		// stealth movement -> lower the camera a bit and update the player status
+		if (inputHandler.isKeyDown(KEY_LCONTROL)) {
+			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
+			player->setStealth(true);
+		}
+		else if (player->isStealthActive()){
+			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
+			player->setStealth(false);
+		}
+
+		if (player->getNode()->getPosition().Y > bedroom->getNode()->getPosition().Y - bedroom->getNode()->getScale().Y*2) {
+			player->setDown(false);
+		}
+		else
+			player->setDown(true);
+		// Now check if the mouse has moved
+		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;
+		int deltaY = inputHandler.getCurrentMouse().Position.Y - inputHandler.getPrevMouse().Position.Y;
+		// Rotate the camera by the change in the mouse position. 
+		player->rotate(deltaX * deltaTime, deltaY * deltaTime);
+		cam->rotate(deltaX * deltaTime, deltaY * deltaTime);
 
 		// zoom in or out so you can see the player
 		if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
@@ -145,11 +209,22 @@ int main (){
 
 		vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
+<<<<<<< HEAD
+=======
+
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size();
 		text->setText(sstream.str().c_str());
 
 		//render
 		if(!game.render()) break;
+<<<<<<< HEAD
+=======
+
+		if (!player->isAlive()){
+			break;
+		}
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 		prevTime = currTime;
 	}

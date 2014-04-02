@@ -56,5 +56,9 @@ public:
 	void update(float deltaTime);
 	void rotate(float deltaYaw, float deltaPitch);
 	void unloadContent(){}
+<<<<<<< HEAD
+=======
+	void Player::handleMessage(const Message& message);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 };

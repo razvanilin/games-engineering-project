@@ -18,9 +18,12 @@ namespace GameEngine{
 			irr::video::EDT_DIRECT3D9,
 			_dimensions,
 			32,
+<<<<<<< HEAD
+=======
+			false,
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 			false,
 			true,
-			0,
 			&inputHandler);
 		if(!_device){
 			std::cerr << "Error creating device" << std::endl;
@@ -42,6 +45,7 @@ namespace GameEngine{
 
 		// initialise the messageHandler
 		MessageHandler::initialise();
+
 
 		//seed the random function
 		srand(time(NULL));

@@ -4,6 +4,10 @@
 #include <iostream>
 #include "Player.h"
 #include "PhysicsEntity.h"
+<<<<<<< HEAD
+=======
+#include "MessageHandler.h"
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 using namespace irr::core;
 using namespace irr::scene;
@@ -33,7 +37,11 @@ void Collectable::loadContent(){
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 	_alive = true;
 
+<<<<<<< HEAD
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1, 1, 1), 1.0f);
+=======
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Collectable");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -41,6 +49,7 @@ void Collectable::loadContent(){
 
 //updates the Object
 void Collectable::update(float deltaTime){
+<<<<<<< HEAD
 	
 
 	if (this->isAlive()){
@@ -58,9 +67,23 @@ void Collectable::update(float deltaTime){
 			cout << this->getItemName() << " picked up" << endl;
 		}
 	}
+=======
+
+
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 }
 
 void Collectable::handleMessage(const Message& message){
+	if (message.message == "COLLISION"){
+		if (((Entity*)message.data)->getName() == "Player"){
+			Player* player = (Player*)message.data;
+			_alive = false;
+			_node->setVisible(false);
 
+			//send message to player that item has been picked up
+			Message m(player, "pickup", this);
+			MessageHandler::sendMessage(m);
+		}
+	}
 
 }

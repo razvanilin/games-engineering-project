@@ -5,13 +5,13 @@
 
 using namespace GameEngine;
 
-class DistanceToFishDecision : public Decision<Enemy>
+class DistanceDecision : public Decision<Enemy>
 {
 private:
 	float _distance;
 protected:
 	DecisionTreeNode<Enemy>* getBranch(Enemy* owner);
 public:
-	DistanceToFishDecision(float distance, DecisionTreeNode<Enemy>* trueNode, DecisionTreeNode<Enemy>* falseNode)
+	DistanceDecision(float distance, DecisionTreeNode<Enemy>* trueNode, DecisionTreeNode<Enemy>* falseNode)
 		: _distance(distance), Decision(trueNode, falseNode) { }
 };

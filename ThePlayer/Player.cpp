@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "EntityManager.h"
 #include "Object.h"
+#include "Collectable.h"
 #include "MessageHandler.h"
 #include "PhysicsEntity.h"
 #include "Door.h"
@@ -13,7 +14,7 @@ using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-
+	
 }
 
 void Player::loadContent(){
@@ -23,6 +24,10 @@ void Player::loadContent(){
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
 	_node->setVisible(false);
+<<<<<<< HEAD
+=======
+	this->setAlive(true);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Player");
@@ -86,6 +91,17 @@ void Player::update(float deltaTime){
 	// setting double key press events
 	if (inputHandler.isKeyDown(KEY_KEY_W) && inputHandler.isKeyDown(KEY_KEY_A) && isDown()) {
 		this->getRigidBody()->setLinearVelocity(btVector3(-forward.X + toLeft.X, 0.0f, forward.Z - toLeft.Z)*_mod);
+<<<<<<< HEAD
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_W) && inputHandler.isKeyDown(KEY_KEY_D) && isDown()) {
+		this->getRigidBody()->setLinearVelocity(btVector3(-forward.X + toRight.X, 0.0f, forward.Z - toRight.Z)*_mod);
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_S) && inputHandler.isKeyDown(KEY_KEY_A) && isDown()) {
+		this->getRigidBody()->setLinearVelocity(btVector3(-backward.X + toLeft.X, 0.0f, backward.Z - toLeft.Z)*_mod);
+	}
+	if (inputHandler.isKeyDown(KEY_KEY_S) && inputHandler.isKeyDown(KEY_KEY_D) && isDown()) {
+		this->getRigidBody()->setLinearVelocity(btVector3(-backward.X + toRight.X, 0.0f, backward.Z - toRight.Z)*_mod);
+=======
 	}
 	if (inputHandler.isKeyDown(KEY_KEY_W) && inputHandler.isKeyDown(KEY_KEY_D) && isDown()) {
 		this->getRigidBody()->setLinearVelocity(btVector3(-forward.X + toRight.X, 0.0f, forward.Z - toRight.Z)*_mod);
@@ -96,6 +112,27 @@ void Player::update(float deltaTime){
 	if (inputHandler.isKeyDown(KEY_KEY_S) && inputHandler.isKeyDown(KEY_KEY_D) && isDown()) {
 		this->getRigidBody()->setLinearVelocity(btVector3(-backward.X + toRight.X, 0.0f, backward.Z - toRight.Z)*_mod);
 	}
+
+	// jump!
+	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
+	}
+	// TODO: fix the jumping and moving forward feature
+	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X - forward.X, up.Y, up.Z + forward.Z)*_mod);
+	}
+	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_S) && isDown() && !isStealthActive()) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X - backward.X, up.Y, up.Z + backward.Z)*_mod);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
+	}
+	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_A) && isDown() && !isStealthActive()) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X +toLeft.X, up.Y, up.Z - toLeft.Z)*_mod);
+	}
+	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_D) && isDown() && !isStealthActive()) {
+		getRigidBody()->setLinearVelocity(btVector3(up.X + toRight.X, up.Y, up.Z - toRight.Z)*_mod);
+	}
+
+	/* THROWABLE OBJECTS*/
 
 	// jump!
 	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
@@ -160,10 +197,17 @@ void Player::update(float deltaTime){
 	/* CHECKING THE DOORS */
 	std::list<Entity*>* doors = EntityManager::getNamedEntities("Door");
 	vector3df playerPos = _node->getPosition();
+<<<<<<< HEAD
 	auto iter = doors->begin();
 	while (iter != doors->end()){
 
 		Door* door = (Door*)(*iter);
+=======
+	auto doorIter = doors->begin();
+	while (doorIter != doors->end()){
+
+		Door* door = (Door*)(*doorIter);
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 		btVector3 btPos = door->getRigidBody()->getCenterOfMassPosition();
 		vector3df doorPos = vector3df(btPos.x(), btPos.y(), btPos.z());
 		vector3df toPlayer = playerPos - doorPos;
@@ -185,7 +229,11 @@ void Player::update(float deltaTime){
 			}
 			getRigidBody()->setCenterOfMassTransform(transform);
 		}
+<<<<<<< HEAD
 		iter++;
+=======
+		doorIter++;
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	}
 
 }
@@ -205,6 +253,32 @@ void Player::rotate(float deltaYaw, float deltaPitch){
 	quat1.setRotation(btVector3(1, 0, 0), _pitch);
 
 	trans.setRotation(quat0);
+<<<<<<< HEAD
+=======
+
+	this->getRigidBody()->setCenterOfMassTransform(trans);
+}
+void Player::handleMessage(const Message& message){
+	if (message.message == "pickup"){
+		Collectable* item = (Collectable*)message.data;
+		auto cIter = _collectedItems.begin();
+		bool addItem = true;
+		while (cIter != _collectedItems.end()){
+			std::string temp = std::string (*cIter);
+			if (temp == item->getItemName()){
+				addItem = false;
+				break;
+			}
+			cIter++;
+		}
+		if (addItem){
+			_collectedItems.push_back(item->getItemName());
+		}		
+	}
+	if (message.message == "Die"){
+		this->setAlive(false);
+	}
+>>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	this->getRigidBody()->setCenterOfMassTransform(trans);
 }
