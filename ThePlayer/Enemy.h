@@ -4,6 +4,8 @@
 #include "StateMachine.h"
 #include "PhysicsEngine.h"
 #include "DecisionTreeNode.h"
+#include "Collectable.h"
+#include "Object.h"
 
 using namespace GameEngine;
 
@@ -23,16 +25,18 @@ private:
 	//
 	float _velMod;
 	vector3df _startPos;
+	Collectable* _guardedItem;
+	Object* _weakness;
 
-	
+
 
 public:
 	//constructor
-	Enemy(std::string name, vector3df startPos, float pVel);
+	Enemy(std::string name, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem);
 	//destructor
 	~Enemy(){}
 	//RB getter
-	btRigidBody* getRigidBody(){return _rigidBody;}
+	btRigidBody* getRigidBody(){ return _rigidBody; }
 	// Gets the state machine of the enemy
 	StateMachine<Enemy>& getStateMachine() { return _stateMachine; }
 	//initialise
@@ -43,11 +47,16 @@ public:
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
 	void unloadContent(){}
+	Collectable* getGuardedItem(){ return _guardedItem; }
+	Object* getWeakness(){ return _weakness; }
+	void Enemy::handleMessage(const Message& message);
+
+
 
 	std::string getEnemyName(){
 		return _enemyName;
 	}
-		
+
 
 	DecisionTreeNode<Enemy>* getDecTree(std::string name);
 };

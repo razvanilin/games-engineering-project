@@ -15,7 +15,7 @@ namespace GameEngine{
 
 		//create transform matrix
 
-		mat.setRotationRadians(vector3df(_pitch, _yaw, 2.0f));
+		mat.setRotationRadians(vector3df(_pitch, _yaw, .0f));
 
 		//transform the translation vector by this matrix to create movement
 		mat.transformVect(_translation);
@@ -49,10 +49,10 @@ namespace GameEngine{
 		_yaw += deltaYaw;
 		_pitch += deltaPitch;
 		//Limit pitch to avoid "looping through legs"
-		if(_pitch <= -1)
+		/*if(_pitch <= -1)
 			_pitch = -1;
 		if (_pitch >= 1)
-			_pitch = 1;
+			_pitch = 1;*/
 	}
 
 	void FreeCamera::move(vector3df translation){

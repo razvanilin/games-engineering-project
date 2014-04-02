@@ -5,7 +5,6 @@
 #include "PhysicsEngine.h"
 #include <ctime>
 
-
 #include <iostream>
 
 using namespace GameEngine;
@@ -18,10 +17,10 @@ namespace GameEngine{
 		_device = irr::createDevice(
 			irr::video::EDT_DIRECT3D9,
 			_dimensions,
-			16,
+			32,
+			false,
 			false,
 			true,
-			0,
 			&inputHandler);
 		if(!_device){
 			std::cerr << "Error creating device" << std::endl;
@@ -43,6 +42,7 @@ namespace GameEngine{
 
 		// initialise the messageHandler
 		MessageHandler::initialise();
+
 
 		//seed the random function
 		srand(time(NULL));

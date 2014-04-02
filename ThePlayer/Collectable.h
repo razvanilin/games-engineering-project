@@ -10,6 +10,7 @@ private:
 
 	std::string _itemName;
 	vector3df _startPos;
+	btRigidBody* _rigidBody;
 
 public:
 	//constructor
@@ -25,6 +26,9 @@ public:
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
 	void unloadContent(){}
+
+	btRigidBody* getRigidBody() { return _rigidBody; }
+	void setRigidBody(btRigidBody* value) { _rigidBody = value; }
 
 	std::string getItemName(){
 		return this->_itemName;
