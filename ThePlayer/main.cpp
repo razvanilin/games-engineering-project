@@ -1,5 +1,7 @@
 //add Irrlicht
 #pragma comment (lib, "Irrlicht")
+//add IrrKlang
+#pragma comment (lib, "irrKlang.lib")
 
 #include <Irrlicht.h>
 #include <iostream>
@@ -34,6 +36,7 @@ const float ROOM_SIZE = 20.0f;
 const int SCREEN_WIDTH = 1366;
 const int SCREEN_HEIGHT = 768;
 
+
 void createHouse() {
 	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/bedroom-carpet.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2,3}, 2);
 	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
@@ -66,11 +69,9 @@ void createHouse() {
 	bedroomWindow2->setRotationAxis(new btVector3(0, 1, 0));
 
 	//Furniture* aquarium = bedroom->addObject("bone", bedroom->getName(), "FEMUR.3ds", vector3df(-5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(.02f, .02f, .02f), .0f);
-	Furniture* fish = bedroom->addObject("fish", bedroom->getName(), "Golden_Fish_OBJ.obj", vector3df(-5.0f, WALL_HEIGHT / 3.7f, 5.0f), vector3df(.01f, .01f, .03f), 0.0f);
-}
+	//Furniture* fish = bedroom->addObject("fish", bedroom->getName(), "Golden_Fish_OBJ.obj", vector3df(-5.0f, WALL_HEIGHT / 3.7f, 5.0f), vector3df(.01f, .01f, .03f), 0.0f);
 
-int main (){
-	Player* player = new Player();
+	// ADDING STUFF
 
 	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));//leave there
 	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));//leave there
@@ -82,12 +83,17 @@ int main (){
 	Collectable* shoes = new Collectable("shoes", vector3df(-20.0f, 0.0f, 20.0f));
 	Collectable* shirt = new Collectable("shirt", vector3df(20.5f, 0.0f, 9.25f));
 
+	Enemy* fatcat = new Enemy("fatcat", kitchen, vector3df(26.0f, 0.0f, 46.0f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat", livingroom, vector3df(5.0f, 0.0f, 43.0f), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog", studyroom, vector3df(-18.0f, 0.0f, 18.0f), 5.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-26.0, 0.0f, 42.0f), 20.0f, carrot, jeans);
+}
+
+int main (){
+	Player* player = new Player();
+
 	createHouse();
 
-	Enemy* fatcat = new Enemy("fatcat", vector3df(20.0f, 0.0f, 10.0f), 5.0f, fish, shirt);
-	Enemy* cat = new Enemy("cat", vector3df(-5.0f, 0.0f, 34.0f), 5.0f, spray, socks);
-	Enemy* dog = new Enemy("dog", vector3df(-20.0f, 0.0f, 20.0f), 10.0f, bone, shoes);
-	Enemy* rabbit = new Enemy("rabbit", vector3df(-20, 0.0F, 25.0F), 10.0f, carrot, jeans);
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -104,6 +110,8 @@ int main (){
 	//initialise and load content
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
+
+	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
 
 	irr::gui::IGUIStaticText* text;
 	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
@@ -192,7 +200,7 @@ int main (){
 
 		vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
-		sstream <<"mouse movement: " << mouseMovementX << "x:" << pos.X << " y: " << player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size() << "  " << -WALL_HEIGHT / 2 + WALL_THIKNESS*2;
+		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
 		text->setText(sstream.str().c_str());
 
 		//render

@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 #include "InputHandler.h"
 #include "Camera.h"
+#include <irrKlang.h>
 
 namespace GameEngine
 {
@@ -18,6 +19,10 @@ namespace GameEngine
 		irr::core::dimension2d<irr::u32> _dimensions;
 		//camera
 		Camera* _camera;
+		//audio engine
+		irrklang::ISoundEngine* _audioEngine;
+
+
 	public:
 		//create a Game class
 		Game(){ }
@@ -40,8 +45,13 @@ namespace GameEngine
 			_dimensions = value;
 		}
 		//get and set camera
-		Camera* getCam(){return _camera;}
-		void setCam(Camera* val){_camera = val;}
+		Camera* getCam(){ return _camera; }
+		void setCam(Camera* val){ _camera = val; }
+
+		//get and set audio engine
+		irrklang::ISoundEngine* getAudioEngine(){ return _audioEngine; }
+		void setAudioEngine(irrklang::ISoundEngine* val){ _audioEngine = val; }
+
 
 		//initialises the game
 		bool initialise();

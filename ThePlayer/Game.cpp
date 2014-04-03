@@ -22,19 +22,19 @@ namespace GameEngine{
 			false,
 			true,
 			&inputHandler);
-		if(!_device){
+		if (!_device){
 			std::cerr << "Error creating device" << std::endl;
 			return false;
 		}
 		_device->setWindowCaption(_caption.c_str());
 
 		//initialise the PhysicsEngine
-		if(!PhysicsEngine::initialise()){
+		if (!PhysicsEngine::initialise()){
 			return false;
 		}
 
 		//initialisation of EntityManager
-		if(!EntityManager::initialise()){
+		if (!EntityManager::initialise()){
 			return false;
 		}
 		//Initialise the camera
@@ -43,19 +43,23 @@ namespace GameEngine{
 		// initialise the messageHandler
 		MessageHandler::initialise();
 
+		//initialise AudioEngine
+		_audioEngine = irrklang::createIrrKlangDevice();
+
+
 		//seed the random function
 		srand(time(NULL));
 		return true;
 	}
-	
+
 	bool Game::loadContent(){
-		if(!EntityManager::loadContent()) return false;
+		if (!EntityManager::loadContent()) return false;
 		return true;
 	}
 
 	bool Game::update(float frameTime){
-		if(!PhysicsEngine::update(frameTime)) return false;
-		if(!EntityManager::update(frameTime)) return false;
+		if (!PhysicsEngine::update(frameTime)) return false;
+		if (!EntityManager::update(frameTime)) return false;
 		inputHandler.update();
 		_camera->update(frameTime);
 		MessageHandler::update();
@@ -63,10 +67,10 @@ namespace GameEngine{
 	}
 
 	bool Game::render(){
-		if(!_device->getVideoDriver()->beginScene()) return false;
+		if (!_device->getVideoDriver()->beginScene()) return false;
 		_device->getSceneManager()->drawAll();
 		_device->getGUIEnvironment()->drawAll();
-		if(!_device->getVideoDriver()->endScene()) return false;
+		if (!_device->getVideoDriver()->endScene()) return false;
 		return true;
 	}
 
@@ -78,5 +82,6 @@ namespace GameEngine{
 		PhysicsEngine::shutdown();
 		EntityManager::shutdown();
 		_device->drop();
+		_audioEngine->drop();
 	}
 }

@@ -6,21 +6,22 @@
 #include "MessageHandler.h"
 #include "PhysicsEntity.h"
 #include "Door.h"
-#include "Room.h"
 #include <unordered_map>
 #include <iostream>
+#include "Room.h"
 
 using namespace irr::scene;
 using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-
+	_noiseMade = 0.0f;
 }
 
 void Player::loadContent(){
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(2.0f);
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
+	//_node->setPosition(vector3df(-13.0f, 0.0f, 33.0f));
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
@@ -103,6 +104,8 @@ void Player::update(float deltaTime){
 	// jump!
 	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
+		game.getAudioEngine()->play2D("sounds/common/jump.wav");
+		_noiseMade += 2;
 	}
 	// TODO: fix the jumping and moving forward feature
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
@@ -157,6 +160,7 @@ void Player::update(float deltaTime){
 				Message m(this->getCarriedItem(), "thrown", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
+				_noiseMade += 5;
 			}
 		}
 	}
@@ -164,10 +168,10 @@ void Player::update(float deltaTime){
 	/* CHECKING THE DOORS */
 	std::list<Entity*>* doors = EntityManager::getNamedEntities("Door");
 	vector3df playerPos = _node->getPosition();
-	auto iter = doors->begin();
-	while (iter != doors->end()){
+	auto doorIter = doors->begin();
+	while (doorIter != doors->end()){
 
-		Door* door = (Door*)(*iter);
+		Door* door = (Door*)(*doorIter);
 		btVector3 btPos = door->getRigidBody()->getCenterOfMassPosition();
 		vector3df doorPos = vector3df(btPos.x(), btPos.y(), btPos.z());
 		vector3df toPlayer = playerPos - doorPos;
@@ -189,9 +193,8 @@ void Player::update(float deltaTime){
 			}
 			getRigidBody()->setCenterOfMassTransform(transform);
 		}
-		iter++;
+		doorIter++;
 	}
-
 	/* GET THE ROOM THE PLAYER IS IN */
 	std::list<Entity*>* rooms = EntityManager::getNamedEntities("Room");
 	playerPos = _node->getPosition();
@@ -206,6 +209,11 @@ void Player::update(float deltaTime){
 			setCurrentRoom(room->getName());
 		iterator++;
 	}
+
+	//make noise unless crouched
+	if (!inputHandler.isKeyDown(KEY_LCONTROL) && (inputHandler.isKeyDown(KEY_KEY_W) || inputHandler.isKeyDown(KEY_KEY_A) || inputHandler.isKeyDown(KEY_KEY_S) || inputHandler.isKeyDown(KEY_KEY_D))){
+		_noiseMade += 0.005;
+	}
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){
@@ -218,7 +226,7 @@ void Player::rotate(float deltaYaw, float deltaPitch){
 	// rotate the rigid body according to the position of the mouse
 	btTransform trans = getRigidBody()->getCenterOfMassTransform();
 	btQuaternion q = btQuaternion::getIdentity();
-	
+
 	btQuaternion quat0;
 	quat0.setRotation(btVector3(0, -1, 0), _yaw);
 
@@ -229,7 +237,6 @@ void Player::rotate(float deltaYaw, float deltaPitch){
 
 	this->getRigidBody()->setCenterOfMassTransform(trans);
 }
-
 void Player::handleMessage(const Message& message){
 	if (message.message == "pickup"){
 		Collectable* item = (Collectable*)message.data;
@@ -245,10 +252,11 @@ void Player::handleMessage(const Message& message){
 		}
 		if (addItem){
 			_collectedItems.push_back(item->getItemName());
+			game.getAudioEngine()->play2D("sounds/common/pickup.wav", false);
 		}
+
 	}
 	if (message.message == "Die"){
 		this->setAlive(false);
 	}
-
 }
