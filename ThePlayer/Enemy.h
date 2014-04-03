@@ -6,6 +6,7 @@
 #include "DecisionTreeNode.h"
 #include "Collectable.h"
 #include "Object.h"
+#include "Room.h"
 
 using namespace GameEngine;
 
@@ -19,14 +20,21 @@ private:
 	//Rigidbody controlling movement (physics)
 	btRigidBody* _rigidBody;
 	// Keep track of total elapsed time since last decision
-	float _elapsedTime;
+	float _elapsedTimeAI;
+	// Keep track of time since last audio played
+	float _elapsedTimeSound;
+
 	//name for AI
 	std::string _enemyName;
+	//current state name
+	std::string _currentState;
+
 	//
 	float _velMod;
 	vector3df _startPos;
 	Collectable* _guardedItem;
 	Object* _weakness;
+	Room* _room;
 
 
 <<<<<<< HEAD
@@ -36,7 +44,7 @@ private:
 
 public:
 	//constructor
-	Enemy(std::string name, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem);
+	Enemy(std::string name, Room* room, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem);
 	//destructor
 	~Enemy(){}
 	//RB getter
@@ -51,11 +59,19 @@ public:
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
 	void unloadContent(){}
+	//get guarded item
 	Collectable* getGuardedItem(){ return _guardedItem; }
+	//get weaknes
 	Object* getWeakness(){ return _weakness; }
 	void Enemy::handleMessage(const Message& message);
 
+	//get/set room
+	Room* getRoom(){ return _room; }
+	void setRoom(Room* val){ _room = val; }
 
+	//get/set currentStateName
+	std::string getCurrentStateName(){ return _currentState; }
+	void setCurrentStateName(std::string val){ _currentState = val; }
 
 	std::string getEnemyName(){
 		return _enemyName;

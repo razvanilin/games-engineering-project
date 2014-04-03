@@ -1,5 +1,7 @@
 //add Irrlicht
 #pragma comment (lib, "Irrlicht")
+//add irrklang
+#pragma comment (lib, "irrKlang.lib")
 
 #include <Irrlicht.h>
 #include <iostream>
@@ -15,7 +17,7 @@
 #include "Collectable.h"
 #include <sstream>
 #include <IGUIFont.h>
-
+#include "MessageHandler.h"
 
 using namespace irr;
 using namespace irr::core;
@@ -32,6 +34,7 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 int main (){
 	Player* player = new Player();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	Object* fish = new Object("fish", vector3df(-15.0f, 0.0f, 5.0f));
 	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));
@@ -74,6 +77,34 @@ int main (){
 	Enemy* dog = new Enemy("dog", vector3df(-20.0f, 0.0f, 20.0f), 10.0f, bone, shoes);
 	Enemy* rabbit = new Enemy("rabbit", vector3df(-20, 0.0F, 25.0F), 10.0f, carrot, jeans);
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
+=======
+	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));
+	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 20.0f));
+	Object* carrot = new Object("carrot", vector3df(15.0f, 0.0f, 15.0f));
+	Object* bone = new Object("bone", vector3df(0.0f, 0.0f, 15.0f));
+
+	Collectable* socks = new Collectable("socks", vector3df(7.0f, 0.0f, 47.0f));
+	Collectable* jeans = new Collectable("jeans", vector3df(-28.0f, 0.0f, 48.0f));
+	Collectable* shoes = new Collectable("shoes", vector3df(-20.3f, 0.0f, 20.3f));
+	Collectable* shirt = new Collectable("shirt", vector3df(28.0f, 0.0f, 48.0f));
+
+	const float WALL_THIKNESS = 0.5f;
+	const float WALL_HEIGHT = 7.5f;
+	const float ROOM_SIZE = 20.0f;
+
+	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
+	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
+	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* storageroom = new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
+	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
+	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
+	
+	Enemy* fatcat = new Enemy("fatcat",kitchen, vector3df(26.0f, 0.0f, 46.0f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat",livingroom, vector3df(5.0f, 0.0f, 43.0f), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog",storageroom, vector3df(-18.0f, 0.0f, 18.0f), 5.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-26.0, 0.0f, 42.0f), 20.0f, carrot, jeans);
+>>>>>>> a0532ee16ce498a477431f2b2720f509d110e7fe
 
 	//setup window
 	game.setCaption(L"State Machines");
@@ -91,9 +122,12 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
+	//play background tunes
+	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
+
 	irr::gui::IGUIStaticText* text;
 	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
-	text = guienv->addStaticText(L"0 : 0", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
+	text = guienv->addStaticText(L"", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
 	irr::gui::IGUIFont* font = guienv->getFont("bigfont.png");
 	text->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
 	text->setOverrideFont(font);
@@ -107,6 +141,10 @@ int main (){
 	btTransform transform;
 	//player->getNode()->setPosition(vector3df(0, 100, 0));
 	while(game.getDevice()->run()){
+
+		
+
+
 		//update timers
 		currTime = game.getDevice()->getTimer()->getRealTime();
 		deltaTime = float (currTime - prevTime)/1000.0f;
@@ -115,7 +153,7 @@ int main (){
 		if (inputHandler.isKeyDown(KEY_ESCAPE)){
 			break;
 		}
-	
+
 
 
 		// zoom in or out so you can see the player
@@ -212,8 +250,12 @@ int main (){
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size();
+=======
+		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
+>>>>>>> a0532ee16ce498a477431f2b2720f509d110e7fe
 		text->setText(sstream.str().c_str());
 
 		//render

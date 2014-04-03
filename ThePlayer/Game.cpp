@@ -46,6 +46,9 @@ namespace GameEngine{
 		// initialise the messageHandler
 		MessageHandler::initialise();
 
+		//initialise AudioEngine
+		_audioEngine = irrklang::createIrrKlangDevice();
+
 
 		//seed the random function
 		srand(time(NULL));
@@ -82,5 +85,6 @@ namespace GameEngine{
 		PhysicsEngine::shutdown();
 		EntityManager::shutdown();
 		_device->drop();
+		_audioEngine->drop();
 	}
 }

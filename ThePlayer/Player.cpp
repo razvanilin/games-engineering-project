@@ -8,18 +8,20 @@
 #include "Door.h"
 #include <unordered_map>
 #include <iostream>
+#include "Room.h"
 
 using namespace irr::scene;
 using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-	
+	_noiseMade = 0.0f;
 }
 
 void Player::loadContent(){
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(2.0f);
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
+	//_node->setPosition(vector3df(-13.0f, 0.0f, 33.0f));
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
@@ -27,8 +29,12 @@ void Player::loadContent(){
 <<<<<<< HEAD
 =======
 	this->setAlive(true);
+<<<<<<< HEAD
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
+=======
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.7f, 2.7f, 2.7f), 50.0f);
+>>>>>>> a0532ee16ce498a477431f2b2720f509d110e7fe
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Player");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -116,6 +122,8 @@ void Player::update(float deltaTime){
 	// jump!
 	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
+		game.getAudioEngine()->play2D("sounds/common/jump.wav");
+		_noiseMade += 2;
 	}
 	// TODO: fix the jumping and moving forward feature
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
@@ -190,6 +198,7 @@ void Player::update(float deltaTime){
 				Message m(this->getCarriedItem(), "thrown", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
+				_noiseMade += 5;
 			}
 		}
 	}
@@ -212,7 +221,7 @@ void Player::update(float deltaTime){
 		vector3df doorPos = vector3df(btPos.x(), btPos.y(), btPos.z());
 		vector3df toPlayer = playerPos - doorPos;
 
-		if (toPlayer.getLength() < 2 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
+		if (toPlayer.getLength() < 3 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
 			btTransform transform = getRigidBody()->getCenterOfMassTransform();
 
 			if (door->getDirection() == 1 && playerPos.X < doorPos.X) {
@@ -235,7 +244,25 @@ void Player::update(float deltaTime){
 		doorIter++;
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 	}
+	/* GET THE ROOM THE PLAYER IS IN */
+	std::list<Entity*>* rooms = EntityManager::getNamedEntities("Room");
+	playerPos = _node->getPosition();
+	auto iterator = rooms->begin();
+	while (iterator != rooms->end()){
 
+		Room* room = (Room*)(*iterator);
+		vector3df roomPos = room->getPosition();
+		vector3df roomScale = room->getScale();
+		vector3df toPlayer = playerPos - roomPos;
+		if (toPlayer.getLength() < roomScale.Z / 2)
+			setCurrentRoom(room->getName());
+		iterator++;
+	}
+
+	//make noise unless crouched
+	if (!inputHandler.isKeyDown(KEY_LCONTROL) && (inputHandler.isKeyDown(KEY_KEY_W) || inputHandler.isKeyDown(KEY_KEY_A) || inputHandler.isKeyDown(KEY_KEY_S) || inputHandler.isKeyDown(KEY_KEY_D))){
+		_noiseMade += 0.005;
+	}
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){
@@ -273,12 +300,17 @@ void Player::handleMessage(const Message& message){
 		}
 		if (addItem){
 			_collectedItems.push_back(item->getItemName());
-		}		
+			game.getAudioEngine()->play2D("sounds/common/pickup.wav", false);
+		}
+		
 	}
 	if (message.message == "Die"){
 		this->setAlive(false);
 	}
+<<<<<<< HEAD
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
 
 	this->getRigidBody()->setCenterOfMassTransform(trans);
+=======
+>>>>>>> a0532ee16ce498a477431f2b2720f509d110e7fe
 }

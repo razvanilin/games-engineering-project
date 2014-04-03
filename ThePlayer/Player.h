@@ -18,6 +18,8 @@ private:
 	btRigidBody* _rigidBody;
 	vector3df _up;
 	vector3df _forward;
+	std::string _currentRoom;
+	float _noiseMade;
 
 public:
 	Player() : Entity(-1, 0, "Player"){
@@ -44,12 +46,18 @@ public:
 	vector3df getForward() { return _forward; }
 	void setForward(vector3df value) { _forward = value; }
 
+	std::string getCurrentRoom() { return _currentRoom; }
+	void setCurrentRoom(std::string value) { _currentRoom = value; }
+
 	Object* getCarriedItem(){ return _carriedItem; }
 	void setCarriedItem(Object* val){ _carriedItem = val; }
 	void clearCarriedItem(){ _carriedItem = 0; }
 
 	void addItem(std::string val){ _collectedItems.push_front(val); }
 	std::list<std::string> getCollectedItems(){ return _collectedItems; }
+
+	void addToNoise(float val){ _noiseMade += val; }
+	float getNoiseMade(){ return _noiseMade; }
 
 	void initialise();
 	void loadContent();

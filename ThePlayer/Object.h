@@ -17,6 +17,7 @@ private:
 	float _mod;
 	vector3df _startPos;
 	std::string _itemName;
+	std::string _currentRoom;
 
 public:
 	//constructor
@@ -37,6 +38,10 @@ public:
 	bool getPickedUp(){ return _pickedUp; }
 	//setter for pickedUp
 	void setPickedUp(bool val){ _pickedUp = val; }
+	//getsets for current room
+	std::string getCurrentRoom() { return _currentRoom; }
+	void setCurrentRoom(std::string value) { _currentRoom = value; }
+
 
 	vector3df getUp() { return _up; }
 	void setUp(vector3df value) { _up = value; }

@@ -38,10 +38,14 @@ void Collectable::loadContent(){
 	_alive = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1, 1, 1), 1.0f);
 =======
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
 >>>>>>> eb236c080a83e866b47b64f67903d66407a63396
+=======
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 10.0f);
+>>>>>>> a0532ee16ce498a477431f2b2720f509d110e7fe
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Collectable");
 	physicsEntity->setRigidBody(_rigidBody);

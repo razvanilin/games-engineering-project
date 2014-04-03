@@ -4,6 +4,7 @@
 #include "EntityManager.h"
 #include "Wall.h"
 #include "Door.h"
+#include "Furniture.h"
 #include <iostream>
 
 using namespace irr::scene;
@@ -13,12 +14,13 @@ using namespace GameEngine;
 void constructDoor(vector3df position, vector3df scale, int direction, bool isExit);
 void constructWall(vector3df position, vector3df scale, std::string texture);
 
-Room::Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor) : Entity(-1, 0, name){
+Room::Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor) : Entity(-1, 0, "Room"){
 	_wallTexture = wallTexture;
 	_floorTexture = floorTexture;
 	_ceilingTexture = ceilingTexture;
 	_position = position;
 	_scale = scale;
+	_name = name;
 	for (int i = 0; i < 4; ++i) {
 		_doors[i] = doors[i];
 	}
@@ -39,42 +41,42 @@ void Room::loadContent() {
 
 		if (i == 0){
 			constructWall(
-				vector3df(_position.X+_scale.Z/2, _position.Y, _position.Z), 
+				vector3df(_position.X + _scale.Z / 2, _position.Y, _position.Z),
 				vector3df(_scale.X, _scale.Y, _scale.Z),
 				_wallTexture);
 		}
 		else if (i == 1) {
 			constructWall(
-				vector3df(_position.X-_scale.Z/2, _position.Y, _position.Z), 
-				vector3df(_scale.X, _scale.Y, _scale.Z), 
+				vector3df(_position.X - _scale.Z / 2, _position.Y, _position.Z),
+				vector3df(_scale.X, _scale.Y, _scale.Z),
 				_wallTexture);
 		}
 		else if (i == 2) {
 			constructWall(
 				vector3df(_position.X, _position.Y, _position.Z + _scale.Z / 2),
-				vector3df(_scale.Z, _scale.Y, _scale.X), 
+				vector3df(_scale.Z, _scale.Y, _scale.X),
 				_wallTexture);
 		}
 		else {
 			constructWall(
 				vector3df(_position.X, _position.Y, _position.Z - _scale.Z / 2),
-				vector3df(_scale.Z, _scale.Y, _scale.X), 
+				vector3df(_scale.Z, _scale.Y, _scale.X),
 				_wallTexture);
 		}
 	}
-	
+
 	// preparing the floor
 	constructWall(
-		vector3df(_position.X, _position.Y - _scale.Y/2, _position.Z), 
+		vector3df(_position.X, _position.Y - _scale.Y / 2, _position.Z),
 		vector3df(_scale.Z, _scale.X, _scale.Z),
 		_floorTexture);
-	
+
 	// preparing the ceiling
 	constructWall(
-		vector3df(_position.X, _scale.Y/2, _position.Z), 
-		vector3df(_scale.Z, _scale.X, _scale.Z), 
+		vector3df(_position.X, _scale.Y / 2, _position.Z),
+		vector3df(_scale.Z, _scale.X, _scale.Z),
 		_ceilingTexture);
-	
+
 	// loading the doors
 	loadDoors();
 }
@@ -110,7 +112,7 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X + _scale.Z / 2 - _scale.X/2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
+				vector3df(_position.X + _scale.Z / 2 - _scale.X / 2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
 				vector3df(_scale.X, _scale.Y / (_scale.Y / 4) + _scale.X, 2.0f),
 				1,
 				isExit
@@ -122,7 +124,7 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X - _scale.Z / 2 + _scale.X/2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
+				vector3df(_position.X - _scale.Z / 2 + _scale.X / 2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
 				vector3df(_scale.X, _scale.Y / (_scale.Y / 4) + _scale.X, 2.0f),
 				2,
 				isExit
@@ -134,8 +136,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z + _scale.Z / 2 - _scale.X/2), 
-				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X/2),
+				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z + _scale.Z / 2 - _scale.X / 2),
+				vector3df(2.0f, _scale.Y / (_scale.Y / 4) + _scale.X, _scale.X / 2),
 				3,
 				isExit
 				);
@@ -146,8 +148,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z - _scale.Z / 2 + _scale.X/2), 
-				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X),
+				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z - _scale.Z / 2 + _scale.X / 2),
+				vector3df(2.0f, _scale.Y / (_scale.Y / 4) + _scale.X, _scale.X),
 				4,
 				isExit
 				);
@@ -163,6 +165,7 @@ void Room::update(float deltaTime) {
 
 }
 
-void Room::addObject(std::string name, std::string meshPath, std::string texturePath, btVector3* position, float mass) {
-
+Furniture* Room::addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
+	vector3df furniturePos = _position - position;
+	return new Furniture(name, roomName, meshPath, furniturePos, scale, mass);
 }

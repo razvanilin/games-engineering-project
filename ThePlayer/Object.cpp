@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "FreeCamera.h"
 #include "PhysicsEntity.h"
+#include "Room.h"
 #include <iostream>
 
 using namespace irr::core;
@@ -57,6 +58,26 @@ void Object::update(float deltaTime){
 	Player* player = (Player*)*(objects->begin());
 	setForward(player->getForward());
 	setUp(player->getUp());
+
+	/* GET THE ROOM THE OBJECT IS IN */
+	std::list<Entity*>* rooms = EntityManager::getNamedEntities("Room");
+	vector3df objectPos = _node->getPosition();
+	auto iterator = rooms->begin();
+	while (iterator != rooms->end()){
+
+		Room* room = (Room*)(*iterator);
+		vector3df roomPos = room->getPosition();
+		vector3df roomScale = room->getScale();
+		vector3df toPlayer = objectPos - roomPos;
+		if (toPlayer.getLength() < roomScale.Z / 2)
+			setCurrentRoom(room->getName());
+		iterator++;
+	}
+
+
+
+
+
 	//if object is picked up - it's position is fixed to the player <- you made a typo, Dave!
 	if (_pickedUp){
 		btRigidBody* body = getRigidBody();
@@ -85,6 +106,8 @@ void Object::handleMessage(const Message& message){
 		_rigidBody->activate();
 		this->_pickedUp = false;
 		_rigidBody->setLinearVelocity(btVector3((_forward.X)*_mod, (_forward.Y)*_mod, (_forward.Z)*_mod));
+		game.getAudioEngine()->play2D("sounds/common/throw.wav");
+		
 	}
 	if (message.message == "dropped"){
 		_rigidBody->activate();
