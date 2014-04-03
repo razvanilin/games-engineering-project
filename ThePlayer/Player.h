@@ -61,4 +61,5 @@ public:
 	void rotate(float deltaYaw, float deltaPitch);
 	void unloadContent(){}
 
+	void Player::handleMessage(const Message& message);
 };

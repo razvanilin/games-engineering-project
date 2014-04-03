@@ -75,6 +75,16 @@ public:
 	MouseState getPrevMouse(){
 		return _prevMouse;
 	}
+	
+	void setCurrentMouse(int valueX, int valueY) {
+		_currentMouse.Position.X = valueX;
+		_currentMouse.Position.Y = valueY;
+	}
+
+	void setPreviousMouse(int valueX, int valueY) {
+		_prevMouse.Position.X = valueX;
+		_prevMouse.Position.Y = valueY;
+	}
 
 	void update(){
 		std::memcpy(_prevKeyDown, _keyDown, sizeof(bool) * KEY_KEY_CODES_COUNT);

@@ -30,48 +30,68 @@ void createSphere(const std::string& name, const vector3df& position, float radi
 
 const float WALL_THIKNESS = 0.5f;
 const float WALL_HEIGHT = 7.5f;
-const float ROOM_SIZE = 15.0f;
+const float ROOM_SIZE = 20.0f;
+const int SCREEN_WIDTH = 1366;
+const int SCREEN_HEIGHT = 768;
 
 void createHouse() {
-	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
-	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
-	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
-	Room* storageroom = new Room("Storageroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 15.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
-	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
-	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
-	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-15.0f, 0.0f, 30.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
+	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/bedroom-carpet.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2,3}, 2);
+	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
+	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/bathroom-floor.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* studyroom = new Room("Studyroom", "textures/wall_rose_paint.jpg", "textures/study-carpet.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
+	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 2*ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
+	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/18_FLOOR TEXTURE _2.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, 2*ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
+	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, 2*ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
 
-	Furniture* couch = bedroom->addObject("couch", bedroom->getName(), "Couch.obj", vector3df(5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
-	couch->setRotationAxis(new btVector3(0, 1, 0));
-	couch->setRotationAngle(PI / 2);
-	Furniture* girl = hall->addObject("girl", hall->getName(), "girl_3.obj", vector3df(5.0f, 2.0f, 5.0f), vector3df(1.0f, 1.0f, 1.0f), 0.0f);
+	// BEDROOM
+	Furniture* girl = bedroom->addObject("girl", bedroom->getName(), "girl_3.obj", vector3df(0, WALL_HEIGHT / 3.5f, ROOM_SIZE / 3.5f), vector3df(1.45f, 1.45f, 1.45f), 0.0f);
+	girl->setRotationAngle(-PI / 2);
+	girl->setRotationAxis(new btVector3(1, 0, 0));
+	Furniture* bed = bedroom->addObject("bed", bedroom->getName(), "bed.obj", vector3df(0, WALL_HEIGHT / 2.3f, ROOM_SIZE / 3), vector3df(.02f, .02f, .02f), 0.0f);
+	Furniture* bedroomDresser = bedroom->addObject("cabinet", bedroom->getName(), "dresser.obj", vector3df(ROOM_SIZE/7, WALL_HEIGHT / 2.3f, ROOM_SIZE / 2 - WALL_THIKNESS*2), vector3df(.02f, .02f, .02f), 0.0f);
+	Furniture* bedroomChest = bedroom->addObject("cabinet", bedroom->getName(), "chest.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS*2, WALL_HEIGHT / 2.3f, ROOM_SIZE / 5), vector3df(.02f, .02f, .02f), 0.0f);
+	bedroomChest->setRotationAngle(-PI / 2);
+	bedroomChest->setRotationAxis(new btVector3(0, 1, 0));
+	Furniture* bedroomBookcase = bedroom->addObject("cabinet", bedroom->getName(), "chest.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, WALL_HEIGHT / 2.3f, ROOM_SIZE / 5), vector3df(.02f, .02f, .02f), 0.0f);
 
 
+
+
+
+
+
+	Furniture* bedroomWindow1 = bedroom->addObject("window", bedroom->getName(), "window.obj", vector3df(0.0f, WALL_HEIGHT / 3, ROOM_SIZE / 2 - WALL_THIKNESS/2), vector3df(.02f, .02f, .02f), 0.0f);
+	Furniture* bedroomWindow2 = bedroom->addObject("window", bedroom->getName(), "window.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS / 2, WALL_HEIGHT / 3, 0.0f), vector3df(.02f, .02f, .02f), 0.0f);
+	bedroomWindow2->setRotationAngle(-PI / 2);
+	bedroomWindow2->setRotationAxis(new btVector3(0, 1, 0));
+
+	//Furniture* aquarium = bedroom->addObject("bone", bedroom->getName(), "FEMUR.3ds", vector3df(-5.0f, WALL_HEIGHT / 2, 5.0f), vector3df(.02f, .02f, .02f), .0f);
+	Furniture* fish = bedroom->addObject("fish", bedroom->getName(), "Golden_Fish_OBJ.obj", vector3df(-5.0f, WALL_HEIGHT / 3.7f, 5.0f), vector3df(.01f, .01f, .03f), 0.0f);
 }
 
 int main (){
 	Player* player = new Player();
 
-	Object* fish = new Object("fish", vector3df(-15.0f, 0.0f, 5.0f));
-	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));
-	Object* carrot = new Object("carrot", vector3df(-15.0f, 0.0f, -15.0f));
-	Object* bone = new Object("bone", vector3df(15.0f, 0.0f, -15.0f));
+	Object* fish = new Object("fish", vector3df(0.0f, 0.0f, 0.0f));//leave there
+	Object* spray = new Object("spray", vector3df(-15.0f, 0.0f, 15.0f));//leave there
+	Object* carrot = new Object("carrot", vector3df(15.0f, 0.0f, 10.0f));//t
+	Object* bone = new Object("bone", vector3df(0.0f, 0.0f, 15.0f));//t
 
-	Collectable* socks = new Collectable("socks", vector3df(-10.0f, 0.0f, -10.0f));
-	Collectable* jeans = new Collectable("jeans", vector3df(10.0f, 0.0f, 10.0f));
-	Collectable* shoes = new Collectable("shoes", vector3df(-10.0f, 0.0f, 10.0f));
-	Collectable* shirt = new Collectable("shirt", vector3df(10.0f, 0.0f, -10.0f));
+	Collectable* socks = new Collectable("socks", vector3df(-5.5f, 0.0f, 35.5f));
+	Collectable* jeans = new Collectable("jeans", vector3df(-20.0f, 0.0f, 24.5f));
+	Collectable* shoes = new Collectable("shoes", vector3df(-20.0f, 0.0f, 20.0f));
+	Collectable* shirt = new Collectable("shirt", vector3df(20.5f, 0.0f, 9.25f));
 
 	createHouse();
 
-	Enemy* fatcat = new Enemy("fatcat", vector3df(10.0f, 0.0f, 10.0f), 5.0f);
-	Enemy* cat = new Enemy("cat", vector3df(-10.0f, 0.0f, -10.0f), 10.0f);
-	Enemy* dog = new Enemy("dog", vector3df(-10.0f, 0.0f, 10.0f), 10.0f);
-	Enemy* rabbit = new Enemy("rabbit", vector3df(10.0F, 0.0F, -10.0F), 10.0f);
+	Enemy* fatcat = new Enemy("fatcat", vector3df(20.0f, 0.0f, 10.0f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat", vector3df(-5.0f, 0.0f, 34.0f), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog", vector3df(-20.0f, 0.0f, 20.0f), 10.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", vector3df(-20, 0.0F, 25.0F), 10.0f, carrot, jeans);
 
 	//setup window
 	game.setCaption(L"State Machines");
-	game.setDimensions(dimension2d<u32>(1366,768));
+	game.setDimensions(dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT));
 
 	//add a camera
 	FreeCamera* cam = new FreeCamera();
@@ -99,6 +119,12 @@ int main (){
 	float deltaTime;
 	int mod = 0;
 	btTransform transform;
+	irr::gui::ICursorControl* cursor = game.getDevice()->getCursorControl();
+	cursor->setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	cursor->setVisible(false);
+	vector2di prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
+	int mouseMovementX = 0;
+	int mouseMovementY = 0;
 	//player->getNode()->setPosition(vector3df(0, 100, 0));
 	while(game.getDevice()->run()){
 		//update timers
@@ -117,15 +143,6 @@ int main (){
 		if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
 			mod--;
 		}
-		
-		// resets the position and velocity of the object object
-		/*if (inputHandler.isKeyDown(KEY_KEY_1) && !inputHandler.wasKeyDown(KEY_KEY_1)) {
-			//tester->~Object();
-			transform = tester->getRigidBody()->getCenterOfMassTransform();
-			transform.setOrigin(btVector3(player->getNode()->getPosition().X, player->getNode()->getPosition().Y, player->getNode()->getPosition().Z));
-			tester->getRigidBody()->setCenterOfMassTransform(transform);
-			tester->getRigidBody()->setLinearVelocity(btVector3(0, 0, 0));
-		}*/
 
 		// set the camera position so it follows the player
 		btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
@@ -141,24 +158,41 @@ int main (){
 			player->setStealth(false);
 		}
 
-		if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT/2+WALL_THIKNESS) {
+		if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT/2+WALL_THIKNESS*2) {
 			player->setDown(false);
 		}
 		else
 			player->setDown(true);
+
+		/* MOUSE MOVEMENT */
 		// Now check if the mouse has moved
-		int deltaX = inputHandler.getCurrentMouse().Position.X - inputHandler.getPrevMouse().Position.X;
-		int deltaY = inputHandler.getCurrentMouse().Position.Y - inputHandler.getPrevMouse().Position.Y;
-		// Rotate the camera by the change in the mouse position. 
-		player->rotate(deltaX * deltaTime, deltaY * deltaTime);
-		cam->rotate(deltaX * deltaTime, deltaY * deltaTime);
+
+		// reset the cursor if goes offscreen an update the previous position
+		if (cursor->getPosition().X >= SCREEN_WIDTH || cursor->getPosition().X <= 0) {
+			cursor->setPosition(SCREEN_WIDTH/2, cursor->getPosition().Y);
+			prevCursorPos.X = cursor->getPosition().X;
+		}
+		if (cursor->getPosition().Y >= SCREEN_HEIGHT || cursor->getPosition().Y <= 0) {
+			cursor->setPosition(cursor->getPosition().X, SCREEN_HEIGHT / 2);
+			prevCursorPos.Y = cursor->getPosition().Y;
+		}
+
+		mouseMovementX = cursor->getPosition().X - prevCursorPos.X;
+		mouseMovementY = cursor->getPosition().Y - prevCursorPos.Y;
+
+		// Rotate the camera and player by the change in the mouse position. 
+		player->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+		cam->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+
+		// update previous mouse position
+		prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
 
 		//update
 		if(!game.update(deltaTime)) break;
 
 		vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
-		sstream << "x:" << pos.X << " y: " << player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size() << "  " << -WALL_HEIGHT / 2 + WALL_THIKNESS;
+		sstream <<"mouse movement: " << mouseMovementX << "x:" << pos.X << " y: " << player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size() << "  " << -WALL_HEIGHT / 2 + WALL_THIKNESS*2;
 		text->setText(sstream.str().c_str());
 
 		//render
@@ -171,50 +205,4 @@ int main (){
 	game.unloadContent();
 	// shutdown game
 	game.shutdown();
-}
-
-
-// function to add a box to our game world
-btRigidBody* createBox(const std::string& name, const vector3df& position, const vector3df& scale, float mass){
-	//first create a box using Irrlicht
-	ISceneNode* node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
-	// and set the scale
-	node->setScale(scale);
-	//set the position
-	node->setPosition(position);
-	// Set the material properties Use a texture of your choice
-	node->setMaterialFlag(EMF_LIGHTING, false);
-	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/steel.jpg"));
-
-	//create a PhysicsEntity
-	PhysicsEntity* physicsEntity = new PhysicsEntity(node, name);
-	//create the rigidBody for the entity
-	btRigidBody* body = PhysicsEngine::createBoxRigidBody(physicsEntity, scale, mass);
-	body->setFriction(1.5f);
-	body->setRollingFriction(2.0f);
-	physicsEntity->setRigidBody(body);
-
-	return body;
-}
-
-void createSphere(const std::string& name, const vector3df& position, float radius, float mass){
-	//create sphere geometry
-	ISceneNode* node  = game.getDevice()->getSceneManager()->addSphereSceneNode(radius, 32);
-
-	//and again
-	node->setPosition(position);
-	//set material properties
-	node->setMaterialFlag(EMF_LIGHTING, false);
-	node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/checked.jpg"));
-
-	//create a PhysicsEntity
-	PhysicsEntity* physicsEntity = new PhysicsEntity(node, name);
-	//create the rigidBody for the entity
-	btRigidBody* rigidBody = PhysicsEngine::createSphereRigidBody(physicsEntity, radius, mass);
-
-	//sets its velocity towards the wall with a random Z value
-	rigidBody->setLinearVelocity(btVector3(-20.0f, 0.0f, -5.0f + (rand()%10)));
-	//add the rigidBody to the PhysicsEntity
-	physicsEntity->setRigidBody(rigidBody);
-	
 }

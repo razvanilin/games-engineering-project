@@ -24,12 +24,11 @@ void Door::loadContent() {
 	_node->setScale(_scale);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	if (_isExit)
-		_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/checked.jpg"));
+		_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/externaldoor.jpg"));
 	else
-		_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/door17.jpg"));
-
+		_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/internaldoor.png"));
+	
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, _scale, 0.0f);
-
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Door");
 	physicsEntity->setRigidBody(_rigidBody);
 }

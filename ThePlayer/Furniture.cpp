@@ -38,7 +38,7 @@ void Furniture::loadContent() {
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	_node->setScale(_scale);
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, _scale, _mass);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), _mass);
 	btQuaternion quat;
 	quat.setRotation(*_rotationAxis, _rotationAngle);
 	btTransform trans = _rigidBody->getCenterOfMassTransform();

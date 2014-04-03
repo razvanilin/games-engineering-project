@@ -2,12 +2,13 @@
 #include "Game.h"
 #include "EntityManager.h"
 #include "Object.h"
+#include "Collectable.h"
 #include "MessageHandler.h"
 #include "PhysicsEntity.h"
 #include "Door.h"
+#include "Room.h"
 #include <unordered_map>
 #include <iostream>
-#include "Room.h"
 
 using namespace irr::scene;
 using namespace irr::video;
@@ -24,7 +25,8 @@ void Player::loadContent(){
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
 	_node->setVisible(false);
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 2.0f, 2.0f), 50.0f);
+	this->setAlive(true);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.7f, 2.7f, 2.7f), 50.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Player");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -170,7 +172,7 @@ void Player::update(float deltaTime){
 		vector3df doorPos = vector3df(btPos.x(), btPos.y(), btPos.z());
 		vector3df toPlayer = playerPos - doorPos;
 
-		if (toPlayer.getLength() < 2 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
+		if (toPlayer.getLength() < 3 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
 			btTransform transform = getRigidBody()->getCenterOfMassTransform();
 
 			if (door->getDirection() == 1 && playerPos.X < doorPos.X) {
@@ -209,7 +211,10 @@ void Player::update(float deltaTime){
 void Player::rotate(float deltaYaw, float deltaPitch){
 	_yaw -= deltaYaw;
 	_pitch += deltaPitch;
-
+	if (_pitch <= -1)
+		_pitch = -1;
+	if (_pitch >= 1)
+		_pitch = 1;
 	// rotate the rigid body according to the position of the mouse
 	btTransform trans = getRigidBody()->getCenterOfMassTransform();
 	btQuaternion q = btQuaternion::getIdentity();
@@ -223,4 +228,27 @@ void Player::rotate(float deltaYaw, float deltaPitch){
 	trans.setRotation(quat0);
 
 	this->getRigidBody()->setCenterOfMassTransform(trans);
+}
+
+void Player::handleMessage(const Message& message){
+	if (message.message == "pickup"){
+		Collectable* item = (Collectable*)message.data;
+		auto cIter = _collectedItems.begin();
+		bool addItem = true;
+		while (cIter != _collectedItems.end()){
+			std::string temp = std::string(*cIter);
+			if (temp == item->getItemName()){
+				addItem = false;
+				break;
+			}
+			cIter++;
+		}
+		if (addItem){
+			_collectedItems.push_back(item->getItemName());
+		}
+	}
+	if (message.message == "Die"){
+		this->setAlive(false);
+	}
+
 }

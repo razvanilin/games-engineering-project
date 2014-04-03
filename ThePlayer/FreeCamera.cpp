@@ -49,10 +49,10 @@ namespace GameEngine{
 		_yaw += deltaYaw;
 		_pitch += deltaPitch;
 		//Limit pitch to avoid "looping through legs"
-		/*if(_pitch <= -1)
+		if(_pitch <= -1)
 			_pitch = -1;
 		if (_pitch >= 1)
-			_pitch = 1;*/
+			_pitch = 1;
 	}
 
 	void FreeCamera::move(vector3df translation){

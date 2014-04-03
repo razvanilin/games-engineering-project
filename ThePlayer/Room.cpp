@@ -33,6 +33,8 @@ void Room::initialise() {
 }
 
 void Room::loadContent() {
+	vector3df roomOffset(0.0f, 0.0f, 0.0f);
+
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(.0f);
 	_node->setPosition(_position);
 
@@ -41,25 +43,25 @@ void Room::loadContent() {
 
 		if (i == 0){
 			constructWall(
-				vector3df(_position.X+_scale.Z/2, _position.Y, _position.Z), 
+				vector3df(_position.X+_scale.Z/2, _position.Y, _position.Z) + roomOffset, 
 				vector3df(_scale.X, _scale.Y, _scale.Z),
 				_wallTexture);
 		}
 		else if (i == 1) {
 			constructWall(
-				vector3df(_position.X-_scale.Z/2, _position.Y, _position.Z), 
+				vector3df(_position.X-_scale.Z/2, _position.Y, _position.Z) + roomOffset, 
 				vector3df(_scale.X, _scale.Y, _scale.Z), 
 				_wallTexture);
 		}
 		else if (i == 2) {
 			constructWall(
-				vector3df(_position.X, _position.Y, _position.Z + _scale.Z / 2),
+				vector3df(_position.X, _position.Y, _position.Z + _scale.Z / 2) + roomOffset,
 				vector3df(_scale.Z, _scale.Y, _scale.X), 
 				_wallTexture);
 		}
 		else {
 			constructWall(
-				vector3df(_position.X, _position.Y, _position.Z - _scale.Z / 2),
+				vector3df(_position.X, _position.Y, _position.Z - _scale.Z / 2) + roomOffset,
 				vector3df(_scale.Z, _scale.Y, _scale.X), 
 				_wallTexture);
 		}
@@ -67,13 +69,13 @@ void Room::loadContent() {
 	
 	// preparing the floor
 	constructWall(
-		vector3df(_position.X, _position.Y - _scale.Y/2, _position.Z), 
+		vector3df(_position.X, _position.Y - _scale.Y/2, _position.Z) + roomOffset, 
 		vector3df(_scale.Z, _scale.X, _scale.Z),
 		_floorTexture);
 	
 	// preparing the ceiling
 	constructWall(
-		vector3df(_position.X, _scale.Y/2, _position.Z), 
+		vector3df(_position.X, _scale.Y/2, _position.Z) + roomOffset, 
 		vector3df(_scale.Z, _scale.X, _scale.Z), 
 		_ceilingTexture);
 	
@@ -112,8 +114,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X + _scale.Z / 2 - _scale.X/2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
-				vector3df(_scale.X, _scale.Y / (_scale.Y / 4) + _scale.X, 2.0f),
+				vector3df(_position.X + _scale.Z / 2 - _scale.X/2, _position.Y - _scale.Y / 5 + _scale.X, _position.Z),
+				vector3df(_scale.X, _scale.Y / (_scale.Y / 5) + _scale.X, 2.5f),
 				1,
 				isExit
 				);
@@ -124,8 +126,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X - _scale.Z / 2 + _scale.X/2, _position.Y - _scale.Y / 4 + _scale.X, _position.Z),
-				vector3df(_scale.X, _scale.Y / (_scale.Y / 4) + _scale.X, 2.0f),
+				vector3df(_position.X - _scale.Z/ 2 + _scale.X/2, _position.Y - _scale.Y / 5 + _scale.X, _position.Z),
+				vector3df(_scale.X, _scale.Y / (_scale.Y / 5) + _scale.X, 2.5f),
 				2,
 				isExit
 				);
@@ -136,8 +138,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z + _scale.Z / 2 - _scale.X/2), 
-				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X/2),
+				vector3df(_position.X, _position.Y - _scale.Y / 5 + _scale.X, _position.Z + _scale.Z / 2 - _scale.X/2), 
+				vector3df(2.5f, _scale.Y / (_scale.Y/5) + _scale.X, _scale.X/2),
 				3,
 				isExit
 				);
@@ -148,8 +150,8 @@ void Room::loadDoors() {
 				isExit = true;
 
 			new Door(
-				vector3df(_position.X, _position.Y - _scale.Y / 4 + _scale.X, _position.Z - _scale.Z / 2 + _scale.X/2), 
-				vector3df(2.0f, _scale.Y / (_scale.Y/4) + _scale.X, _scale.X),
+				vector3df(_position.X, _position.Y - _scale.Y / 5 + _scale.X, _position.Z - _scale.Z / 2 + _scale.X/2), 
+				vector3df(2.5f, _scale.Y / (_scale.Y/5) + _scale.X, _scale.X),
 				4,
 				isExit
 				);
