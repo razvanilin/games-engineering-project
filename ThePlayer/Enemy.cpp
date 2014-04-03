@@ -60,8 +60,10 @@ void Enemy::initialise(){
 
 	//set initial state to normal
 	_stateMachine.setState("Normal");
+	_currentState = "Normal";
 	// Set elapsed time to 0
-	_elapsedTime = 0.0f;
+	_elapsedTimeAI = 0.0f;
+	_elapsedTimeSound = 1.0f;
 	// Create decision tree
 	_decisionTree = this->getDecTree(_enemyName);
 }
@@ -102,25 +104,64 @@ void Enemy::loadContent(){
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 1.0f, 2.0f), 100);
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
 	physicsEntity->setRigidBody(_rigidBody);
+	
 
 }
 
 //updates the enemy
 void Enemy::update(float deltaTime){
 	// Add elapsed time
-	_elapsedTime += deltaTime;
-
+	_elapsedTimeAI += deltaTime;
+	_elapsedTimeSound+=deltaTime;
+	Player* player = (Player*)EntityManager::getNamedEntities("Player")->front();
+	
+	
+	
+	
 	// Run AI every half second
-
-	float freq = 0.1f;
-	if (_elapsedTime > freq)
+	float freq = 0.5f;
+	if (_elapsedTimeAI > freq)
 	{
 		// Make decision
 		_decisionTree->makeDecision(this);
 		// Execute state
 		_stateMachine.update(deltaTime);
+		//increase noise made if agrod
+		if (_currentState == "SeekPlayer"){
+			player->addToNoise(deltaTime*10);
+		}
+
 		// Reset elapsed time
-		_elapsedTime = 0.0f;
+		_elapsedTimeAI = 0.0f;
+	}
+
+	/*SOUND STUFF*/
+	//fatcat is never agrod this is the player in teh same room?
+	bool fc = false;
+	if (_enemyName == "fatcat"){
+		fc = (_currentState == "Normal" && player->getCurrentRoom() == this->getRoom()->getName());		
+	}
+	
+	//play agrod audio
+	if (_elapsedTimeSound > 1.294 && (_currentState == "SeekPlayer" || fc)){
+		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_agro.wav";
+		game.getAudioEngine()->play2D(path.c_str());
+		_elapsedTimeSound = 0.0f;
+		
+	}
+
+	//if cat, play scared audio
+	if (_elapsedTimeSound > 1.294 && _enemyName == "cat" && _currentState == "FleeWeakness"){
+		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_scared.wav";
+		game.getAudioEngine()->play2D(path.c_str());
+		_elapsedTimeSound = 0.0f;
+	}
+
+	//play dog eager audio
+	if (_elapsedTimeSound > 1.294 && _enemyName == "dog" && _currentState == "SeekWeakness"){
+		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_eager.wav";
+		game.getAudioEngine()->play2D(path.c_str());
+		_elapsedTimeSound = 0.0f;
 	}
 }
 
@@ -200,7 +241,7 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 		result = new PlayerInRoomDecision(
 			
 			new DistanceToWeaknessDecision(
-				4.0f,
+				2.0f,
 				new FleeWeaknessDecision(),
 				new DistanceToGuardedItemDecision(
 					3.0f,

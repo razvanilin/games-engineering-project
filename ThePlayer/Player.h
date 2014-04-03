@@ -19,6 +19,7 @@ private:
 	vector3df _up;
 	vector3df _forward;
 	std::string _currentRoom;
+	float _noiseMade;
 
 public:
 	Player() : Entity(-1, 0, "Player"){
@@ -54,6 +55,9 @@ public:
 
 	void addItem(std::string val){ _collectedItems.push_front(val); }
 	std::list<std::string> getCollectedItems(){ return _collectedItems; }
+
+	void addToNoise(float val){ _noiseMade += val; }
+	float getNoiseMade(){ return _noiseMade; }
 
 	void initialise();
 	void loadContent();

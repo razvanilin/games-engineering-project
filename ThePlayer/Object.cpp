@@ -106,6 +106,8 @@ void Object::handleMessage(const Message& message){
 		_rigidBody->activate();
 		this->_pickedUp = false;
 		_rigidBody->setLinearVelocity(btVector3((_forward.X)*_mod, (_forward.Y)*_mod, (_forward.Z)*_mod));
+		game.getAudioEngine()->play2D("sounds/common/throw.wav");
+		
 	}
 	if (message.message == "dropped"){
 		_rigidBody->activate();

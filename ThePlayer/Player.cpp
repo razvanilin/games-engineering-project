@@ -15,7 +15,7 @@ using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-	
+	_noiseMade = 0.0f;
 }
 
 void Player::loadContent(){
@@ -104,6 +104,8 @@ void Player::update(float deltaTime){
 	// jump!
 	if (inputHandler.isKeyDown(KEY_SPACE) && !inputHandler.wasKeyDown(KEY_SPACE) && isDown() && !isStealthActive()) {
 		getRigidBody()->setLinearVelocity(btVector3(up.X, up.Y*_mod, up.Z));
+		game.getAudioEngine()->play2D("sounds/common/jump.wav");
+		_noiseMade += 2;
 	}
 	// TODO: fix the jumping and moving forward feature
 	if (inputHandler.isKeyDown(KEY_SPACE) && inputHandler.isKeyDown(KEY_KEY_W) && isDown() && !isStealthActive()) {
@@ -157,6 +159,7 @@ void Player::update(float deltaTime){
 				Message m(this->getCarriedItem(), "thrown", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
+				_noiseMade += 5;
 			}
 		}
 	}
@@ -206,7 +209,10 @@ void Player::update(float deltaTime){
 		iterator++;
 	}
 
-
+	//make noise unless crouched
+	if (!inputHandler.isKeyDown(KEY_LCONTROL) && (inputHandler.isKeyDown(KEY_KEY_W) || inputHandler.isKeyDown(KEY_KEY_A) || inputHandler.isKeyDown(KEY_KEY_S) || inputHandler.isKeyDown(KEY_KEY_D))){
+		_noiseMade += 0.005;
+	}
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){
@@ -242,10 +248,11 @@ void Player::handleMessage(const Message& message){
 		}
 		if (addItem){
 			_collectedItems.push_back(item->getItemName());
-		}		
+			game.getAudioEngine()->play2D("sounds/common/pickup.wav", false);
+		}
+		
 	}
 	if (message.message == "Die"){
 		this->setAlive(false);
 	}
-
 }

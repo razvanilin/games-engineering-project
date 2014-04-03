@@ -1,5 +1,7 @@
 //add Irrlicht
 #pragma comment (lib, "Irrlicht")
+//add irrklang
+#pragma comment (lib, "irrKlang.lib")
 
 #include <Irrlicht.h>
 #include <iostream>
@@ -56,7 +58,7 @@ int main (){
 	
 	Enemy* fatcat = new Enemy("fatcat",kitchen, vector3df(26.0f, 0.0f, 46.0f), 5.0f, fish, shirt);
 	Enemy* cat = new Enemy("cat",livingroom, vector3df(5.0f, 0.0f, 43.0f), 5.0f, spray, socks);
-	Enemy* dog = new Enemy("dog",storageroom, vector3df(-18.0f, 0.0f, 18.0f), 2.0f, bone, shoes);
+	Enemy* dog = new Enemy("dog",storageroom, vector3df(-18.0f, 0.0f, 18.0f), 5.0f, bone, shoes);
 	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-26.0, 0.0f, 42.0f), 20.0f, carrot, jeans);
 
 	//setup window
@@ -75,9 +77,12 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
+	//play background tunes
+	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
+
 	irr::gui::IGUIStaticText* text;
 	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
-	text = guienv->addStaticText(L"0 : 0", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
+	text = guienv->addStaticText(L"", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
 	irr::gui::IGUIFont* font = guienv->getFont("bigfont.png");
 	text->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
 	text->setOverrideFont(font);
@@ -155,7 +160,7 @@ int main (){
 		vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
 
-		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << ". CI: " << player->getCollectedItems().size();
+		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
 		text->setText(sstream.str().c_str());
 
 		//render

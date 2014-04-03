@@ -20,7 +20,10 @@ private:
 	//Rigidbody controlling movement (physics)
 	btRigidBody* _rigidBody;
 	// Keep track of total elapsed time since last decision
-	float _elapsedTime;
+	float _elapsedTimeAI;
+	// Keep track of time since last audio played
+	float _elapsedTimeSound;
+
 	//name for AI
 	std::string _enemyName;
 	//current state name
