@@ -109,7 +109,6 @@ namespace GameEngine{
 
 	//creates and registers a new square rigidbody - assumes position is set
 	btRigidBody* PhysicsEngine::createBoxRigidBody(Entity* entity, const vector3df& scale, float mass){
-		
 		//create rigidbody's transform using entity's position
 		btTransform transform;
 		transform.setIdentity();

@@ -8,5 +8,8 @@ using namespace GameEngine;
 class NormalDecision : public DecisionTreeNode<Enemy>
 {
 public:
-	void makeDecision(Enemy* owner) { owner->getStateMachine().setState("Normal"); }
+	void makeDecision(Enemy* owner) { 
+		owner->getStateMachine().setState("Normal"); 
+		owner->setCurrentStateName("Normal");
+	}
 };

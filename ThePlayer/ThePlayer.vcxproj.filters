@@ -24,13 +24,7 @@
     <ClCompile Include="SeekState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Spin2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StateNormal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StateSpin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TargetCamera.cpp">
@@ -70,6 +64,42 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiHud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collectable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToPlayerDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToWeaknessDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistanceToGuardedItemDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Furniture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerInRoomDecision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaknessInRoomDecision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -149,15 +179,6 @@
     <ClInclude Include="SeekState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Spin2.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spin2Decision.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpinDecision.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -167,9 +188,6 @@
     <ClInclude Include="StateNormal.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="StateSpin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="SteeringBehaviour.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -177,6 +195,63 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="TargetCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FleePlayerDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiHud.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collectable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToPlayerDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FleeColletableDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekPlayerDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToWeaknessDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistanceToGuardedItemDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekGuardedItemDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SeekWeaknessDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FleeWeaknessDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInRoomDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Furniture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentDecision.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaknessInRoomDecision.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
