@@ -6,5 +6,8 @@
 class SeekGuardedItemDecision : public DecisionTreeNode<Enemy>
 {
 public:
-	void makeDecision(Enemy* owner) { owner->getStateMachine().setState("SeekGuardedItem"); }
+	void makeDecision(Enemy* owner) {
+		owner->getStateMachine().setState("SeekGuardedItem");
+		owner->setCurrentStateName("SeekGuardedItem");
+	}
 };

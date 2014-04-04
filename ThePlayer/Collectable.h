@@ -30,6 +30,9 @@ public:
 	btRigidBody* getRigidBody() { return _rigidBody; }
 	void setRigidBody(btRigidBody* value) { _rigidBody = value; }
 
+	vector3df getPosition() { return _startPos; }
+	void setPosition(vector3df value) { _startPos = value; }
+
 	std::string getItemName(){
 		return this->_itemName;
 	}

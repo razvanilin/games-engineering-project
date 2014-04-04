@@ -22,6 +22,8 @@ public:
 
 	int getDirection() { return _direction; }
 
+	bool isExit() { return _isExit; }
+
 	void initialise();
 	void loadContent();
 	void update(float deltaTime);

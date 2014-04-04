@@ -11,17 +11,21 @@ private:
 	btRigidBody* _rigidBody;
 	//boolean indicating if object has been collected
 	bool _pickedUp;
+	bool _firstPicked = true;
 	std::string _name;
 	vector3df _forward;
 	vector3df _up;
 	float _mod;
+	float _mass;
 	vector3df _startPos;
+	vector3df _scale;
 	std::string _itemName;
+	std::string _meshName;
 	std::string _currentRoom;
 
 public:
 	//constructor
-	Object(std::string name, vector3df startPos);
+	Object(std::string name, std::string meshName, vector3df startPos);
 	//destructor
 	~Object(){}
 	//RB getter
@@ -42,6 +46,13 @@ public:
 	std::string getCurrentRoom() { return _currentRoom; }
 	void setCurrentRoom(std::string value) { _currentRoom = value; }
 
+	vector3df getPosition() { return _startPos; }
+	void setPosition(vector3df value) { _startPos = value; }
+
+	vector3df getScale() { return _scale; }
+	void setScale(vector3df value) { _scale = value; }
+
+	void setMass(float value) { _mass = value; }
 
 	vector3df getUp() { return _up; }
 	void setUp(vector3df value) { _up = value; }

@@ -6,16 +6,19 @@
 #include "PhysicsEntity.h"
 #include "Room.h"
 #include <iostream>
+#include <sstream>
 
 using namespace irr::core;
 using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an pickupable object. Initialises Entity and SM
-Object::Object(std::string name, vector3df startPos) : Entity(-1, 0, "Object"){
+Object::Object(std::string name, std::string meshName, vector3df startPos) : Entity(-1, 0, "Object"){
 	_pickedUp = false;
 	_itemName = name;
+	_meshName = meshName;
 	_startPos = startPos;
+	_mass = 0;
 }
 
 
@@ -26,34 +29,36 @@ void Object::initialise(){
 //Load content for the Object
 void Object::loadContent(){
 	//make a sphere
-	//IAnimatedMesh* mesh = game.getDevice()->getSceneManager()->getMesh("meshes/house/Couch.obj");
-	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(1.0f);
-	//_node->setScale(vector3df(0.5f, 0.5f, 0.5f));
+	std::wstringstream path;
+	path << "meshes/" << _itemName.c_str() << "/" << _meshName.c_str();
+	IAnimatedMesh* mesh = game.getDevice()->getSceneManager()->getMesh(path.str().c_str());
+	if (!mesh){
+		std::cout << "Could not load " << _itemName.c_str() << " mesh" << std::endl;
+		return;
+	}
+	_node = game.getDevice()->getSceneManager()->addAnimatedMeshSceneNode(mesh);
+	_node->setScale(_scale);
 	//_node->setMesh(mesh);
 	//set position to (0,0,0)
 	_node->setPosition(_startPos);
 	//set material properties
 	//_node->setVisible(0);
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	std::string pathToTexture = "textures/" + _itemName + ".jpg";
-	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 
 	//_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/BRNLEAT2.jpg"));
 	//create rigid body (sphere with rad of 1)
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), _mass);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 	physicsEntity->setRigidBody(_rigidBody);
 }
 
-float objDistance = 2.0f;
-
+float objDistance = 3.0f;
 //updates the Object
 void Object::update(float deltaTime){
 	// throw power
 	_mod = 15.0f;
-
 	std::list<Entity*>* objects = EntityManager::getNamedEntities("Player");
 	Player* player = (Player*)*(objects->begin());
 	setForward(player->getForward());
@@ -74,12 +79,16 @@ void Object::update(float deltaTime){
 		iterator++;
 	}
 
-
-
-
-
 	//if object is picked up - it's position is fixed to the player <- you made a typo, Dave!
 	if (_pickedUp){
+		// replace the rigid body with one that has the mass 10
+		if (_firstPicked) {
+			_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
+			PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
+			physicsEntity->setRigidBody(_rigidBody);
+			_firstPicked = false;
+		}
+
 		btRigidBody* body = getRigidBody();
 		Entity* player = EntityManager::getNamedEntities("Player")->front();
 		vector3df playerPos = player->getNode()->getPosition();
@@ -100,6 +109,7 @@ void Object::update(float deltaTime){
 void Object::handleMessage(const Message& message){
 	if (message.message == "pickedup"){
 		this->_pickedUp = true;
+		_mass = 10;
 	}
 
 	if (message.message == "thrown"){

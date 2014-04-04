@@ -16,6 +16,7 @@ using namespace GameEngine;
 
 void Player::initialise(){
 	_noiseMade = 0.0f;
+	_hasKey = false;
 }
 
 void Player::loadContent(){
@@ -131,6 +132,7 @@ void Player::update(float deltaTime){
 				Message m(this->getCarriedItem(), "dropped", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
+				_hasKey = false;
 			}
 		}
 		else{//picking up
@@ -143,7 +145,13 @@ void Player::update(float deltaTime){
 				vector3df objPos = vector3df(hm.getX(), hm.getY(), hm.getZ());
 				vector3df toPlayer = playerPos - objPos;
 				if (toPlayer.getLength() < 5){
+					if (obj->getItemName() == "key") {
+						_hasKey = true;
+						std::cout << _hasKey << std::endl;
+					}
 					obj->setPickedUp(true);
+					obj->setMass(10);
+					obj->getRigidBody()->setMassProps(10, btVector3(0, 0, 0));
 					this->setCarriedItem(obj);
 					this->_isCarrying = true;
 					break;
@@ -161,6 +169,7 @@ void Player::update(float deltaTime){
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
 				_noiseMade += 5;
+				_hasKey = false;
 			}
 		}
 	}
@@ -179,18 +188,22 @@ void Player::update(float deltaTime){
 		if (toPlayer.getLength() < 3 && inputHandler.isKeyDown(KEY_KEY_F) && !inputHandler.wasKeyDown(KEY_KEY_F)) {
 			btTransform transform = getRigidBody()->getCenterOfMassTransform();
 
-			if (door->getDirection() == 1 && playerPos.X < doorPos.X) {
+			if (door->getDirection() == 1 && playerPos.X < doorPos.X && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X + 2.0f, playerPos.Y, doorPos.Z));
 			}
-			else if (door->getDirection() == 2 && playerPos.X > doorPos.X) {
+			else if (door->getDirection() == 2 && playerPos.X > doorPos.X && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X - 2.0f, playerPos.Y, doorPos.Z));
 			}
-			else if (door->getDirection() == 3 && playerPos.Z < doorPos.Z) {
+			else if (door->getDirection() == 3 && playerPos.Z < doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z + 2.0f));
 			}
-			else if (door->getDirection() == 4 && playerPos.Z > doorPos.Z) {
+			else if (door->getDirection() == 4 && playerPos.Z > doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z - 2.0f));
 			}
+			else if (door->getDirection() == 2 && playerPos.X > doorPos.X && door->isExit() && _hasKey) {
+				transform.setOrigin(btVector3(doorPos.X - 2.0f, playerPos.Y, doorPos.Z));
+			}
+
 			getRigidBody()->setCenterOfMassTransform(transform);
 		}
 		doorIter++;

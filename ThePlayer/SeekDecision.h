@@ -6,5 +6,8 @@
 class SeekDecision : public DecisionTreeNode<Enemy>
 {
 public:
-	void makeDecision(Enemy* owner) { owner->getStateMachine().setState("Seek"); }
+	void makeDecision(Enemy* owner) { 
+		owner->getStateMachine().setState("Seek"); 
+		owner->setCurrentStateName("Seek");
+	}
 };

@@ -13,6 +13,7 @@ private:
 	bool _isCarrying;
 	bool _stealthActive;
 	bool _isDown;
+	bool _hasKey;
 	Object* _carriedItem;
 	std::list<std::string> _collectedItems;
 	btRigidBody* _rigidBody;

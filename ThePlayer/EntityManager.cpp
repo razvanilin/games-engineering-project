@@ -65,7 +65,7 @@ namespace GameEngine{
 		//otherwise check ID is not already in use
 		else if (_entities.find(entity->getID()) != _entities.end()){
 			//diplay error and return
-			std::cerr << "Error registering entity of ID: " + entity->getID() << std::endl;
+			std::cerr << "Error registering entity of ID: " + entity->getName() << std::endl;
 			return;
 		}
 		//if it gets this far, all is good so add to map

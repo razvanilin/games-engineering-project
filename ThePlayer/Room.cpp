@@ -11,7 +11,6 @@ using namespace irr::scene;
 using namespace irr::video;
 using namespace GameEngine;
 
-void constructDoor(vector3df position, vector3df scale, int direction, bool isExit);
 void constructWall(vector3df position, vector3df scale, std::string texture);
 
 Room::Room(std::string name, std::string wallTexture, std::string floorTexture, std::string ceilingTexture, vector3df position, vector3df scale, int doors[4], int exitDoor) : Entity(-1, 0, "Room"){
@@ -25,7 +24,7 @@ Room::Room(std::string name, std::string wallTexture, std::string floorTexture, 
 		_doors[i] = doors[i];
 	}
 	_exitDoor = exitDoor;
-	EntityManager::registerEntity(this);
+	//EntityManager::registerEntity(this);
 }
 
 void Room::initialise() {
@@ -159,15 +158,19 @@ void Room::loadDoors() {
 	}
 }
 
-void constructDoor(vector3df position, vector3df scale, int direction, bool isExit) {
-	new Door(position, scale, direction, isExit);
-}
-
 void Room::update(float deltaTime) {
 
 }
 
-Furniture* Room::addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
-	vector3df furniturePos = _position - position;
+Furniture* Room::addFurniture(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass) {
+	vector3df furniturePos = _position + position;
 	return new Furniture(name, roomName, meshPath, furniturePos, scale, mass);
+}
+
+void Room::placeObject(Object* object, vector3df position) {
+	object->setPosition(_position + position);
+}
+
+void Room::placeCollectable(Collectable* collectable, vector3df position) {
+	collectable->setPosition(_position + position);
 }

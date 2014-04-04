@@ -36,7 +36,7 @@ using namespace irr::video;
 Enemy::Enemy(std::string name, Room* room, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem) : Entity(-1, 0, "Enemy"), _stateMachine(this){
 	_enemyName = name;
 	_velMod = pVel;
-	_startPos = startPos;
+	_startPos = room->getPosition() + startPos;
 	_guardedItem = guardedItem;
 	_weakness = weakness;
 	_room = room;
@@ -89,7 +89,7 @@ void Enemy::loadContent(){
 
 	//set scales
 	if (_enemyName == "fatcat"){
-		_node->setScale(vector3df(2, 1, 1));
+		_node->setScale(vector3df(2.5f, 1.5f, 1.5f));
 	}
 	else if (_enemyName == "cat"){
 		_node->setScale(vector3df(1.0f, 1.0f, 1.0f));

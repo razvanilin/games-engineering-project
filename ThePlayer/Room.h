@@ -3,6 +3,8 @@
 #include "Entity.h"
 #include "PhysicsEngine.h"
 #include "Furniture.h"
+#include "Object.h"
+#include "Collectable.h"
 
 using namespace GameEngine;
 
@@ -54,6 +56,8 @@ public:
 	void update(float deltaTime);
 	void unloadContent() {}
 
-	Furniture* addObject(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
+	Furniture* addFurniture(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
+	void placeObject(Object* object, vector3df position);
+	void placeCollectable(Collectable* collectable, vector3df position);
 
 };
