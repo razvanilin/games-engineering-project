@@ -15,6 +15,8 @@
 #include "FreeCamera.h"
 #include "Room.h"
 #include "Collectable.h"
+#include "Menu.h"
+#include "HudManager.h"
 #include <sstream>
 #include <IGUIFont.h>
 
@@ -212,6 +214,8 @@ int main (){
 	if(!game.initialise()) return -1;
 	if(!game.loadContent()) return -1;
 
+	HudManager* hudMan = new HudManager();
+	//Menu* menu = new Menu();
 	sign->getNode()->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg"));
 
 	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
@@ -229,85 +233,108 @@ int main (){
 	u32 currTime;
 	float deltaTime;
 	int mod = 0;
-	btTransform transform;
 	irr::gui::ICursorControl* cursor = game.getDevice()->getCursorControl();
 	cursor->setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 	cursor->setVisible(false);
 	vector2di prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
 	int mouseMovementX = 0;
 	int mouseMovementY = 0;
-	//player->getNode()->setPosition(vector3df(0, 100, 0));
-	while(game.getDevice()->run()){
+	bool gamePaused = false;
+	
+	while (game.getDevice()->run()){
 		//update timers
 		currTime = game.getDevice()->getTimer()->getRealTime();
-		deltaTime = float (currTime - prevTime)/1000.0f;
+		deltaTime = float(currTime - prevTime) / 1000.0f;
 
 		//escape!
 		if (inputHandler.isKeyDown(KEY_ESCAPE)){
 			break;
 		}
+		if (!gamePaused) {
+			// zoom in or out so you can see the player
+			if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
+				mod++;
+			}
+			if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
+				mod--;
+			}
 
-		// zoom in or out so you can see the player
-		if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
-			mod++;
+			// set the camera position so it follows the player
+			btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
+			cam->setPosition(vector3df(playerPos.x(), playerPos.y() + 2.0f, playerPos.z() + mod));
+
+			// stealth movement -> lower the camera a bit and update the player status
+			if (inputHandler.isKeyDown(KEY_LCONTROL)) {
+				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
+				player->setStealth(true);
+			}
+			else if (player->isStealthActive()){
+				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
+				player->setStealth(false);
+			}
+
+			if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT / 2 + WALL_THIKNESS * 2) {
+				player->setDown(false);
+			}
+			else
+				player->setDown(true);
+
+			/* MOUSE MOVEMENT */
+			// Now check if the mouse has moved
+
+			// reset the cursor if goes offscreen an update the previous position
+			if (cursor->getPosition().X >= SCREEN_WIDTH || cursor->getPosition().X <= 0) {
+				cursor->setPosition(SCREEN_WIDTH / 2, cursor->getPosition().Y);
+				prevCursorPos.X = cursor->getPosition().X;
+			}
+			if (cursor->getPosition().Y >= SCREEN_HEIGHT || cursor->getPosition().Y <= 0) {
+				cursor->setPosition(cursor->getPosition().X, SCREEN_HEIGHT / 2);
+				prevCursorPos.Y = cursor->getPosition().Y;
+			}
+
+			mouseMovementX = cursor->getPosition().X - prevCursorPos.X;
+			mouseMovementY = cursor->getPosition().Y - prevCursorPos.Y;
+
+			// Rotate the camera and player by the change in the mouse position. 
+			player->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+			cam->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+
+			// update previous mouse position
+			prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
+
+			
 		}
-		if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
-			mod--;
+
+		//Pause the game
+		if (inputHandler.isKeyDown(KEY_KEY_P) && !inputHandler.wasKeyDown(KEY_KEY_P)) {
+			if (gamePaused) {
+				gamePaused = false;
+				prevCursorPos = cursor->getPosition();
+			}
+			else {
+				gamePaused = true;
+			}
+			cursor->setVisible(gamePaused);
 		}
-
-		// set the camera position so it follows the player
-		btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
-		cam->setPosition(vector3df(playerPos.x(), playerPos.y()+2.0f, playerPos.z()+mod));
-
-		// stealth movement -> lower the camera a bit and update the player status
-		if (inputHandler.isKeyDown(KEY_LCONTROL)) {
-			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
-			player->setStealth(true);
-		}
-		else if (player->isStealthActive()){
-			cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
-			player->setStealth(false);
-		}
-
-		if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT/2+WALL_THIKNESS*2) {
-			player->setDown(false);
-		}
-		else
-			player->setDown(true);
-
-		/* MOUSE MOVEMENT */
-		// Now check if the mouse has moved
-
-		// reset the cursor if goes offscreen an update the previous position
-		if (cursor->getPosition().X >= SCREEN_WIDTH || cursor->getPosition().X <= 0) {
-			cursor->setPosition(SCREEN_WIDTH/2, cursor->getPosition().Y);
-			prevCursorPos.X = cursor->getPosition().X;
-		}
-		if (cursor->getPosition().Y >= SCREEN_HEIGHT || cursor->getPosition().Y <= 0) {
-			cursor->setPosition(cursor->getPosition().X, SCREEN_HEIGHT / 2);
-			prevCursorPos.Y = cursor->getPosition().Y;
-		}
-
-		mouseMovementX = cursor->getPosition().X - prevCursorPos.X;
-		mouseMovementY = cursor->getPosition().Y - prevCursorPos.Y;
-
-		// Rotate the camera and player by the change in the mouse position. 
-		player->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
-		cam->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
-
-		// update previous mouse position
-		prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
 
 		//update
-		if(!game.update(deltaTime)) break;
-
-		vector3df pos = player->getNode()->getPosition();
+		if (!game.update(deltaTime)) break;
+		/*vector3df pos = player->getNode()->getPosition();
 		std::wstringstream sstream;
 		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
-		text->setText(sstream.str().c_str());
+		text->setText(sstream.str().c_str());*/
 
 		//render
-		if(!game.render()) break;
+		if (!gamePaused) {
+			if (!game.render()) break;
+			ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg");
+			IGUIImage* img = guienv->addImage(texture, position2d<s32>(game.getDimensions().Width, game.getDimensions().Height), false);
+		}
+		else {
+			ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg");
+			IGUIImage* img = guienv->addImage(texture, position2d<s32>(game.getDimensions().Width, game.getDimensions().Height), false);
+			//img->setUseAlphaChannel(1);
+		}
 
 		prevTime = currTime;
 	}

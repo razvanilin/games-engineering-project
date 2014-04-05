@@ -54,7 +54,7 @@ void Collectable::handleMessage(const Message& message){
 			Player* player = (Player*)message.data;
 			_alive = false;
 			_node->setVisible(false);
-
+			PhysicsEngine::removeRigidBody(_rigidBody);
 			//send message to player that item has been picked up
 			Message m(player, "pickup", this);
 			MessageHandler::sendMessage(m);

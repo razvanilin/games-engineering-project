@@ -72,7 +72,6 @@ public:
 	std::string getEnemyName(){
 		return _enemyName;
 	}
-
-
 	DecisionTreeNode<Enemy>* getDecTree(std::string name);
+
 };

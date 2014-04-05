@@ -3,6 +3,7 @@
 #include "InputHandler.h"
 #include "MessageHandler.h"
 #include "PhysicsEngine.h"
+#include "Menu.h"
 #include <ctime>
 
 #include <iostream>
@@ -18,7 +19,7 @@ namespace GameEngine{
 			irr::video::EDT_DIRECT3D9,
 			_dimensions,
 			32,
-			false,
+			true,
 			false,
 			true,
 			&inputHandler);
@@ -46,7 +47,7 @@ namespace GameEngine{
 		//initialise AudioEngine
 		_audioEngine = irrklang::createIrrKlangDevice();
 
-
+		// initialises the menu
 		//seed the random function
 		srand(time(NULL));
 		return true;
@@ -57,20 +58,28 @@ namespace GameEngine{
 		return true;
 	}
 
+	bool gamePaused = false;
 	bool Game::update(float frameTime){
-		if (!PhysicsEngine::update(frameTime)) return false;
-		if (!EntityManager::update(frameTime)) return false;
-		inputHandler.update();
-		_camera->update(frameTime);
-		MessageHandler::update();
+		
+		
+		
+		if (!gamePaused) {
+			if (!PhysicsEngine::update(frameTime)) return false;
+			if (!EntityManager::update(frameTime)) return false;
+			inputHandler.update();
+			_camera->update(frameTime);
+			MessageHandler::update();
+		}
 		return true;
 	}
 
 	bool Game::render(){
+
 		if (!_device->getVideoDriver()->beginScene()) return false;
 		_device->getSceneManager()->drawAll();
 		_device->getGUIEnvironment()->drawAll();
 		if (!_device->getVideoDriver()->endScene()) return false;
+
 		return true;
 	}
 

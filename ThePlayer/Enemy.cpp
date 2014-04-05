@@ -36,7 +36,7 @@ using namespace irr::video;
 Enemy::Enemy(std::string name, Room* room, vector3df startPos, float pVel, Object* weakness, Collectable* guardedItem) : Entity(-1, 0, "Enemy"), _stateMachine(this){
 	_enemyName = name;
 	_velMod = pVel;
-	_startPos = room->getPosition() + startPos;
+	_startPos = room->getPosition()+startPos;
 	_guardedItem = guardedItem;
 	_weakness = weakness;
 	_room = room;
@@ -89,7 +89,7 @@ void Enemy::loadContent(){
 
 	//set scales
 	if (_enemyName == "fatcat"){
-		_node->setScale(vector3df(2.5f, 1.5f, 1.5f));
+		_node->setScale(vector3df(2, 1, 1));
 	}
 	else if (_enemyName == "cat"){
 		_node->setScale(vector3df(1.0f, 1.0f, 1.0f));
@@ -101,7 +101,7 @@ void Enemy::loadContent(){
 		_node->setScale(vector3df(1.5f, 1.5f, 1.5f));
 	}
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 1.0f, 2.0f), 100);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 0.5f, 2.0f), 100);
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
 	physicsEntity->setRigidBody(_rigidBody);
 
@@ -118,8 +118,9 @@ void Enemy::update(float deltaTime){
 
 
 
-	// Run AI every half second
-	float freq = 0.5f;
+	// Run AI every 1/10th sec if in room, otherwise once per sec
+
+	float freq = (player->getCurrentRoom() == getRoom()->getName()) ? 0.1 : 1.0;
 	if (_elapsedTimeAI > freq)
 	{
 		// Make decision
@@ -128,7 +129,7 @@ void Enemy::update(float deltaTime){
 		_stateMachine.update(deltaTime);
 		//increase noise made if agrod
 		if (_currentState == "SeekPlayer"){
-			player->addToNoise(deltaTime * 10);
+			player->decreaseNoiseAllowanceBy(deltaTime * 10);
 		}
 
 		// Reset elapsed time
@@ -152,6 +153,7 @@ void Enemy::update(float deltaTime){
 
 	//if cat, play scared audio
 	if (_elapsedTimeSound > 1.294 && _enemyName == "cat" && _currentState == "FleeWeakness"){
+
 		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_scared.wav";
 		game.getAudioEngine()->play2D(path.c_str());
 		_elapsedTimeSound = 0.0f;
@@ -163,6 +165,8 @@ void Enemy::update(float deltaTime){
 		game.getAudioEngine()->play2D(path.c_str());
 		_elapsedTimeSound = 0.0f;
 	}
+
+
 }
 
 
@@ -230,7 +234,7 @@ DecisionTreeNode<Enemy>* Enemy::getDecTree(std::string name){
 			)
 			),
 			new DistanceToGuardedItemDecision(
-			2.0f,
+			4.0f,
 			new NormalDecision(),
 			new SeekGuardedItemDecision()
 			)
@@ -259,8 +263,6 @@ void Enemy::handleMessage(const Message& message){
 	if (message.message == "COLLISION"){
 		if (((Entity*)message.data)->getName() == "Player"){
 			Player* player = (Player*)message.data;
-
-			//send message to player that item has been picked up
 			if (player->getCarriedItem() != _weakness && (_currentState == "SeekPlayer" || _currentState == "Normal" || _currentState == "SeekGuardedItem")){
 				Message m(player, "Die", this);
 				MessageHandler::sendMessage(m);

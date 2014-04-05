@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Object.h"
+#include <unordered_map>
 
 using namespace GameEngine;
 
@@ -13,14 +14,14 @@ private:
 	bool _isCarrying;
 	bool _stealthActive;
 	bool _isDown;
-	bool _hasKey;
 	Object* _carriedItem;
-	std::list<std::string> _collectedItems;
+	std::unordered_map<std::string, bool> _collectedItems;
 	btRigidBody* _rigidBody;
 	vector3df _up;
 	vector3df _forward;
 	std::string _currentRoom;
-	float _noiseMade;
+	float _noiseAllowance;
+
 
 public:
 	Player() : Entity(-1, 0, "Player"){
@@ -54,11 +55,24 @@ public:
 	void setCarriedItem(Object* val){ _carriedItem = val; }
 	void clearCarriedItem(){ _carriedItem = 0; }
 
-	void addItem(std::string val){ _collectedItems.push_front(val); }
-	std::list<std::string> getCollectedItems(){ return _collectedItems; }
+	void addItem(std::string val){ _collectedItems[val] = true; }
+	std::unordered_map<std::string, bool> getCollectedItems(){ return _collectedItems; }
 
-	void addToNoise(float val){ _noiseMade += val; }
-	float getNoiseMade(){ return _noiseMade; }
+	void decreaseNoiseAllowanceBy(float val){ _noiseAllowance -= val; }
+	float getNoiseAllowance(){ return _noiseAllowance; }
+
+	bool allItemsCollected(){
+		std::unordered_map<std::string, bool>::iterator bi = _collectedItems.begin();
+		for (; bi != _collectedItems.end(); bi++){
+			if (!bi->second){
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+
 
 	void initialise();
 	void loadContent();
