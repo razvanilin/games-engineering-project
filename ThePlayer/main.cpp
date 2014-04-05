@@ -316,7 +316,7 @@ int main (){
 			}
 			cursor->setVisible(gamePaused);
 		}
-
+		if (gamePaused) deltaTime = 0;
 		//update
 		if (!game.update(deltaTime)) break;
 		/*vector3df pos = player->getNode()->getPosition();
