@@ -39,6 +39,210 @@ const int SCREEN_WIDTH = 1366;
 const int SCREEN_HEIGHT = 768;
 
 Furniture* sign = 0;
+std::string difficulty;
+
+void createHouse();
+int startGame();
+int startMenu();
+int startEndGame();
+
+int main (){
+	startMenu();
+}
+
+int startMenu() {
+	menu.setCaption(L"ThePlayer Menu");
+	menu.setDimensions(dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT));
+
+	if (!menu.initialise()) return -1;
+	if (!menu.loadContent()) return -1;
+
+	u32 prevTime = menu.getDevice()->getTimer()->getRealTime();
+	u32 currTime;
+	float deltaTime;
+
+	while (menu.getDevice()->run()) {
+		currTime = menu.getDevice()->getTimer()->getRealTime();
+		deltaTime = float(currTime - prevTime) / 1000.0f;
+
+		if (inputHandlerMenu.isKeyDown(KEY_ESCAPE)) {
+			break;
+		}
+
+		if (!menu.update(deltaTime)) {
+			break;
+		}
+
+		if (!menu.render()) break;
+
+		if (inputHandlerMenu.getGameState().GameStarted || inputHandlerMenu.getGameState().GameClosed) {
+			break;
+		}
+
+		prevTime = currTime;
+
+	}
+	difficulty = inputHandlerMenu.getGameState().GameDifficulty;
+
+	menu.unloadContent();
+	menu.shutdown();
+
+	if (inputHandlerMenu.getGameState().GameStarted) {
+		startGame();
+	}
+	else
+		startEndGame();
+	
+	return 1;
+}
+
+int startGame() {
+	Player* player = new Player();
+	
+	createHouse();
+
+
+	//setup window
+	game.setCaption(L"The Player");
+	game.setDimensions(dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT));
+
+	//add a camera
+	FreeCamera* cam = new FreeCamera();
+	cam->setPosition(vector3df(0.0f, 30.0f, 30.0f));
+	cam->setTarget(vector3df(0.0f, 0.0f, 0.0f));
+	cam->setYaw(0.0f);
+	cam->setPitch(0.0f);
+	game.setCam(cam);
+
+	//initialise and load content
+	if (!game.initialise()) return -1;
+	if (!game.loadContent()) return -1;
+
+	if (difficulty == "easy")
+		player->setNoiseAllowance(150.0f);
+	else if (difficulty == "medium")
+		player->setNoiseAllowance(100.0f);
+	else if (difficulty == "hard")
+		player->setNoiseAllowance(50.0f);
+
+	HudManager* hudMan = new HudManager();
+	//Menu* menu = new Menu();
+	sign->getNode()->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg"));
+
+	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
+
+	//set up timers
+
+	int mod = 0;
+	irr::gui::ICursorControl* cursor = game.getDevice()->getCursorControl();
+	cursor->setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	cursor->setVisible(false);
+	vector2di prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
+	int mouseMovementX = 0;
+	int mouseMovementY = 0;
+	bool gamePaused = false;
+
+	float deltaTime;
+	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
+	u32 currTime;
+	while (game.getDevice()->run()){
+		//update timers
+		currTime = game.getDevice()->getTimer()->getRealTime();
+		deltaTime = float(currTime - prevTime) / 1000.0f;
+
+		//escape!
+		if (inputHandler.isKeyDown(KEY_ESCAPE)){
+			break;
+		}
+		if (!gamePaused) {
+			// zoom in or out so you can see the player
+			if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
+				mod++;
+			}
+			if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
+				mod--;
+			}
+
+			// set the camera position so it follows the player
+			btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
+			cam->setPosition(vector3df(playerPos.x(), playerPos.y() + 2.0f, playerPos.z() + mod));
+
+			// stealth movement -> lower the camera a bit and update the player status
+			if (inputHandler.isKeyDown(KEY_LCONTROL)) {
+				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
+				player->setStealth(true);
+			}
+			else if (player->isStealthActive()){
+				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
+				player->setStealth(false);
+			}
+
+			if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT / 2 + WALL_THIKNESS * 2) {
+				player->setDown(false);
+			}
+			else
+				player->setDown(true);
+
+			/* MOUSE MOVEMENT */
+			// Now check if the mouse has moved
+
+			// reset the cursor if goes offscreen an update the previous position
+			if (cursor->getPosition().X >= SCREEN_WIDTH || cursor->getPosition().X <= 0) {
+				cursor->setPosition(SCREEN_WIDTH / 2, cursor->getPosition().Y);
+				prevCursorPos.X = cursor->getPosition().X;
+			}
+			if (cursor->getPosition().Y >= SCREEN_HEIGHT || cursor->getPosition().Y <= 0) {
+				cursor->setPosition(cursor->getPosition().X, SCREEN_HEIGHT / 2);
+				prevCursorPos.Y = cursor->getPosition().Y;
+			}
+
+			mouseMovementX = cursor->getPosition().X - prevCursorPos.X;
+			mouseMovementY = cursor->getPosition().Y - prevCursorPos.Y;
+
+			// Rotate the camera and player by the change in the mouse position. 
+			player->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+			cam->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
+
+			// update previous mouse position
+			prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
+
+
+		}
+
+		//Pause the game
+		if (inputHandler.isKeyDown(KEY_KEY_P) && !inputHandler.wasKeyDown(KEY_KEY_P)) {
+			if (gamePaused) {
+				gamePaused = false;
+				prevCursorPos = cursor->getPosition();
+			}
+			else {
+				gamePaused = true;
+			}
+			cursor->setVisible(gamePaused);
+		}
+		if (gamePaused) deltaTime = 0;
+		//update
+		if (!game.update(deltaTime)) break;
+		/*vector3df pos = player->getNode()->getPosition();
+		std::wstringstream sstream;
+		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
+		text->setText(sstream.str().c_str());*/
+
+		//render
+		if (!game.render()) break;
+			
+		prevTime = currTime;
+	}
+
+	//game ended unload and shutdown
+	game.unloadContent();
+	// shutdown game
+	game.shutdown();
+}
+
+int startEndGame() {
+	return 1;
+}
 
 void createHouse() {
 	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/bedroom-carpet.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
@@ -117,7 +321,7 @@ void createHouse() {
 	livingroomShelves->setRotationAngle(-PI / 2);
 	livingroomShelves->setRotationAxis(new btVector3(0, 1, 0));
 
-	Furniture* test0 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100,100,100), vector3df(.02f, .02f, .02f), .0f);
+	Furniture* test0 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100, 100, 100), vector3df(.02f, .02f, .02f), .0f);
 	Furniture* test1 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100, 100, 100), vector3df(.02f, .02f, .02f), .0f);
 	Furniture* test2 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100, 100, 100), vector3df(.02f, .02f, .02f), .0f);
 	Furniture* test3 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100, 100, 100), vector3df(.02f, .02f, .02f), .0f);
@@ -125,7 +329,7 @@ void createHouse() {
 	Furniture* test5 = bedroom->addFurniture("plant", bedroom->getName(), "plant.obj", vector3df(100, 100, 100), vector3df(.02f, .02f, .02f), .0f);
 
 	/**** KITCHEN ****/
-	Furniture* trash = kitchen->addFurniture("kitchen", kitchen->getName(), "trash.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2 - WALL_THIKNESS * 2), vector3df(0.01f,0.01f,0.01f), 0.0f);
+	Furniture* trash = kitchen->addFurniture("kitchen", kitchen->getName(), "trash.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2 - WALL_THIKNESS * 2), vector3df(0.01f, 0.01f, 0.01f), 0.0f);
 	Furniture* fridge = kitchen->addFurniture("kitchen", kitchen->getName(), "fridge.obj", vector3df(0.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
 	Furniture* washingmachine = kitchen->addFurniture("kitchen", kitchen->getName(), "washingmachine.obj", vector3df(2.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
 	Furniture* cooker = kitchen->addFurniture("kitchen", kitchen->getName(), "cooker.obj", vector3df(0.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2 - WALL_THIKNESS * 3), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
@@ -150,9 +354,9 @@ void createHouse() {
 	/**** EXIT ****/
 	Furniture* rack = hallexit->addFurniture("rack", hallexit->getName(), "Clothes Rack.3DS", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -4.0f), vector3df(0.02f, 0.02f, 0.02f), 0.0f);
 	sign = hallexit->addFurniture("sign", hallexit->getName(), "schild OBJ.obj", vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, 4.0f), vector3df(0.003f, 0.005f, 0.003f), 0.0f);
-	sign->setRotationAngle(PI/2);
+	sign->setRotationAngle(PI / 2);
 	sign->setRotationAxis(new btVector3(0, 1, 0));
-	Furniture* exitPlant = hallexit->addFurniture("plant", hallexit->getName(), "plant.obj", vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE/2 + WALL_THIKNESS*2), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
+	Furniture* exitPlant = hallexit->addFurniture("plant", hallexit->getName(), "plant.obj", vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 2, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
 
 
 	// ADDING STUFF
@@ -162,7 +366,7 @@ void createHouse() {
 	livingroom->placeObject(fish, vector3df(-ROOM_SIZE / 3, -WALL_HEIGHT / 4.5f, -ROOM_SIZE / 2 + WALL_THIKNESS * 2));
 	Object* spray = new Object("spray", "spray.3ds", vector3df(-15.0f, 0.0f, 15.0f));
 	spray->setScale(vector3df(0.003f, 0.003f, 0.003f));
-	hallexit->placeObject(spray, vector3df(ROOM_SIZE / 3, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE/2 + WALL_THIKNESS*2));
+	hallexit->placeObject(spray, vector3df(ROOM_SIZE / 3, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2));
 	Object* carrot = new Object("carrot", "carrot.3ds", vector3df(15.0f, 0.0f, 10.0f));
 	carrot->setScale(vector3df(0.005f, 0.005f, 0.005f));
 	hall->placeObject(carrot, vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 3.5f, -WALL_HEIGHT / 2.2f, ROOM_SIZE / 2 - WALL_THIKNESS * 3));
@@ -178,169 +382,16 @@ void createHouse() {
 	Collectable* shoes = new Collectable("shoes", vector3df(-20.0f, 0.0f, 20.0f));
 	Collectable* shirt = new Collectable("shirt", vector3df(20.5f, 0.0f, 9.25f));
 	Collectable* wallet = new Collectable("wallet", vector3df(0.0f, 0.0f, 0.0f));
-	Collectable* pills = new Collectable("pill-bottle", vector3df(0, 0, 0));
+	//Collectable* pills = new Collectable("pill-bottle", vector3df(0, 0, 0));
 	bedroom->placeCollectable(wallet, vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 2, 0, -ROOM_SIZE / 3));
-	studyroom->placeCollectable(shoes, vector3df(-ROOM_SIZE/2 + WALL_THIKNESS*2, 0.0f, ROOM_SIZE/2 - WALL_THIKNESS*2));
-	bathroom->placeCollectable(pills, vector3df(1.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2.0f - WALL_THIKNESS * 2));
-	livingroom->placeCollectable(socks, vector3df(0 , 0, ROOM_SIZE/2 - WALL_THIKNESS*2));
-	kitchen->placeCollectable(shirt, vector3df(ROOM_SIZE/2 - WALL_THIKNESS*2, 0, -ROOM_SIZE/2 + WALL_THIKNESS*2));
+	studyroom->placeCollectable(shoes, vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, 0.0f, ROOM_SIZE / 2 - WALL_THIKNESS * 2));
+	//bathroom->placeCollectable(pills, vector3df(1.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2.0f - WALL_THIKNESS * 2));
+	livingroom->placeCollectable(socks, vector3df(0, 0, ROOM_SIZE / 2 - WALL_THIKNESS * 2));
+	kitchen->placeCollectable(shirt, vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 2, 0, -ROOM_SIZE / 2 + WALL_THIKNESS * 2));
 	hallexit->placeCollectable(jeans, vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, 0, ROOM_SIZE / 2 - WALL_THIKNESS * 2));
 
-	Enemy* fatcat = new Enemy("fatcat", kitchen, vector3df(ROOM_SIZE / 2.5f, -WALL_HEIGHT/3, -ROOM_SIZE / 2.5f), 5.0f, fish, shirt);
-	Enemy* cat = new Enemy("cat", livingroom, vector3df(0.0f, -WALL_HEIGHT/3, ROOM_SIZE/3), 5.0f, spray, socks);
-	Enemy* dog = new Enemy("dog", studyroom, vector3df(-ROOM_SIZE / 3, WALL_HEIGHT/3, ROOM_SIZE / 3), 5.0f, bone, shoes);
-	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-ROOM_SIZE/3.5f, -WALL_HEIGHT/3, ROOM_SIZE/3.5f), 20.0f, carrot, jeans);
-}
-
-int main (){
-	Player* player = new Player();
-
-	createHouse();
-
-
-	//setup window
-	game.setCaption(L"State Machines");
-	game.setDimensions(dimension2d<u32>(SCREEN_WIDTH, SCREEN_HEIGHT));
-
-	//add a camera
-	FreeCamera* cam = new FreeCamera();
-	cam->setPosition(vector3df(0.0f,30.0f,30.0f));
-	cam->setTarget(vector3df(0.0f,0.0f,0.0f));
-	cam->setYaw(0.0f);
-	cam->setPitch(0.0f);
-	game.setCam(cam);
-
-	//initialise and load content
-	if(!game.initialise()) return -1;
-	if(!game.loadContent()) return -1;
-
-	HudManager* hudMan = new HudManager();
-	//Menu* menu = new Menu();
-	sign->getNode()->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg"));
-
-	game.getAudioEngine()->play2D("sounds/common/background.wav", true);
-
-	irr::gui::IGUIStaticText* text;
-	irr::gui::IGUIEnvironment* guienv = game.getDevice()->getGUIEnvironment();
-	text = guienv->addStaticText(L"0 : 0", irr::core::rect<irr::s32>(250, 10, 1000, 200), false);
-	irr::gui::IGUIFont* font = guienv->getFont("bigfont.png");
-	text->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
-	text->setOverrideFont(font);
-
-
-	//set up timers
-	u32 prevTime = game.getDevice()->getTimer()->getRealTime();
-	u32 currTime;
-	float deltaTime;
-	int mod = 0;
-	irr::gui::ICursorControl* cursor = game.getDevice()->getCursorControl();
-	cursor->setPosition(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	cursor->setVisible(false);
-	vector2di prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
-	int mouseMovementX = 0;
-	int mouseMovementY = 0;
-	bool gamePaused = false;
-	
-	while (game.getDevice()->run()){
-		//update timers
-		currTime = game.getDevice()->getTimer()->getRealTime();
-		deltaTime = float(currTime - prevTime) / 1000.0f;
-
-		//escape!
-		if (inputHandler.isKeyDown(KEY_ESCAPE)){
-			break;
-		}
-		if (!gamePaused) {
-			// zoom in or out so you can see the player
-			if (inputHandler.isKeyDown(KEY_PLUS) && !inputHandler.wasKeyDown(KEY_PLUS)) {
-				mod++;
-			}
-			if (inputHandler.isKeyDown(KEY_MINUS) && !inputHandler.wasKeyDown(KEY_MINUS)) {
-				mod--;
-			}
-
-			// set the camera position so it follows the player
-			btVector3 playerPos = player->getRigidBody()->getCenterOfMassPosition();
-			cam->setPosition(vector3df(playerPos.x(), playerPos.y() + 2.0f, playerPos.z() + mod));
-
-			// stealth movement -> lower the camera a bit and update the player status
-			if (inputHandler.isKeyDown(KEY_LCONTROL)) {
-				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y - .1f, cam->getPosition().Z));
-				player->setStealth(true);
-			}
-			else if (player->isStealthActive()){
-				cam->setPosition(vector3df(cam->getPosition().X, cam->getPosition().Y + .1f, cam->getPosition().Z));
-				player->setStealth(false);
-			}
-
-			if (player->getRigidBody()->getCenterOfMassPosition().y() - player->getNode()->getScale().Y > -WALL_HEIGHT / 2 + WALL_THIKNESS * 2) {
-				player->setDown(false);
-			}
-			else
-				player->setDown(true);
-
-			/* MOUSE MOVEMENT */
-			// Now check if the mouse has moved
-
-			// reset the cursor if goes offscreen an update the previous position
-			if (cursor->getPosition().X >= SCREEN_WIDTH || cursor->getPosition().X <= 0) {
-				cursor->setPosition(SCREEN_WIDTH / 2, cursor->getPosition().Y);
-				prevCursorPos.X = cursor->getPosition().X;
-			}
-			if (cursor->getPosition().Y >= SCREEN_HEIGHT || cursor->getPosition().Y <= 0) {
-				cursor->setPosition(cursor->getPosition().X, SCREEN_HEIGHT / 2);
-				prevCursorPos.Y = cursor->getPosition().Y;
-			}
-
-			mouseMovementX = cursor->getPosition().X - prevCursorPos.X;
-			mouseMovementY = cursor->getPosition().Y - prevCursorPos.Y;
-
-			// Rotate the camera and player by the change in the mouse position. 
-			player->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
-			cam->rotate(mouseMovementX * deltaTime, mouseMovementY * deltaTime);
-
-			// update previous mouse position
-			prevCursorPos = vector2di(cursor->getPosition().X, cursor->getPosition().Y);
-
-			
-		}
-
-		//Pause the game
-		if (inputHandler.isKeyDown(KEY_KEY_P) && !inputHandler.wasKeyDown(KEY_KEY_P)) {
-			if (gamePaused) {
-				gamePaused = false;
-				prevCursorPos = cursor->getPosition();
-			}
-			else {
-				gamePaused = true;
-			}
-			cursor->setVisible(gamePaused);
-		}
-		if (gamePaused) deltaTime = 0;
-		//update
-		if (!game.update(deltaTime)) break;
-		/*vector3df pos = player->getNode()->getPosition();
-		std::wstringstream sstream;
-		sstream << "x:" << pos.X << " y: " << pos.Y << " z: " << pos.Z << "\nCI: " << player->getCollectedItems().size() << "; NM: " << player->getNoiseMade();
-		text->setText(sstream.str().c_str());*/
-
-		//render
-		if (!gamePaused) {
-			if (!game.render()) break;
-			ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg");
-			IGUIImage* img = guienv->addImage(texture, position2d<s32>(game.getDimensions().Width, game.getDimensions().Height), false);
-		}
-		else {
-			ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg");
-			IGUIImage* img = guienv->addImage(texture, position2d<s32>(game.getDimensions().Width, game.getDimensions().Height), false);
-			//img->setUseAlphaChannel(1);
-		}
-
-		prevTime = currTime;
-	}
-
-	//game ended unload and shutdown
-	game.unloadContent();
-	// shutdown game
-	game.shutdown();
+	Enemy* fatcat = new Enemy("fatcat", kitchen, vector3df(ROOM_SIZE / 2.5f, -WALL_HEIGHT / 3, -ROOM_SIZE / 2.5f), 5.0f, fish, shirt);
+	Enemy* cat = new Enemy("cat", livingroom, vector3df(0.0f, -WALL_HEIGHT / 3, ROOM_SIZE / 3), 5.0f, spray, socks);
+	Enemy* dog = new Enemy("dog", studyroom, vector3df(-ROOM_SIZE / 3, WALL_HEIGHT / 3, ROOM_SIZE / 3), 5.0f, bone, shoes);
+	Enemy* rabbit = new Enemy("rabbit", hallexit, vector3df(-ROOM_SIZE / 3.5f, -WALL_HEIGHT / 3, ROOM_SIZE / 3.5f), 20.0f, carrot, jeans);
 }

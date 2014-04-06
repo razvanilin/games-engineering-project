@@ -83,6 +83,7 @@ void Object::update(float deltaTime){
 	if (_pickedUp){
 		// replace the rigid body with one that has the mass 10
 		if (_firstPicked) {
+			PhysicsEngine::removeRigidBody(_rigidBody);
 			_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
 			PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 			physicsEntity->setRigidBody(_rigidBody);

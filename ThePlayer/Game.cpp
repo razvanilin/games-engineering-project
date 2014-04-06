@@ -3,7 +3,6 @@
 #include "InputHandler.h"
 #include "MessageHandler.h"
 #include "PhysicsEngine.h"
-#include "Menu.h"
 #include <ctime>
 
 #include <iostream>
@@ -19,7 +18,7 @@ namespace GameEngine{
 			irr::video::EDT_DIRECT3D9,
 			_dimensions,
 			32,
-			true,
+			false,
 			false,
 			true,
 			&inputHandler);
@@ -60,16 +59,13 @@ namespace GameEngine{
 
 	bool gamePaused = false;
 	bool Game::update(float frameTime){
-		
-		
-		
-		if (!gamePaused) {
-			if (!PhysicsEngine::update(frameTime)) return false;
-			if (!EntityManager::update(frameTime)) return false;
-			inputHandler.update();
-			_camera->update(frameTime);
-			MessageHandler::update();
-		}
+
+
+		if (!PhysicsEngine::update(frameTime)) return false;
+		if (!EntityManager::update(frameTime)) return false;
+		inputHandler.update();
+		_camera->update(frameTime);
+		MessageHandler::update();
 		return true;
 	}
 

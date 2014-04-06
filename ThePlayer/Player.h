@@ -14,6 +14,7 @@ private:
 	bool _isCarrying;
 	bool _stealthActive;
 	bool _isDown;
+	bool _hasKey;
 	Object* _carriedItem;
 	std::unordered_map<std::string, bool> _collectedItems;
 	btRigidBody* _rigidBody;
@@ -42,6 +43,9 @@ public:
 	bool isDown() { return _isDown; }
 	void setDown(bool value) { _isDown = value; }
 
+	bool hasKey() { return _hasKey; }
+	void hasKey(bool value) { _hasKey = value; }
+
 	vector3df getUp() { return _up; }
 	void setUp(vector3df value) { _up = value; }
 
@@ -59,6 +63,7 @@ public:
 	std::unordered_map<std::string, bool> getCollectedItems(){ return _collectedItems; }
 
 	void decreaseNoiseAllowanceBy(float val){ _noiseAllowance -= val; }
+	void setNoiseAllowance(float value) { _noiseAllowance = value; }
 	float getNoiseAllowance(){ return _noiseAllowance; }
 
 	bool allItemsCollected(){

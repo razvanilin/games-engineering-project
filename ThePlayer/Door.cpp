@@ -29,7 +29,7 @@ void Door::loadContent() {
 		_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/internaldoor.png"));
 	
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, _scale, 0.0f);
-	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Door");
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "DoorBody");
 	physicsEntity->setRigidBody(_rigidBody);
 }
 
