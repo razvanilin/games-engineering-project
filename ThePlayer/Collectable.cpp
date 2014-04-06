@@ -37,7 +37,7 @@ void Collectable::loadContent(){
 
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
 
-	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Collectable");
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "CollectableBody");
 	physicsEntity->setRigidBody(_rigidBody);
 }
 
@@ -45,6 +45,22 @@ void Collectable::loadContent(){
 void Collectable::update(float deltaTime){
 	
 
+	
+}
+
+void Collectable::reset() {
+	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(1);
+	_node->setPosition(_startPos);
+	_node->setVisible(true);
+	_alive = true;
+
+	PhysicsEngine::removeRigidBody(_rigidBody);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
+	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "CollectableBody");
+	physicsEntity->setRigidBody(_rigidBody);
+}
+
+void Collectable::unloadContent() {
 	
 }
 

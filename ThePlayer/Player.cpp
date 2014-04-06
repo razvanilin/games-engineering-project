@@ -17,7 +17,7 @@ using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-	_noiseAllowance = 100.0f;
+	
 }
 
 void Player::loadContent(){
@@ -225,6 +225,9 @@ void Player::update(float deltaTime){
 			}
 			else if (door->getDirection() == 3 && playerPos.Z < doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z + 2.0f));
+				game.setEndCause("win");
+				game.setNoiseMade(_startingNoise - _noiseAllowance);
+				inputHandler.setEnded(true);
 			}
 			else if (door->getDirection() == 4 && playerPos.Z > doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z - 2.0f));

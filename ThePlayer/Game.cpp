@@ -3,6 +3,7 @@
 #include "InputHandler.h"
 #include "MessageHandler.h"
 #include "PhysicsEngine.h"
+#include "MainMenu.h"
 #include <ctime>
 
 #include <iostream>
@@ -47,11 +48,15 @@ namespace GameEngine{
 		_audioEngine = irrklang::createIrrKlangDevice();
 
 		// initialises the menu
+		
+
+		// initialises the pause menu
+		
 		//seed the random function
 		srand(time(NULL));
 		return true;
 	}
-
+	int i = 0;
 	bool Game::loadContent(){
 		if (!EntityManager::loadContent()) return false;
 		return true;
@@ -60,12 +65,39 @@ namespace GameEngine{
 	bool gamePaused = false;
 	bool Game::update(float frameTime){
 
-
-		if (!PhysicsEngine::update(frameTime)) return false;
-		if (!EntityManager::update(frameTime)) return false;
+		if (inputHandler.getGameState().GameStarted && !inputHandler.getGameState().GamePaused && !inputHandler.getGameState().GameEnded) {
+			if (!PhysicsEngine::update(frameTime)) return false;
+			if (!EntityManager::update(frameTime)) return false;
+			_camera->update(frameTime);
+			MessageHandler::update();
+		}
+		else if (inputHandler.getGameState().GamePaused) {
+			if (i == 0) {
+				_pause = new PauseMenu();
+				_pause->initialise();
+			}
+			_pause->update(frameTime);
+			i++;
+		}
+		else if (inputHandler.getGameState().GameMenu){
+			if (i == 0) {
+				_menu = new MainMenu();
+				_menu->initialise();
+			}
+			_menu->update(frameTime);
+			i++;
+		}
+		else if (inputHandler.getGameState().GameEnded) {
+			if (i == 0) {
+				_end = new EndGame(_endCause, _noiseMade);
+				//_end->initialise();
+			}
+			_end->update(frameTime);
+			i++;
+		}
 		inputHandler.update();
-		_camera->update(frameTime);
-		MessageHandler::update();
+		i = 0;
+
 		return true;
 	}
 
@@ -81,6 +113,7 @@ namespace GameEngine{
 
 	void Game::unloadContent(){
 		EntityManager::unloadContent();
+		_pause->unloadContent();
 	}
 
 	void Game::shutdown(){

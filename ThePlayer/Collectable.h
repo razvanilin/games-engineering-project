@@ -25,7 +25,8 @@ public:
 	//Updates enemy
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
-	void unloadContent(){}
+	void unloadContent();
+	void reset();
 
 	btRigidBody* getRigidBody() { return _rigidBody; }
 	void setRigidBody(btRigidBody* value) { _rigidBody = value; }

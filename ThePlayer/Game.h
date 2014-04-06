@@ -4,6 +4,9 @@
 #include <irrlicht.h>
 #include "InputHandler.h"
 #include "Camera.h"
+#include "MainMenu.h"
+#include "PauseMenu.h"
+#include "EndGame.h"
 #include <irrKlang.h>
 
 namespace GameEngine
@@ -21,7 +24,15 @@ namespace GameEngine
 		Camera* _camera;
 		//audio engine
 		irrklang::ISoundEngine* _audioEngine;
+		// Menu
+		MainMenu* _menu;
+		// pause menu
+		PauseMenu* _pause;
+		// End game
+		EndGame* _end;
 
+		std::string _endCause;
+		float _noiseMade;
 
 	public:
 		//create a Game class
@@ -47,6 +58,9 @@ namespace GameEngine
 		//get and set camera
 		Camera* getCam(){ return _camera; }
 		void setCam(Camera* val){ _camera = val; }
+
+		void setEndCause(std::string value) { _endCause = value; }
+		void setNoiseMade(float value) { _noiseMade = value; }
 
 		//get and set audio engine
 		irrklang::ISoundEngine* getAudioEngine(){ return _audioEngine; }

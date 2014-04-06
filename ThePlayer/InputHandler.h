@@ -2,6 +2,7 @@
 
 #include <irrlicht.h>
 #include <memory>
+#include <string>
 
 using namespace irr;
 using namespace irr::core;
@@ -19,16 +20,21 @@ using namespace irr::gui;
 		bool GameStarted;
 		bool GameClosed;
 		bool GamePaused;
+		bool GameResumed;
+		bool GameMenu;
+		bool GameRestart;
 		bool GameEnded;
 		std::string GameDifficulty;
 	};
-	
+
 	enum {
 		START,
 		EXIT,
 		EASY,
 		MEDIUM,
-		HARD
+		HARD,
+		RESUME,
+		MENU
 	};
 
 	class InputHandler : public IEventReceiver{
@@ -41,6 +47,9 @@ using namespace irr::gui;
 	public:
 		InputHandler(){
 			_gameState.GameDifficulty = "easy";
+			_gameState.GameStarted = false;
+			_gameState.GameMenu = true;
+			_gameState.GameRestart = false;
 
 			for (int i = 0; i < KEY_KEY_CODES_COUNT; i++){
 				_keyDown[i] = false;
@@ -91,6 +100,11 @@ using namespace irr::gui;
 					{
 					case START:
 						_gameState.GameStarted = true;
+						_gameState.GamePaused = false;
+						_gameState.GameMenu = false;
+						_gameState.GameRestart = false;
+						_gameState.GameDifficulty = "";
+
 						break;
 					case EXIT:
 						_gameState.GameClosed = true;
@@ -103,6 +117,19 @@ using namespace irr::gui;
 						break;
 					case HARD:
 						_gameState.GameDifficulty = "hard";
+						break;
+					case RESUME:
+						_gameState.GameResumed = true;
+						_gameState.GamePaused = false;
+						_gameState.GameStarted = true;
+						_gameState.GameRestart = false;
+
+						break;
+					case MENU:
+						_gameState.GameMenu = true;
+						_gameState.GameStarted = false;
+						_gameState.GamePaused = false;
+						_gameState.GameRestart = true;
 						break;
 					default:
 						break;
@@ -131,6 +158,16 @@ using namespace irr::gui;
 
 		GameState getGameState() {
 			return _gameState;
+		}
+		
+		void setPause(bool value) { 
+			_gameState.GamePaused = value;
+		}
+		void setRestart(bool value) {
+			_gameState.GameRestart = value;
+		}
+		void setEnded(bool value) {
+			_gameState.GameEnded = value;
 		}
 
 		void setCurrentMouse(int valueX, int valueY) {

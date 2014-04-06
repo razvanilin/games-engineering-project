@@ -17,6 +17,7 @@
     <ClCompile Include="DistanceToPlayerDecision.cpp" />
     <ClCompile Include="DistanceToWeaknessDecision.cpp" />
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="EndGame.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
@@ -28,9 +29,10 @@
     <ClCompile Include="GuiHud.cpp" />
     <ClCompile Include="HudManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="PhysicsEntity.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -56,6 +58,7 @@
     <ClInclude Include="DistanceToPlayerDecision.h" />
     <ClInclude Include="DistanceToWeaknessDecision.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="EndGame.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
@@ -72,12 +75,13 @@
     <ClInclude Include="GuiHud.h" />
     <ClInclude Include="HudManager.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="MultiDecision.h" />
     <ClInclude Include="NormalDecision.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="PhysicsEntity.h" />
     <ClInclude Include="Player.h" />

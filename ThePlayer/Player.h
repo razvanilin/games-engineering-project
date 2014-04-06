@@ -22,6 +22,7 @@ private:
 	vector3df _forward;
 	std::string _currentRoom;
 	float _noiseAllowance;
+	float _startingNoise;
 
 
 public:
@@ -63,7 +64,7 @@ public:
 	std::unordered_map<std::string, bool> getCollectedItems(){ return _collectedItems; }
 
 	void decreaseNoiseAllowanceBy(float val){ _noiseAllowance -= val; }
-	void setNoiseAllowance(float value) { _noiseAllowance = value; }
+	void setNoiseAllowance(float value) { _startingNoise = value; _noiseAllowance = value; }
 	float getNoiseAllowance(){ return _noiseAllowance; }
 
 	bool allItemsCollected(){
