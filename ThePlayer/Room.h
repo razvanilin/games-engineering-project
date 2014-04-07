@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -19,6 +26,7 @@ private:
 	std::string _ceilingTexture;
 	int _doors[4];
 	int _exitDoor;
+	int _doorLength;
 public:
 	// when creating a room, specify the textures for walls, floor and ceiling
 	
@@ -59,5 +67,6 @@ public:
 	Furniture* addFurniture(std::string name, std::string roomName, std::string meshPath, vector3df position, vector3df scale, float mass);
 	void placeObject(Object* object, vector3df position);
 	void placeCollectable(Collectable* collectable, vector3df position);
+	Room(std::string t);
 
 };

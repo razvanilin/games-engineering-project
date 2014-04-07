@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "MessageHandler.h"
 #include "Entity.h"
 #include "Game.h"

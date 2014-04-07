@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -21,8 +28,8 @@ private:
 	vector3df _up;
 	vector3df _forward;
 	std::string _currentRoom;
-	float _noiseAllowance;
 	float _startingNoise;
+	float _noiseAllowance;
 
 
 public:
@@ -43,9 +50,6 @@ public:
 
 	bool isDown() { return _isDown; }
 	void setDown(bool value) { _isDown = value; }
-
-	bool hasKey() { return _hasKey; }
-	void hasKey(bool value) { _hasKey = value; }
 
 	vector3df getUp() { return _up; }
 	void setUp(vector3df value) { _up = value; }

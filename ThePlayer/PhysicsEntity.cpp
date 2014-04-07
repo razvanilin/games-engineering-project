@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "PhysicsEntity.h"
 #include <btBulletDynamicsCommon.h>
 #include "InputHandler.h"
@@ -31,14 +38,6 @@ void PhysicsEntity::update(float deltaTime){
 	// set the rotation of the node
 	_node->setRotation(eular);	
 
-	/*if(inputHandler.isKeyDown(KEY_KEY_Q)&&!inputHandler.wasKeyDown(KEY_KEY_Q)){
-		_rigidBody->activate();
-		_rigidBody->applyCentralImpulse(btVector3(rand()%20-10, rand()%10, rand()%20-10));
-	}
-	if(inputHandler.isKeyDown(KEY_KEY_E)&&!inputHandler.wasKeyDown(KEY_KEY_E)){
-		_rigidBody->activate();
-		_rigidBody->applyCentralImpulse(btVector3(-rand()%20+10, -rand()%10, -rand()%20+10));
-	}*/
 }
 void PhysicsEntity::handleMessage(const Message& message){
 	//check for collision message

@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -19,11 +26,8 @@ public:
 
 	btRigidBody* getRigidBody() { return _rigidBody; }
 	void setRigidBody(btRigidBody* value) { _rigidBody = value; }
-
 	int getDirection() { return _direction; }
-
 	bool isExit() { return _isExit; }
-
 	void initialise();
 	void loadContent();
 	void update(float deltaTime);

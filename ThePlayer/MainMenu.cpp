@@ -35,8 +35,9 @@ namespace GameEngine {
 		dimension2d<u32> dims = game.getDimensions();
 
 		// create the background image
-		ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/killer-rabbit.jpg");
-		IGUIImage* img = _env->addImage(texture, position2d<s32>(300, 150), true);
+		ITexture* texture = game.getDevice()->getVideoDriver()->getTexture("textures/logo.png");
+		IGUIImage* img = _env->addImage(texture, position2d<s32>(500,  300), true);
+		img->setUseAlphaChannel(true);
 
 		// create the start and exit buttons
 		IGUIButton* startBtn = _env->addButton(recti(vector2di(100, 200), vector2di(350, 300)), 0, START, L"Start Game");

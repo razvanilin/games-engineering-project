@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Collectable.h"
 #include "Game.h"
 #include "EntityManager.h"
@@ -17,7 +24,6 @@ Collectable::Collectable(std::string name, vector3df startPos) : Entity(-1, 0, "
 	_startPos = startPos;
 }
 
-
 void Collectable::initialise(){
 
 }
@@ -31,11 +37,11 @@ void Collectable::loadContent(){
 
 	//set material properties
 	_node->setMaterialFlag(EMF_LIGHTING, false);
-	std::string pathToTexture = "textures/" + _itemName + ".jpg";
+	std::string pathToTexture = "textures/" + _itemName + ".png";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(pathToTexture.c_str()));
 	_alive = true;
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 100.0f);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "CollectableBody");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -43,25 +49,7 @@ void Collectable::loadContent(){
 
 //updates the Object
 void Collectable::update(float deltaTime){
-	
-
-	
-}
-
-void Collectable::reset() {
-	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(1);
-	_node->setPosition(_startPos);
-	_node->setVisible(true);
-	_alive = true;
-
-	PhysicsEngine::removeRigidBody(_rigidBody);
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), 100.0f);
-	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "CollectableBody");
-	physicsEntity->setRigidBody(_rigidBody);
-}
-
-void Collectable::unloadContent() {
-	
+		
 }
 
 void Collectable::handleMessage(const Message& message){
@@ -74,9 +62,6 @@ void Collectable::handleMessage(const Message& message){
 			//send message to player that item has been picked up
 			Message m(player, "pickup", this);
 			MessageHandler::sendMessage(m);
-
 		}
-
 	}
-
 }

@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Object.h"
 #include "Game.h"
 #include "EntityManager.h"
@@ -5,6 +12,7 @@
 #include "FreeCamera.h"
 #include "PhysicsEntity.h"
 #include "Room.h"
+#include "HudManager.h"
 #include <iostream>
 #include <sstream>
 
@@ -13,12 +21,14 @@ using namespace irr::scene;
 using namespace irr::video;
 
 //Creates an pickupable object. Initialises Entity and SM
-Object::Object(std::string name, std::string meshName, vector3df startPos) : Entity(-1, 0, "Object"){
+Object::Object(std::string name, std::string meshName, vector3df startPos, std::string startRoom) : Entity(-1, 0, "Object"){
 	_pickedUp = false;
 	_itemName = name;
 	_meshName = meshName;
 	_startPos = startPos;
 	_mass = 0;
+	_currentRoom = startRoom;
+	_firstPicked = true;
 }
 
 
@@ -48,7 +58,7 @@ void Object::loadContent(){
 	//_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture("textures/BRNLEAT2.jpg"));
 	//create rigid body (sphere with rad of 1)
 
-	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f), _mass);
+	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(0.5f, 0.5f, 0.5f),_mass);
 
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 	physicsEntity->setRigidBody(_rigidBody);
@@ -79,11 +89,11 @@ void Object::update(float deltaTime){
 		iterator++;
 	}
 
-	//if object is picked up - it's position is fixed to the player <- you made a typo, Dave!
+	//if object is picked up - it's position is fixed to the player
 	if (_pickedUp){
 		// replace the rigid body with one that has the mass 10
 		if (_firstPicked) {
-			PhysicsEngine::removeRigidBody(_rigidBody);
+			//PhysicsEngine::removeRigidBody(_rigidBody);
 			_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(1.0f, 1.0f, 1.0f), 10);
 			PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Object");
 			physicsEntity->setRigidBody(_rigidBody);
@@ -104,6 +114,17 @@ void Object::update(float deltaTime){
 		transform.setOrigin(newPos);
 		body->setCenterOfMassTransform(transform);
 		//}
+	}
+	//does the player need a hint?
+	HudManager* hud = (HudManager*)EntityManager::getNamedEntities("Hudman")->front();
+	if (!hud->hasHintBeenShownFor("Object")){
+		vector3df playerPos = ((Entity*)player)->getNode()->getPosition();
+		vector3df objectPos = _node->getPosition();
+		vector3df d = playerPos - objectPos;
+		auto dist = d.getLength();
+		if (d.getLength()<5){
+			hud->drawHintFor("Object");
+		}
 	}
 }
 

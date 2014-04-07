@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "HudManager.h"
 #include "Game.h"
 #include "MessageHandler.h"
@@ -25,9 +32,10 @@ HudManager::HudManager() : Entity(-1, 0, "Hudman"){
 	_hints["Door"] = "Press 'F' to move through doors";
 	_hints["Noise"] = "Wow!\nThat made a lot of noise...";
 	_hints["Runaway"] = "Great!\nYou got all your stuff.\nNow get out...\nBefore she wakes up!";
+	_hints["Pause"] = "Press'p' to pause.";
 
 
-	//init hints shown check map
+	//init hintsShown check map
 	std::unordered_map<std::string, std::string>::iterator si = _hints.begin();
 	for (; si != _hints.end();si++){
 		_hintsShown[si->first] = false;
@@ -48,6 +56,7 @@ HudManager::HudManager() : Entity(-1, 0, "Hudman"){
 		iter++;
 	}
 	_font = _env->getFont("bigfont.png");
+	_hintText = "";
 }
 
 
@@ -61,23 +70,23 @@ void HudManager::loadContent(){
 }
 
 void HudManager::update(float deltaTime){
-	if (_hintTimer > 5) _hintTimer = 0;
+	
 	//clear everything
 	_env->clear();
-
-	Player* player = (Player*)EntityManager::getNamedEntities("Player")->front();
 	
-	//ofset for images
-	int offset = 60;
-	int count = 0;
 
-	//dimension
+	//get player
+	Player* player = (Player*)EntityManager::getNamedEntities("Player")->front();
+
+	
+
+	//get dimensions
 	dimension2d<u32> dims = game.getDimensions();
 
 
-
 	//Draw collectables. use of alpha channel depends on if the object has been picked up or not
-	
+	int offset = 60;
+	int count = 0;
 	std::unordered_map<std::string, bool> collectableList = player->getCollectedItems();
 	std::unordered_map<std::string, bool>::iterator i = collectableList.begin();
 	for (; i != collectableList.end(); i++){
@@ -85,18 +94,25 @@ void HudManager::update(float deltaTime){
 		img->setUseAlphaChannel(!i->second); 
 		count++;
 	}
+	//draw label
 	IGUIStaticText* CollLabel = _env->addStaticText(L"Possessions:", irr::core::rect<irr::s32>(dims.Width - 100 - (offset*count) + 50, 20, dims.Width - 100 - (offset*count) + 300, 80), false);
 	CollLabel->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
 	CollLabel->setOverrideFont(_font);
 
-	//control hints
+	//display hint checks
+	if (_hintTimer > 5) _hintTimer = 0;
 	if (_hintTimer == 0 && !hasHintBeenShownFor("Movement")){
 		drawHintFor("Movement");
 	}
 	if (_hintTimer == 0 && !hasHintBeenShownFor("Camera")){
 		drawHintFor("Camera");
 	}
-
+	if (_hintTimer == 0 && !hasHintBeenShownFor("Pause")){
+		drawHintFor("Pause");
+	}
+	if (player->allItemsCollected() && !hasHintBeenShownFor("Runaway")){
+		drawHintFor("Runaway");
+	}
 	if (_hintTimer >= 1 && _hintTimer < 5){
 		std::wstringstream sstream;
 		sstream << _hintText.c_str();
@@ -107,24 +123,51 @@ void HudManager::update(float deltaTime){
 	if (_hintTimer >= 1){
 		_hintTimer += deltaTime;
 	}
-
-
 	
-	if (player->allItemsCollected()){
-		drawHintFor("Runaway");
-	}
 
+	//draw noise meter based on players noise allowance - uses a IGUIButton
+	ITexture* buttColor;
+	if (player->getNoiseAllowance() > 50){
+		buttColor = game.getDevice()->getVideoDriver()->getTexture(L"textures/noise_100.png");
+	}
+	else if (player->getNoiseAllowance() > 20){
+		buttColor = game.getDevice()->getVideoDriver()->getTexture(L"textures/noise_50.png");
+	}
+	else{
+		buttColor = game.getDevice()->getVideoDriver()->getTexture(L"textures/noise_20.png");
+	}
+	IGUIButton* butt = _env->addButton(rect<s32>(20, 50, 20 + (4 * player->getNoiseAllowance()), 100));
+	butt->setImage(buttColor);
+	butt->setScaleImage(true);
 	//draw noise meter - currently text counting from 100	
 	std::wstringstream sstream;
+	sstream.precision(1);
+	sstream << "Noise Allowance: \n";
+	IGUIStaticText* noiseMeter = _env->addStaticText(sstream.str().c_str(), irr::core::rect<irr::s32>(20, 20, 620, 50), false);
+	noiseMeter->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
+	noiseMeter->setOverrideFont(_font);
+
+	//DEBUGTEXT
+	/*std::wstringstream sstream;
 	sstream.precision(1);
 	sstream << "Noise Allowance: \n" << fixed << player->getNoiseAllowance();
 	IGUIStaticText* noiseMeter = _env->addStaticText(sstream.str().c_str(), irr::core::rect<irr::s32>(20, 20, 620, 120), false);
 	noiseMeter->setOverrideColor(irr::video::SColor(255, 255, 255, 255));
-	noiseMeter->setOverrideFont(_font);
+	noiseMeter->setOverrideFont(_font);*/
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void HudManager::render(){
-
 
 }
 
@@ -145,19 +188,3 @@ void HudManager::drawHintFor(std::string hintFor){
 		_hintsShown[found->first] = true;
 	}
 }
-
-void HudManager::handleMessage(const Message& message){
-
-}
-
-//does the player need a hint?
-//HudManager* hud = (HudManager*)EntityManager::getNamedEntities("Hudman")->front();
-//if (!hud->hasHintBeenShownFor("Object")){
-//	vector3df playerPos = ((Entity*)player)->getNode()->getPosition();
-//	vector3df objectPos = _node->getPosition();
-//	vector3df d = playerPos - objectPos;
-//	auto dist = d.getLength();
-//	if (d.getLength()<5){
-//		hud->drawHintFor("Object");
-//	}
-//}

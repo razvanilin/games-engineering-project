@@ -1,5 +1,13 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Player.h"
 #include "EntityManager.h"
+#include "Enemy.h"
 #include "HudManager.h"
 #include "Game.h"
 #include "EntityManager.h"
@@ -17,13 +25,20 @@ using namespace irr::video;
 using namespace GameEngine;
 
 void Player::initialise(){
-	
+
+	//Easy = 200.0f
+	//normal = 100.0f
+	//hard = 30.0.0f
+	//meatboy = 20.0f (don't know if it's even possible)
+
+	//_hasKey = false;
+	_yaw = 0.0f;
+	_pitch = 0.0f;
 }
 
 void Player::loadContent(){
 	_node = game.getDevice()->getSceneManager()->addCubeSceneNode(2.0f);
 	_node->setPosition(vector3df(0.0f, 0.0f, 0.0f));
-	//_node->setPosition(vector3df(-13.0f, 0.0f, 33.0f));
 	_node->setMaterialFlag(EMF_LIGHTING, false);
 	std::string path = "textures/checked.jpg";
 	_node->setMaterialTexture(0, game.getDevice()->getVideoDriver()->getTexture(path.c_str()));
@@ -47,9 +62,10 @@ void Player::update(float deltaTime){
 	getRigidBody()->activate();
 
 	// modifying the speed based on the movement mode
-	if (inputHandler.isKeyDown(KEY_LCONTROL))
+	if (inputHandler.isKeyDown(KEY_LCONTROL)){
 		// stealth movement
 		_mod = 2.0f;
+	}
 	else
 		// normal movement
 		_mod = 5.0f;
@@ -79,11 +95,11 @@ void Player::update(float deltaTime){
 	mat = mat0 * mat1;
 
 	// transform direction vectors based on the orientation of the player
-	vector3df backward(.0f, .0f, -1.0f);
-	vector3df toLeft(-1.0f, .0f, .0f);
-	vector3df toRight(1.0f, .0f, .0f);
-	vector3df forward(.0f, .0f, 1.0f);
-	vector3df up(.0f, 1.0f, .0f);
+	vector3df backward(0.0f, 0.0f, -1.0f);
+	vector3df toLeft(-1.0f, 0.0f, .0f);
+	vector3df toRight(1.0f, 0.0f, 0.0f);
+	vector3df forward(0.0f, 0.0f, 1.0f);
+	vector3df up(0.0f, 1.0f, 0.0f);
 
 	mat.transformVect(forward);
 	mat.transformVect(backward);
@@ -149,10 +165,10 @@ void Player::update(float deltaTime){
 		if (_isCarrying){//dropping
 			if (this->getCarriedItem() != NULL){
 				this->_isCarrying = false;
-				_hasKey = false;
 				Message m(this->getCarriedItem(), "dropped", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
+				_hasKey = false;
 				_noiseAllowance -= 1.0f;
 			}
 		}
@@ -165,10 +181,11 @@ void Player::update(float deltaTime){
 				btVector3 hm = obj->getRigidBody()->getCenterOfMassPosition();
 				vector3df objPos = vector3df(hm.getX(), hm.getY(), hm.getZ());
 				vector3df toPlayer = playerPos - objPos;
-				if (toPlayer.getLength() < 5){
+				if (toPlayer.getLength() < 5 && (getCurrentRoom() == obj->getCurrentRoom())){
 					if (obj->getItemName() == "key") {
 						_hasKey = true;
-					}
+						std::cout << _hasKey << std::endl;
+					}					
 					obj->setPickedUp(true);
 					this->setCarriedItem(obj);
 					this->_isCarrying = true;
@@ -189,7 +206,6 @@ void Player::update(float deltaTime){
 		if (_isCarrying){//dropping
 			if (this->getCarriedItem() != NULL){
 				this->_isCarrying = false;
-				_hasKey = false;
 				Message m(this->getCarriedItem(), "thrown", 0);
 				MessageHandler::sendMessage(m);
 				this->clearCarriedItem();
@@ -199,6 +215,7 @@ void Player::update(float deltaTime){
 				if (!hud->hasHintBeenShownFor("Noise")){
 					hud->drawHintFor("Noise");
 				}
+				_hasKey = false;
 			}
 		}
 	}
@@ -225,16 +242,20 @@ void Player::update(float deltaTime){
 			}
 			else if (door->getDirection() == 3 && playerPos.Z < doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z + 2.0f));
-				game.setEndCause("win");
-				game.setNoiseMade(_startingNoise - _noiseAllowance);
-				inputHandler.setEnded(true);
 			}
 			else if (door->getDirection() == 4 && playerPos.Z > doorPos.Z && !door->isExit()) {
 				transform.setOrigin(btVector3(doorPos.X, playerPos.Y, doorPos.Z - 2.0f));
 			}
-			else if (door->isExit() && _hasKey) {
-				transform.setOrigin(btVector3(doorPos.X - 2.0f, playerPos.Y, doorPos.Z));
+			else if (door->getDirection() == 2 && playerPos.X > doorPos.X && door->isExit() && _hasKey) {
+				//exitdoor with key
+				game.setEndCause((allItemsCollected() ? "win" : "fail"));
+				game.setNoiseMade(_startingNoise - _noiseAllowance);
+				inputHandler.setEnded(true);
 			}
+			else if (door->getDirection() == 2 && playerPos.X > doorPos.X && door->isExit() && !_hasKey){
+				game.getAudioEngine()->play2D("sounds/common/locked_door.wav");
+			}
+
 			getRigidBody()->setCenterOfMassTransform(transform);
 		}
 		doorIter++;
@@ -253,11 +274,18 @@ void Player::update(float deltaTime){
 			setCurrentRoom(room->getName());
 		iterator++;
 	}
+
+	if (_noiseAllowance<0.0f){
+		game.setEndCause("lose");
+		inputHandler.setEnded(true);
+	}
 }
 
 void Player::rotate(float deltaYaw, float deltaPitch){
 	_yaw -= deltaYaw;
 	_pitch += deltaPitch;
+
+	//std::cout << "yaw: " << _yaw << " pitch: " << _pitch << std::endl;
 	if (_pitch <= -1)
 		_pitch = -1;
 	if (_pitch >= 1)
@@ -287,6 +315,8 @@ void Player::handleMessage(const Message& message){
 
 	}
 	if (message.message == "Die"){
-		this->setAlive(false);
+		game.setEndCause(((Enemy*)message.data)->getEnemyName());
+		game.setNoiseMade(0.0f); 
+		inputHandler.setEnded(true);
 	}
 }

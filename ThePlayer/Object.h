@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -11,7 +18,7 @@ private:
 	btRigidBody* _rigidBody;
 	//boolean indicating if object has been collected
 	bool _pickedUp;
-	bool _firstPicked = true;
+	bool _firstPicked;
 	std::string _name;
 	vector3df _forward;
 	vector3df _up;
@@ -25,7 +32,7 @@ private:
 
 public:
 	//constructor
-	Object(std::string name, std::string meshName, vector3df startPos);
+	Object::Object(std::string name, std::string meshName, vector3df startPos, std::string startRoom);
 	//destructor
 	~Object(){}
 	//RB getter

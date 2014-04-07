@@ -1,32 +1,39 @@
-#include "Enemy.h"
-#include "Player.h"
-#include "MessageHandler.h"
-#include "StateNormal.h"
-#include "Game.h"
-#include "EntityManager.h"
-#include "DecisionTreeNode.h"
-#include "Decision.h"
-#include "NormalDecision.h"
-#include "DistanceToPlayerDecision.h"
-#include "PlayerInRoomDecision.h"
-#include "ContentDecision.h"
-#include "RandomDecision.h"
-#include "SeekState.h"
-#include "Seek.h"
-#include "SeekPlayerDecision.h"
-#include "SeekGuardedItemDecision.h"
-#include "FleeState.h"
-#include "FleePlayerDecision.h"
-#include "FleeWeaknessDecision.h"
-#include "SeekWeaknessDecision.h"
-#include "Object.h"
-#include <iostream>
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Collectable.h"
-#include <sstream>
-#include "PhysicsEntity.h"
+#include "ContentDecision.h"
+#include "Decision.h"
+#include "DecisionTreeNode.h"
 #include "DistanceToGuardedItemDecision.h"
+#include "DistanceToPlayerDecision.h"
 #include "DistanceToWeaknessDecision.h"
+#include "Enemy.h"
+#include "EntityManager.h"
+#include "FleePlayerDecision.h"
+#include "FleeState.h"
+#include "FleeWeaknessDecision.h"
+#include "Game.h"
+#include "MessageHandler.h"
+#include "NormalDecision.h"
+#include "Object.h"
+#include "PhysicsEntity.h"
+#include "Player.h"
+#include "PlayerInRoomDecision.h"
+#include "Seek.h"
+#include "SeekGuardedItemDecision.h"
+#include "SeekPlayerDecision.h"
+#include "SeekState.h"
+#include "SeekWeaknessDecision.h"
+#include "StateNormal.h"
 #include "WeaknessInRoomDecision.h"
+#include <iostream>
+#include <sstream>
+
 
 using namespace irr::core;
 using namespace irr::scene;
@@ -43,7 +50,6 @@ Enemy::Enemy(std::string name, Room* room, vector3df startPos, float pVel, Objec
 }
 
 //Initialise the enemy and add states to SM
-
 void Enemy::initialise(){
 	// find player pointer
 	Entity* player = EntityManager::getNamedEntities("Player")->front();
@@ -55,8 +61,6 @@ void Enemy::initialise(){
 	_stateMachine.addState("FleeWeakness", new FleeState(this, this->getWeakness(), _velMod));
 	_stateMachine.addState("SeekWeakness", new SeekState(this, this->getWeakness(), _velMod));
 	_stateMachine.addState("SeekGuardedItem", new SeekState(this, this->getGuardedItem(), _velMod));
-
-
 
 	//set initial state to normal
 	_stateMachine.setState("Normal");
@@ -91,21 +95,16 @@ void Enemy::loadContent(){
 	if (_enemyName == "fatcat"){
 		_node->setScale(vector3df(2, 1, 1));
 	}
-	else if (_enemyName == "cat"){
-		_node->setScale(vector3df(1.0f, 1.0f, 1.0f));
-	}
-	else if (_enemyName == "rabbit") {
-		_node->setScale(vector3df(1, 1, 1));
-	}
 	else if (_enemyName == "dog") {
 		_node->setScale(vector3df(1.5f, 1.5f, 1.5f));
 	}
-
+	else {
+		_node->setScale(vector3df(1, 1, 1));
+	}
+	
 	_rigidBody = PhysicsEngine::createBoxRigidBody(this, vector3df(2.0f, 0.5f, 2.0f), 100);
 	PhysicsEntity* physicsEntity = new PhysicsEntity(_node, "Enemy");
 	physicsEntity->setRigidBody(_rigidBody);
-
-
 }
 
 //updates the enemy
@@ -115,11 +114,7 @@ void Enemy::update(float deltaTime){
 	_elapsedTimeSound += deltaTime;
 	Player* player = (Player*)EntityManager::getNamedEntities("Player")->front();
 
-
-
-
-	// Run AI every 1/10th sec if in room, otherwise once per sec
-
+	//AI runs every 1/10th second while player in room, otherwise once per sec.
 	float freq = (player->getCurrentRoom() == getRoom()->getName()) ? 0.1 : 1.0;
 	if (_elapsedTimeAI > freq)
 	{
@@ -137,13 +132,13 @@ void Enemy::update(float deltaTime){
 	}
 
 	/*SOUND STUFF*/
-	//fatcat is never agrod this is the player in teh same room?
+	//fatcat is never agrod is the player in teh same room?
 	bool fc = false;
 	if (_enemyName == "fatcat"){
 		fc = (_currentState == "Normal" && player->getCurrentRoom() == this->getRoom()->getName());
 	}
 
-	//play agrod audio
+	//play agrod audio if required
 	if (_elapsedTimeSound > 1.294 && (_currentState == "SeekPlayer" || fc)){
 		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_agro.wav";
 		game.getAudioEngine()->play2D(path.c_str());
@@ -151,7 +146,7 @@ void Enemy::update(float deltaTime){
 
 	}
 
-	//if cat, play scared audio
+	//if cat, play scared audio if required
 	if (_elapsedTimeSound > 1.294 && _enemyName == "cat" && _currentState == "FleeWeakness"){
 
 		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_scared.wav";
@@ -159,14 +154,12 @@ void Enemy::update(float deltaTime){
 		_elapsedTimeSound = 0.0f;
 	}
 
-	//play dog eager audio
+	//play dog eager audio if required
 	if (_elapsedTimeSound > 1.294 && _enemyName == "dog" && _currentState == "SeekWeakness"){
 		std::string path = "sounds/" + _enemyName + "/" + _enemyName + "_eager.wav";
 		game.getAudioEngine()->play2D(path.c_str());
 		_elapsedTimeSound = 0.0f;
 	}
-
-
 }
 
 

@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -7,7 +14,6 @@ using namespace GameEngine;
 
 class Collectable : public Entity{
 private:
-
 	std::string _itemName;
 	vector3df _startPos;
 	btRigidBody* _rigidBody;
@@ -25,8 +31,7 @@ public:
 	//Updates enemy
 	void update(float deltaTime);
 	//Unloads anything not handled by Irrlicht or Bullet
-	void unloadContent();
-	void reset();
+	void unloadContent(){}
 
 	btRigidBody* getRigidBody() { return _rigidBody; }
 	void setRigidBody(btRigidBody* value) { _rigidBody = value; }

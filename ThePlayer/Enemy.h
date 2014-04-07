@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "Entity.h"
@@ -28,15 +35,11 @@ private:
 	std::string _enemyName;
 	//current state name
 	std::string _currentState;
-
-	//
 	float _velMod;
 	vector3df _startPos;
 	Collectable* _guardedItem;
 	Object* _weakness;
 	Room* _room;
-
-
 
 public:
 	//constructor

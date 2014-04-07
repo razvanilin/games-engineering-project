@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Game.h"
 #include "EntityManager.h"
 #include "InputHandler.h"
@@ -48,10 +55,10 @@ namespace GameEngine{
 		_audioEngine = irrklang::createIrrKlangDevice();
 
 		// initialises the menu
-		
+
 
 		// initialises the pause menu
-		
+
 		//seed the random function
 		srand(time(NULL));
 		return true;

@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 //add Irrlicht
 #pragma comment (lib, "Irrlicht")
 //add IrrKlang
@@ -6,7 +13,6 @@
 #include <Irrlicht.h>
 #include <iostream>
 #include "Game.h"
-#include "TargetCamera.h"
 #include "PhysicsEntity.h"
 #include "PhysicsEngine.h"
 #include "Player.h"
@@ -19,6 +25,7 @@
 #include "EntityManager.h"
 #include <sstream>
 #include <IGUIFont.h>
+#include <string>
 
 
 using namespace irr;
@@ -48,19 +55,14 @@ int startGame();
 
 
 
-int main (){
-	/*int restart = startGame();
-	while (restart == 0){
-		restart = startGame();
-		std::cout << "Game Restarted" << std::endl;
-	}*/
-		startGame();
+int main(){
+	startGame();
 }
 
 
 int startGame() {
 	Player* player = new Player();
-	
+
 	createHouse();
 
 	//setup window
@@ -121,11 +123,11 @@ int startGame() {
 		}
 
 		if (inputHandler.getGameState().GameDifficulty == "easy")
-			player->setNoiseAllowance(150.0f);
+			player->setNoiseAllowance(200.0f);
 		else if (inputHandler.getGameState().GameDifficulty == "medium")
 			player->setNoiseAllowance(100.0f);
 		else if (inputHandler.getGameState().GameDifficulty == "hard")
-			player->setNoiseAllowance(50.0f);
+			player->setNoiseAllowance(30.0f);
 
 		if (inputHandler.getGameState().GamePaused || inputHandler.getGameState().GameMenu) {
 			prevCursorPos = cursor->getPosition();
@@ -140,9 +142,6 @@ int startGame() {
 			inputHandler.setRestart(false);
 		}
 
-		if (inputHandler.isKeyDown(KEY_KEY_R) && !inputHandler.wasKeyDown(KEY_KEY_R)) {
-			wallet->reset();
-		}
 
 		//escape!
 		if (inputHandler.isKeyDown(KEY_ESCAPE)){
@@ -218,16 +217,25 @@ int startGame() {
 	game.unloadContent();
 	// shutdown game
 	game.shutdown();
+	return 1;
 }
 
 void createHouse() {
-	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/bedroom-carpet.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{3}, 0);
-	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 3, 4}, 0);
-	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/bathroom-floor.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
-	Room* studyroom = new Room("Studyroom", "textures/wall_rose_paint.jpg", "textures/study-carpet.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1}, 0);
-	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2, 4}, 0);
-	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/18_FLOOR TEXTURE _2.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{2}, 0);
-	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), new int[]{1, 2}, 2);
+	int bedDoors[] = {0, 0, 3, 0};
+	int hallDoors[] = {1, 2, 3, 4};
+	int bathDoors[] = {0, 2, 0, 0};
+	int studyDoors[] = {1, 0, 0, 0};
+	int livingDoors[] = {1, 2, 0, 4};
+	int kitchenDoors[] = {0, 2, 0, 0};
+	int hallExitDoors[] = {1, 2, 0, 0};
+	
+	Room* bedroom = new Room("Bedroom", "textures/wall_rose_paint.jpg", "textures/bedroom-carpet.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 0.0f), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), bedDoors, 0);
+	Room* hall = new Room("Hall", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), hallDoors, 0);
+	Room* bathroom = new Room("Bathroom", "textures/wall_rose_paint.jpg", "textures/bathroom-floor.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), bathDoors, 0);
+	Room* studyroom = new Room("Studyroom", "textures/wall_rose_paint.jpg", "textures/study-carpet.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), studyDoors, 0);
+	Room* livingroom = new Room("Livingroom", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(0.0f, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), livingDoors, 0);
+	Room* kitchen = new Room("Kitchen", "textures/wall_rose_paint.jpg", "textures/18_FLOOR TEXTURE _2.jpg", "textures/ceiling.jpg", vector3df(ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), kitchenDoors, 0);
+	Room* hallexit = new Room("Hallexit", "textures/wall_rose_paint.jpg", "textures/wood.jpg", "textures/ceiling.jpg", vector3df(-ROOM_SIZE, 0.0f, 2 * ROOM_SIZE), vector3df(WALL_THIKNESS, WALL_HEIGHT, ROOM_SIZE), hallExitDoors, 2);
 
 	/**** BEDROOM ****/
 	Furniture* girl = bedroom->addFurniture("girl", bedroom->getName(), "girl_3.obj", vector3df(0, -WALL_HEIGHT / 3.5f, -ROOM_SIZE / 3.5f), vector3df(1.45f, 1.45f, 1.45f), 0.0f);
@@ -283,7 +291,8 @@ void createHouse() {
 	bath->setRotationAngle(PI / 2);
 	bath->setRotationAxis(new btVector3(0, 1, 0));
 	Furniture* washbasin = bathroom->addFurniture("bath", bathroom->getName(), "washbasin.obj", vector3df(0.0f, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, ROOM_SIZE / 2.0f - WALL_THIKNESS * 2), vector3df(0.03f, 0.03f, 0.03f), 0.0f);
-
+	washbasin->setRotationAngle(PI);
+	washbasin->setRotationAxis(new btVector3(0, 1, 0));
 	/**** LIVINGROOM ****/
 
 	Furniture* aquarium = livingroom->addFurniture("aquarium", livingroom->getName(), "aquarium.obj", vector3df(-ROOM_SIZE / 3, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2), vector3df(.02f, .02f, .02f), .0f);
@@ -337,19 +346,19 @@ void createHouse() {
 
 	// ADDING STUFF
 
-	Object* fish = new Object("fish", "fish.obj", vector3df(0.0f, 0.0f, 0.0f));
+	Object* fish = new Object("fish", "fish.obj", vector3df(0.0f, 0.0f, 0.0f), livingroom->getName());
 	fish->setScale(vector3df(0.01f, 0.01f, 0.02f));
 	livingroom->placeObject(fish, vector3df(-ROOM_SIZE / 3, -WALL_HEIGHT / 4.5f, -ROOM_SIZE / 2 + WALL_THIKNESS * 2));
-	Object* spray = new Object("spray", "spray.3ds", vector3df(-15.0f, 0.0f, 15.0f));
+	Object* spray = new Object("spray", "spray.3ds", vector3df(-15.0f, 0.0f, 15.0f), hallexit->getName());
 	spray->setScale(vector3df(0.003f, 0.003f, 0.003f));
 	hallexit->placeObject(spray, vector3df(ROOM_SIZE / 3, -WALL_HEIGHT / 2.0f + WALL_THIKNESS / 2, -ROOM_SIZE / 2 + WALL_THIKNESS * 2));
-	Object* carrot = new Object("carrot", "carrot.3ds", vector3df(15.0f, 0.0f, 10.0f));
+	Object* carrot = new Object("carrot", "carrot.3ds", vector3df(15.0f, 0.0f, 10.0f), hall->getName());
 	carrot->setScale(vector3df(0.005f, 0.005f, 0.005f));
 	hall->placeObject(carrot, vector3df(ROOM_SIZE / 2 - WALL_THIKNESS * 3.5f, -WALL_HEIGHT / 2.2f, ROOM_SIZE / 2 - WALL_THIKNESS * 3));
-	Object* bone = new Object("bone", "FEMUR.3ds", vector3df(0.0f, 0.0f, 15.0f));
+	Object* bone = new Object("bone", "FEMUR.3ds", vector3df(0.0f, 0.0f, 15.0f), kitchen->getName());
 	bone->setScale(vector3df(0.0015f, 0.0015f, 0.0015f));
 	kitchen->placeObject(bone, vector3df(-ROOM_SIZE / 2 + WALL_THIKNESS * 2, -WALL_HEIGHT / 3.0f, ROOM_SIZE / 2 - WALL_THIKNESS * 2));
-	Object* key = new Object("key", "Key_B_02.3ds", vector3df(0, 0, 0));
+	Object* key = new Object("key", "Key_B_02.3ds", vector3df(0, 0, 0), studyroom->getName());
 	key->setScale(vector3df(0.05f, 0.05f, 0.05f));
 	studyroom->placeObject(key, vector3df(0.0f, -WALL_HEIGHT / 4.0f, ROOM_SIZE / 2 - WALL_THIKNESS * 3));
 

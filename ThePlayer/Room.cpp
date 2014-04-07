@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "Room.h"
 #include "PhysicsEntity.h"
 #include "Game.h"
@@ -20,11 +27,18 @@ Room::Room(std::string name, std::string wallTexture, std::string floorTexture, 
 	_position = position;
 	_scale = scale;
 	_name = name;
+	_doorLength = 0;
+	for (int i =0; i < 4; ++i) {
+		_doors[i] = 0;
+	}
 	for (int i = 0; i < 4; ++i) {
 		_doors[i] = doors[i];
 	}
 	_exitDoor = exitDoor;
 	//EntityManager::registerEntity(this);
+}
+Room::Room(std::string t):Entity(-1, 0, "Room"){
+
 }
 
 void Room::initialise() {
