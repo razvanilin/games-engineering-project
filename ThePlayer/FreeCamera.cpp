@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "FreeCamera.h"
 #include "Game.h"
 
@@ -15,7 +22,7 @@ namespace GameEngine{
 
 		//create transform matrix
 
-		mat.setRotationRadians(vector3df(_pitch, _yaw, 2.0f));
+		mat.setRotationRadians(vector3df(_pitch, _yaw, .0f));
 
 		//transform the translation vector by this matrix to create movement
 		mat.transformVect(_translation);

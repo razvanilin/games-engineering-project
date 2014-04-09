@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #include "PhysicsEngine.h"
 #include <algorithm>
 #include <iostream>
@@ -109,7 +116,6 @@ namespace GameEngine{
 
 	//creates and registers a new square rigidbody - assumes position is set
 	btRigidBody* PhysicsEngine::createBoxRigidBody(Entity* entity, const vector3df& scale, float mass){
-		
 		//create rigidbody's transform using entity's position
 		btTransform transform;
 		transform.setIdentity();

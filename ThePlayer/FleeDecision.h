@@ -1,3 +1,10 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include "DecisionTreeNode.h"
@@ -6,5 +13,8 @@
 class FleeDecision : public DecisionTreeNode<Enemy>
 {
 public:
-	void makeDecision(Enemy* owner) { owner->getStateMachine().setState("Flee"); }
+	void makeDecision(Enemy* owner) {
+		owner->getStateMachine().setState("Flee");
+		owner->setCurrentStateName("Flee");
+	}
 };

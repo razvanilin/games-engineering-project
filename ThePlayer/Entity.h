@@ -1,3 +1,11 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
+
 #pragma once
 
 #include <irrlicht.h>
@@ -14,6 +22,7 @@ namespace GameEngine{
 		Entity(int id, irr::scene::ISceneNode* node, const std::string& name = "");
 		virtual ~Entity(){ }
 		irr::scene::ISceneNode* getNode(){ return _node; }
+		void setNode(irr::scene::ISceneNode* value) { _node = value; }
 		bool isAlive() const {return _alive;}
 		void setAlive(bool value){ _alive = value; }
 		std::string getName() const {return _name;}

@@ -1,9 +1,20 @@
+/*
+* Authors:
+* Razvan Ilin(40090044) 
+* && 
+* David Russell(40091149)
+* Date: April 2014
+*/
 #pragma once
 
 #include <string>
 #include <irrlicht.h>
 #include "InputHandler.h"
 #include "Camera.h"
+#include "MainMenu.h"
+#include "PauseMenu.h"
+#include "EndGame.h"
+#include <irrKlang.h>
 
 namespace GameEngine
 {
@@ -18,6 +29,18 @@ namespace GameEngine
 		irr::core::dimension2d<irr::u32> _dimensions;
 		//camera
 		Camera* _camera;
+		//audio engine
+		irrklang::ISoundEngine* _audioEngine;
+		// Menu
+		MainMenu* _menu;
+		// pause menu
+		PauseMenu* _pause;
+		// End game
+		EndGame* _end;
+
+		std::string _endCause;
+		float _noiseMade;
+
 	public:
 		//create a Game class
 		Game(){ }
@@ -40,8 +63,16 @@ namespace GameEngine
 			_dimensions = value;
 		}
 		//get and set camera
-		Camera* getCam(){return _camera;}
-		void setCam(Camera* val){_camera = val;}
+		Camera* getCam(){ return _camera; }
+		void setCam(Camera* val){ _camera = val; }
+
+		void setEndCause(std::string value) { _endCause = value; }
+		void setNoiseMade(float value) { _noiseMade = value; }
+
+		//get and set audio engine
+		irrklang::ISoundEngine* getAudioEngine(){ return _audioEngine; }
+		void setAudioEngine(irrklang::ISoundEngine* val){ _audioEngine = val; }
+
 
 		//initialises the game
 		bool initialise();
