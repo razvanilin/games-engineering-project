@@ -9,7 +9,13 @@ Link to the engines:
 * Bullet: https://code.google.com/p/bullet/
 * IrrKlang: http://www.ambiera.com/irrklang/downloads.html
 
-The submitted version of the game can be downloaded from here: https://dl.dropboxusercontent.com/u/119667319/ThePlayerSetup.zip
+The submitted version of the game can be downloaded from here: 
+
+https://github.com/razvanilin/games-engineering-project/releases/download/v1.0/ThePlayerSetup.exe
+
+or
+
+https://dl.dropboxusercontent.com/u/119667319/ThePlayerSetup.zip
 
 
 Install notes:
